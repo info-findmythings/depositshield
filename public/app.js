@@ -616,7 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const day8Preview = document.getElementById('previewDay8Script');
     if (day8Preview) {
-      day8Preview.textContent = `FINAL NOTICE: 7-DAY STATUTORY TIMELINE EXPIRED. Ref: ${d.refNo}. Mr./Ms. ${d.landlordName}, you are now in willful statutory default under Sec 73 Contract Act. Our dispute docket is being submitted to the National Consumer Helpline (1915), e-Daakhil Consumer Court (demanding ₹${formattedWithheld}/- + 18% interest + ₹1,00,000 punitive damages), and local Police Station for Criminal Breach of Trust. Transfer ₹${formattedWithheld}/- immediately to avoid summons.`;
+      day8Preview.textContent = `FINAL NOTICE: 7-DAY STATUTORY TIMELINE EXPIRED. Ref: ${d.refNo}. Mr./Ms. ${d.landlordName}, you are now in willful statutory default under Sec 73 Contract Act. Our dispute docket is being submitted to the National Consumer Helpline (1915), e-Jagriti Consumer Court Portal (e-jagriti.gov.in) demanding ₹${formattedWithheld}/- + 18% interest + ₹1,00,000 punitive damages, and local Police Station for Criminal Breach of Trust. Transfer ₹${formattedWithheld}/- immediately to avoid summons.`;
     }
   }
 
@@ -1220,7 +1220,7 @@ This is a formal Pre-Litigation Legal Notice under *Section 73 of the Indian Con
 You are hereby formally called upon to refund the balance sum of *₹${formatINR(d.amountWithheld)}/-* to my bank account / UPI within *SEVEN (7) DAYS* of this notice.
 
 *NOTICE OF CONSEQUENCES:*
-Should you fail to remit the refund within 7 days, a formal dispute shall be registered with the *National Consumer Helpline (NCH - 1915)* followed by an official petition via the *e-Daakhil Portal* before the District Consumer Disputes Redressal Commission for recovery of the deposit + 18% statutory interest + ₹1,00,000 compensation for mental harassment.
+Should you fail to remit the refund within 7 days, a formal dispute shall be registered with the *National Consumer Helpline (NCH - 1915)* followed by an official petition via the *e-Jagriti Consumer Portal (https://e-jagriti.gov.in/)* before the District Consumer Disputes Redressal Commission for recovery of the deposit + 18% statutory interest + ₹1,00,000 compensation for mental harassment.
 
 Kindly confirm receipt and transfer the amount to avoid unnecessary litigation costs.
 
@@ -1288,7 +1288,7 @@ Mr./Ms. ${d.landlordName},
 
 Please note that the 7-day peremptory deadline stipulated in our formal Pre-Litigation Legal Demand Notice expires in 72 HOURS.
 
-To avoid initiation of proceedings before the District Consumer Disputes Redressal Commission (e-Daakhil) and statutory claim of 18% penal interest under Sec 73 Contract Act, kindly transfer the unlawfully withheld balance of ₹${formattedWithheld}/- immediately.
+To avoid initiation of proceedings before the District Consumer Disputes Redressal Commission (e-Jagriti: https://e-jagriti.gov.in/) and statutory claim of 18% penal interest under Sec 73 Contract Act, kindly transfer the unlawfully withheld balance of ₹${formattedWithheld}/- immediately.
 
 Yours sincerely,
 ${d.tenantName}`;
@@ -1315,7 +1315,7 @@ Consequently, you are now in willful statutory default under Section 73 of the I
 
 Our formal dispute file is being submitted today to:
 1. National Consumer Helpline (NCH Docket 1915).
-2. District Consumer Disputes Redressal Commission via e-Daakhil for recovery of ₹${formattedWithheld}/- + 18% p.a. interest + ₹1,00,000 compensation for mental harassment.
+2. District Consumer Disputes Redressal Commission via e-Jagriti (https://e-jagriti.gov.in/) for recovery of ₹${formattedWithheld}/- + 18% p.a. interest + ₹1,00,000 compensation for mental harassment.
 3. Local Police Station SHO under Section 405/406 IPC (Section 316 BNS) for Criminal Breach of Trust.
 
 If you wish to settle this amicably without facing court summons, transfer the withheld balance of ₹${formattedWithheld}/- immediately.
