@@ -881,6 +881,11 @@ app.get(ADMIN_SECRET_PATH, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin-portal.html'));
 });
 
+// Statutory Laws & Rules Portal
+app.get('/laws', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'laws.html'));
+});
+
 // Fallback to SPA homepage
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
