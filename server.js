@@ -886,6 +886,23 @@ app.get('/laws', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'laws.html'));
 });
 
+// Razorpay Compliance & Policy Routes
+app.get('/terms', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'terms.html'));
+});
+app.get('/privacy', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
+});
+app.get('/refund', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'refund.html'));
+});
+app.get('/contact', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'contact.html'));
+});
+app.get('/shipping', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'shipping.html'));
+});
+
 // Fallback to SPA homepage
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

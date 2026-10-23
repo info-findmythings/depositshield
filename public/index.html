@@ -183,6 +183,10 @@
             <option value="painting">Painting Charges (Deducting 1 month rent or ₹15,000 - ₹30,000)</option>
             <option value="cleaning">Deep Cleaning Fee (Deducting ₹5,000 - ₹15,000)</option>
             <option value="wear_tear">Normal Wear & Tear (Minor wall marks, floor scuffs)</option>
+            <option value="gujarat_hc">Gujarat Tenancy: Landlord deducting repairs without verified bills (Gujarat HC)</option>
+            <option value="pg_lockin">PG / Co-Living: Forfeiting caution deposit for early exit under lock-in</option>
+            <option value="job_relocation">Corporate Employee: Job transfer/relocation (Landlord refusing deposit)</option>
+            <option value="student_threat">Student Tenant: Landlord withholding marksheets/laptops or calling college</option>
             <option value="delay">"No Funds Right Now" / Delaying Beyond 30 Days</option>
             <option value="ghosting">Ghosting / Not Answering WhatsApp or Calls</option>
             <option value="fake_repairs">Old Plumbing / Pre-existing Appliance Breakdown</option>
@@ -266,9 +270,11 @@
                   
                   <div class="dropdown-group-label">GUJARAT</div>
                   <div class="dropdown-item" data-value="Ahmedabad, Gujarat">Ahmedabad, Gujarat</div>
+                  <div class="dropdown-item" data-value="Gandhinagar, Gujarat">Gandhinagar, Gujarat (GIFT City / Infocity)</div>
                   <div class="dropdown-item" data-value="Surat, Gujarat">Surat, Gujarat</div>
                   <div class="dropdown-item" data-value="Vadodara, Gujarat">Vadodara, Gujarat</div>
                   <div class="dropdown-item" data-value="Rajkot, Gujarat">Rajkot, Gujarat</div>
+                  <div class="dropdown-item" data-value="Bhavnagar, Gujarat">Bhavnagar, Gujarat</div>
 
                   <div class="dropdown-group-label">NORTH & CENTRAL</div>
                   <div class="dropdown-item" data-value="Jaipur, Rajasthan">Jaipur, Rajasthan</div>
@@ -333,6 +339,16 @@
             <div class="form-group">
               <label for="tenancyStartDate">Tenancy Start Date</label>
               <input type="date" id="tenancyStartDate" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label for="accommodationType">Accommodation / Occupancy Category *</label>
+              <select id="accommodationType" class="form-input">
+                <option value="Residential Apartment / Flat" selected>Residential Apartment / Independent House</option>
+                <option value="Paying Guest (PG) / Co-Living Space">Paying Guest (PG) / Co-Living Space (Zolo, Stanza, etc.)</option>
+                <option value="College Student Hostel / Room">College Student Hostel / Private Room</option>
+                <option value="Corporate Employee Leased Residence">Corporate Employee / Relocated Professional Flat</option>
+              </select>
             </div>
 
             <div class="form-group">
@@ -404,6 +420,26 @@
                   <input type="checkbox" name="landlordExcuse" value="No Breakdown or Bills">
                   <span class="checkmark"></span>
                   Failed to provide valid GST bills/quotations for deductions
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="landlordExcuse" value="Arbitrary PG/Hostel Lock-in Forfeiture">
+                  <span class="checkmark"></span>
+                  PG / Hostel arbitrary lock-in period forfeiture (Sec 52 Easements Act)
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="landlordExcuse" value="Corporate Job Transfer / Relocation Deduction">
+                  <span class="checkmark"></span>
+                  Corporate Job Transfer / Employee relocation deduction (Sec 56 ICA Frustration)
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="landlordExcuse" value="Student Threats or Withholding Belongings">
+                  <span class="checkmark"></span>
+                  Threatening student / withholding deposit or documents (BNS Sec 308)
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" name="landlordExcuse" value="Unverified Repairs without Invoices (Gujarat HC)">
+                  <span class="checkmark"></span>
+                  Gujarat HC violation: Deducting repairs without authentic GST invoices
                 </label>
               </div>
             </div>
@@ -1144,7 +1180,7 @@
                 </div>
 
                 <div class="court-body-paras">
-                  <p><strong>4. SETTLED HIGH COURT PRECEDENTS & SEC 108(m) TPA:</strong> It is a settled position of law that normal wear, tear, and natural weathering are the statutory responsibility of the lessor under Section 108(m) of the Transfer of Property Act, 1882. Deductions without verified third-party GST bills are illegal and punishable under law.</p>
+                  <p><strong>4. SETTLED HIGH COURT PRECEDENTS & SEC 108(m) TPA:</strong> It is a settled position of law (reiterated by the High Court of Gujarat, High Court of Karnataka, and Delhi High Court) that normal wear, tear, and natural weathering are the statutory responsibility of the lessor under Section 108(m) of the Transfer of Property Act, 1882. Arbitrary deductions without verified third-party GST bills are illegal, ultra vires, and actionable under consumer protection law.</p>
                   <p><strong>5. STRICT SEVEN (7) DAYS PEREMPTORY DEMAND:</strong> You are hereby called upon to refund the withheld sum of <strong>₹<span id="noticeWithheldP2">45,000</span>/-</strong> along with statutory accrued interest at 18% per annum directly to my Client's bank account / UPI within <strong>SEVEN (7) DAYS</strong> of receipt of this notice.</p>
                   
                   <div style="background: #fef2f2; border: 1.5px solid #dc2626; padding: 10px 14px; margin: 12px 0; border-radius: 4px;">
@@ -1537,6 +1573,10 @@
                   <label for="inqCity">City</label>
                   <select id="inqCity" class="form-input">
                     <option value="Bengaluru">Bengaluru</option>
+                    <option value="Ahmedabad (Gujarat)">Ahmedabad (Gujarat)</option>
+                    <option value="Gandhinagar (Gujarat)">Gandhinagar (Gujarat)</option>
+                    <option value="Surat (Gujarat)">Surat (Gujarat)</option>
+                    <option value="Vadodara (Gujarat)">Vadodara (Gujarat)</option>
                     <option value="Pune">Pune</option>
                     <option value="Mumbai">Mumbai</option>
                     <option value="Delhi NCR">Delhi NCR</option>
@@ -1643,11 +1683,22 @@
         <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
         <h3>Deposit<span>Shield</span> India</h3>
         <p>Empowering Indian tenants against unlawful security deposit deductions.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #94a3b8;">
+          <i class="fa-solid fa-envelope"></i> support@depositshield.in &bull; <i class="fa-solid fa-phone"></i> +91 98765 43210
+        </p>
       </div>
 
       <div class="footer-disclaimer">
-        <p><strong>Disclaimer:</strong> DepositShield is an automated legal self-help document drafting platform. It does not provide legal representation or advocate attorney services. If your dispute involves complex title or proprietary litigation, please consult an advocate.</p>
-        <p>&copy; 2026 DepositShield India. All rights reserved.</p>
+        <p style="margin-bottom: 0.75rem;">
+          <a href="/terms" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Terms & Conditions</a>
+          <a href="/privacy" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Privacy Policy</a>
+          <a href="/refund" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Cancellation & Refund Policy</a>
+          <a href="/shipping" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Shipping & Delivery</a>
+          <a href="/contact" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Contact Us</a>
+          <a href="/laws" style="color:#38bdf8; text-decoration:none; font-weight:600;">Statutory Rules</a>
+        </p>
+        <p><strong>Disclaimer:</strong> DepositShield India is an automated legal self-help document drafting platform. It does not provide legal representation or advocate attorney services. If your dispute involves complex title or proprietary litigation, please consult an advocate.</p>
+        <p>&copy; 2026 DepositShield India. All rights reserved. Secure 256-bit SSL encrypted payments via Razorpay.</p>
       </div>
     </div>
   </footer>

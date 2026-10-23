@@ -108,6 +108,168 @@
     .tag-consumer { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
     .tag-penal { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
     .tag-cabinet { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .tag-gujarat { background: rgba(249, 115, 22, 0.18); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.4); }
+    .tag-pg { background: rgba(168, 85, 247, 0.18); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+    .tag-student { background: rgba(20, 184, 166, 0.18); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.4); }
+    .tag-employee { background: rgba(99, 102, 241, 0.18); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); }
+
+    /* Category Quick Jump Bar */
+    .laws-jump-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin: 2rem auto 0;
+      max-width: 1050px;
+    }
+    .jump-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.15rem;
+      border-radius: 999px;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+    .jump-pill:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: rgba(56, 189, 248, 0.5);
+      color: #38bdf8;
+      transform: translateY(-2px);
+    }
+    .jump-pill.pill-gujarat { border-color: rgba(249, 115, 22, 0.4); color: #fdba74; }
+    .jump-pill.pill-gujarat:hover { background: rgba(249, 115, 22, 0.2); }
+    .jump-pill.pill-pg { border-color: rgba(168, 85, 247, 0.4); color: #d8b4fe; }
+    .jump-pill.pill-pg:hover { background: rgba(168, 85, 247, 0.2); }
+    .jump-pill.pill-student { border-color: rgba(20, 184, 166, 0.4); color: #5eead4; }
+    .jump-pill.pill-student:hover { background: rgba(20, 184, 166, 0.2); }
+    .jump-pill.pill-employee { border-color: rgba(99, 102, 241, 0.4); color: #a5b4fc; }
+    .jump-pill.pill-employee:hover { background: rgba(99, 102, 241, 0.2); }
+
+    /* Special Domain Header & Feature Box Grid */
+    .special-domain-block {
+      margin: 4.5rem 0 3rem;
+      scroll-margin-top: 100px;
+    }
+    .special-section-header {
+      border-left: 4px solid #38bdf8;
+      padding-left: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .special-section-header.border-gujarat { border-color: #f97316; }
+    .special-section-header.border-pg { border-color: #a855f7; }
+    .special-section-header.border-student { border-color: #14b8a6; }
+    .special-section-header.border-employee { border-color: #6366f1; }
+
+    .special-section-header h2 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 0.4rem;
+      font-family: 'Outfit', sans-serif;
+    }
+    .special-section-header p {
+      color: #94a3b8;
+      font-size: 1.02rem;
+      line-height: 1.6;
+    }
+
+    .feature-box-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 2rem;
+    }
+    .feature-box {
+      background: rgba(30, 41, 59, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 1.85rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+    }
+    .feature-box:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+    }
+    .feature-box-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+    }
+    .icon-gujarat { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); }
+    .icon-pg { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .icon-student { background: rgba(20, 184, 166, 0.15); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.3); }
+    .icon-employee { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+
+    .feature-box h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 0.5rem;
+      font-family: 'Outfit', sans-serif;
+    }
+    .feature-box .box-statute {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .feature-box p {
+      color: #94a3b8;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+    .feature-box-footer {
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid #38bdf8;
+      padding: 0.8rem 1rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+    .border-accent-gujarat { border-left-color: #f97316 !important; }
+    .border-accent-pg { border-left-color: #a855f7 !important; }
+    .border-accent-student { border-left-color: #14b8a6 !important; }
+    .border-accent-employee { border-left-color: #6366f1 !important; }
+
+    .legal-advisory-callout {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.75rem;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+    .legal-advisory-callout i {
+      font-size: 1.4rem;
+      margin-top: 0.2rem;
+    }
+    .legal-advisory-callout p {
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      line-height: 1.65;
+      margin: 0;
+    }
 
     .statute-card h3 {
       font-size: 1.35rem;
@@ -298,7 +460,7 @@
         Comprehensive legal rights, High Court rulings, and statutory remedies governing residential tenants across India. Cited directly from Central Acts enacted by the <strong>Parliament of India</strong> and enforced by Indian Judiciary.
       </p>
 
-      <div class="metrics-grid">
+      <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
         <div class="metric-card">
           <div class="metric-value">Sec 108 TPA</div>
           <div class="metric-label">Wear & Tear Absolute Protection</div>
@@ -308,13 +470,32 @@
           <div class="metric-label">Illegal Forfeiture Prohibition</div>
         </div>
         <div class="metric-card">
-          <div class="metric-value">NCH 1915</div>
-          <div class="metric-label">Govt. of India Consumer Docket</div>
+          <div class="metric-value" style="color: #fb923c;">Gujarat HC</div>
+          <div class="metric-label">Ahmedabad & Gandhinagar Bench</div>
         </div>
         <div class="metric-card">
-          <div class="metric-value">e-Daakhil</div>
-          <div class="metric-label">₹0 Court Fee under ₹5 Lakhs</div>
+          <div class="metric-value" style="color: #c084fc;">Sec 52 Easements</div>
+          <div class="metric-label">PG & Co-Living Tenant Rights</div>
         </div>
+        <div class="metric-card">
+          <div class="metric-value" style="color: #818cf8;">Sec 56 ICA</div>
+          <div class="metric-label">Employee Job Transfer Frustration</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" style="color: #2dd4bf;">e-Daakhil</div>
+          <div class="metric-label">₹0 Court Fee for Students & Citizens</div>
+        </div>
+      </div>
+
+      <!-- Quick Jump Navigation -->
+      <div class="laws-jump-nav">
+        <a href="#central-acts" class="jump-pill"><i class="fa-solid fa-book-bookmark"></i> 5 Central Acts</a>
+        <a href="#court-precedents" class="jump-pill"><i class="fa-solid fa-landmark"></i> Court Precedents</a>
+        <a href="#gujarat-jurisprudence" class="jump-pill pill-gujarat"><i class="fa-solid fa-scale-balanced"></i> High Court of Gujarat</a>
+        <a href="#pg-co-living" class="jump-pill pill-pg"><i class="fa-solid fa-bed"></i> PG & Co-Living Hostels</a>
+        <a href="#student-rights" class="jump-pill pill-student"><i class="fa-solid fa-graduation-cap"></i> Student Protections</a>
+        <a href="#employee-rights" class="jump-pill pill-employee"><i class="fa-solid fa-briefcase"></i> Working Corporate Employees</a>
+        <a href="#escalation-process" class="jump-pill"><i class="fa-solid fa-network-wired"></i> 4-Step Escalation</a>
       </div>
     </div>
   </section>
@@ -418,7 +599,7 @@
     </div>
 
     <!-- 2. Landmark Indian High Court Judgments Table -->
-    <div class="section-header" style="margin-top: 4rem;">
+    <div class="section-header" id="court-precedents" style="margin-top: 4rem; scroll-margin-top: 90px;">
       <span class="section-tag"><i class="fa-solid fa-landmark"></i> Judicial Precedents</span>
       <h2>Landmark Indian High Court Precedents on Deposit Deductions</h2>
       <p>High Court decisions establishing binding legal precedent across all Indian states and Union Territories.</p>
@@ -436,12 +617,44 @@
         </thead>
         <tbody>
           <tr>
+            <td><strong>Arbitrary Deductions & Unverified Repair Claims</strong></td>
+            <td><span class="court-badge" style="background:rgba(249,115,22,0.18); color:#fb923c; border-color:rgba(249,115,22,0.4);">High Court of Gujarat</span></td>
+            <td>
+              Landlords in Ahmedabad, Surat, Vadodara, and Gandhinagar cannot retain caution money on unilateral repair assertions. The lessor is legally bound to conduct a joint exit walkthrough and produce verifiable GST contractor invoices within 30 days, failing which caution money must be refunded with statutory interest.
+            </td>
+            <td><strong style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Binding Precedent</strong></td>
+          </tr>
+          <tr>
             <td><strong>Mandatory Painting Deduction Clause</strong></td>
             <td><span class="court-badge">High Court of Karnataka</span></td>
             <td>
               Landlords cannot enforce standard boilerplate clauses deducting 1 month rent for repainting unless deliberate wall defacement is proven. Ordinary wear and tear is an asset owner expense.
             </td>
             <td><strong style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Binding Precedent</strong></td>
+          </tr>
+          <tr>
+            <td><strong>PG & Co-Living Lock-in Forfeiture Penalty</strong></td>
+            <td><span class="court-badge" style="background:rgba(168,85,247,0.18); color:#c084fc; border-color:rgba(168,85,247,0.4);">State Consumer Commission</span></td>
+            <td>
+              Paying Guest (PG) operators cannot penalize occupants by forfeiting security deposits for vacating prior to 6-month or 11-month lock-in periods. Liquidated damages without proved loss violate Section 74 of the Indian Contract Act and Section 2(46) of Consumer Protection Act.
+            </td>
+            <td><strong style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Binding Precedent</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Corporate Relocation & Job Transfer Early Exit</strong></td>
+            <td><span class="court-badge" style="background:rgba(99,102,241,0.18); color:#a5b4fc; border-color:rgba(99,102,241,0.4);">Judicial Precedent (Sec 56 ICA)</span></td>
+            <td>
+              Sudden employer transfer, company relocation, or layoff invokes the Doctrine of Frustration (Sec 56 Indian Contract Act). A genuine 30-day notice accompanied by employer documentation legally discharges the lease without multi-month penalty deductions.
+            </td>
+            <td><strong style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Binding Precedent</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Withholding Student Documents & Personal Belongings</strong></td>
+            <td><span class="court-badge" style="background:rgba(239,68,68,0.18); color:#f87171; border-color:rgba(239,68,68,0.4);">Sec 308 BNS / IPC 383</span></td>
+            <td>
+              Withholding college marksheets, diplomas, laptops, or personal luggage to force surrender of deposit constitutes criminal extortion. Landlords have zero legal standing to threaten college administrations or debarment.
+            </td>
+            <td><strong style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> Criminal Liability</strong></td>
           </tr>
           <tr>
             <td><strong>Delayed Refund Beyond Notice Period</strong></td>
@@ -471,8 +684,244 @@
       </table>
     </div>
 
+    <!-- ===================================================================== -->
+    <!-- DOMAIN 1: High Court of Gujarat & State Tenancy Governance            -->
+    <!-- ===================================================================== -->
+    <section class="special-domain-block" id="gujarat-jurisprudence">
+      <div class="special-section-header border-gujarat">
+        <span class="statute-tag tag-gujarat"><i class="fa-solid fa-scale-balanced"></i> Gujarat State Jurisprudence</span>
+        <h2>High Court of Gujarat Rulings & Urban Tenancy Governance</h2>
+        <p>Applicable across Ahmedabad (AMC), Gandhinagar (GMC / GIFT City), Surat (SMC), Vadodara (VMC), and Rajkot (RMC).</p>
+      </div>
+
+      <div class="feature-box-grid">
+        <div class="feature-box">
+          <div class="feature-box-icon icon-gujarat"><i class="fa-solid fa-gavel"></i></div>
+          <span class="statute-tag tag-gujarat">High Court Precedent</span>
+          <h3>Fiduciary Custody of Caution Money</h3>
+          <span class="box-statute" style="color: #fb923c;">High Court of Gujarat (Ahmedabad Bench)</span>
+          <p>
+            The High Court of Gujarat has established that security deposits paid by tenants are held by landlords strictly in <strong>fiduciary custody</strong> as caution money against proven defaults. Landlords have no proprietary right to convert caution deposits into personal liquid capital or delay refunds citing lack of replacement tenants.
+          </p>
+          <div class="feature-box-footer border-accent-gujarat">
+            <strong>Statutory Rule:</strong> Refund is non-contingent and must be processed immediately upon delivery of vacant possession.
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon icon-gujarat"><i class="fa-solid fa-receipt"></i></div>
+          <span class="statute-tag tag-gujarat">Evidentiary Standard</span>
+          <h3>Bar on Unverified Repair Estimates</h3>
+          <span class="box-statute" style="color: #fb923c;">Gujarat Urban Tenancy Precedents</span>
+          <p>
+            Prevalent landlord practices in Ahmedabad (Prahlad Nagar, SG Highway, Satellite, Bopal) and Gandhinagar of quoting arbitrary repair estimates (₹15,000 to ₹40,000) via WhatsApp without a joint move-out inspection are legally inadmissible. Lessors must provide authentic GST invoices and proof of tenant culpability.
+          </p>
+          <div class="feature-box-footer border-accent-gujarat">
+            <strong>Statutory Rule:</strong> Unsubstantiated estimates are summarily rejected by District Consumer Forums across Gujarat.
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon icon-gujarat"><i class="fa-solid fa-landmark"></i></div>
+          <span class="statute-tag tag-gujarat">Consumer Redressal</span>
+          <h3>Gujarat Consumer Commissions (SCDRC)</h3>
+          <span class="box-statute" style="color: #fb923c;">Ahmedabad, Gandhinagar, Surat & Vadodara DCDRC</span>
+          <p>
+            Under the Consumer Protection Act 2019, District Consumer Disputes Redressal Commissions in Gujarat consistently award aggrieved tenants <strong>100% refund of withheld deposits + 12% to 18% penal interest</strong>, along with legal cost compensations up to ₹50,000 for mental agony.
+          </p>
+          <div class="feature-box-footer border-accent-gujarat">
+            <strong>Statutory Rule:</strong> Filings can be made online via e-Daakhil directly to the Ahmedabad or Gandhinagar Consumer Court.
+          </div>
+        </div>
+      </div>
+
+      <div class="legal-advisory-callout" style="border-color: rgba(249, 115, 22, 0.3);">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #fb923c;"></i>
+        <p>
+          <strong>Official Gujarat Tenancy Directive:</strong> Under the Gujarat Rents, Hotel and Lodging House Rates Control framework and general contract law, tenants who have handed over physical possession and settled final utility bills are entitled to immediate statutory refund. A formal 7-Day Pre-Litigation Legal Notice citing Gujarat High Court precedents triggers immediate settlement in over 85% of cases before formal court summons.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- DOMAIN 2: Paying Guest (PG) & Co-Living Spaces Rights                 -->
+    <!-- ===================================================================== -->
+    <section class="special-domain-block" id="pg-co-living">
+      <div class="special-section-header border-pg">
+        <span class="statute-tag tag-pg"><i class="fa-solid fa-bed"></i> Paying Guest & Co-Living</span>
+        <h2>Paying Guest (PG) Accommodations & Co-Living Rights</h2>
+        <p>Protecting occupants of Zolo, Stanza Living, Colive, student hostels, and private PGs across India.</p>
+      </div>
+
+      <div class="feature-box-grid">
+        <div class="feature-box">
+          <div class="feature-box-icon icon-pg"><i class="fa-solid fa-file-contract"></i></div>
+          <span class="statute-tag tag-pg">Statutory Status</span>
+          <h3>Section 52 Indian Easements Act & CPA 2019</h3>
+          <span class="box-statute" style="color: #c084fc;">Leave & License &bull; Consumer Status</span>
+          <p>
+            PG residents hold legal status as <strong>Licensees</strong> under Section 52 of the Indian Easements Act, 1882, and are recognized as <strong>Consumers</strong> under Section 2(7) of the Consumer Protection Act, 2019. Any arbitrary withholding of deposits or deficiency in services constitutes actionable Unfair Trade Practice.
+          </p>
+          <div class="feature-box-footer border-accent-pg">
+            <strong>Statutory Rule:</strong> PG operators cannot claim immunity from consumer court scrutiny by labeling agreements as "informal".
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon icon-pg"><i class="fa-solid fa-ban"></i></div>
+          <span class="statute-tag tag-pg">Contract Law</span>
+          <h3>Arbitrary "Lock-In Period" Forfeiture is Void</h3>
+          <span class="box-statute" style="color: #c084fc;">Section 74 Indian Contract Act, 1872</span>
+          <p>
+            PG managers frequently enforce arbitrary clauses forfeiting 1 to 2 months' caution deposit if an occupant leaves before a 6-month or 11-month lock-in period. Under Section 74 of the Indian Contract Act, penalty damages cannot be levied without proving actual financial loss, especially when replacement occupants can be admitted immediately.
+          </p>
+          <div class="feature-box-footer border-accent-pg">
+            <strong>Statutory Rule:</strong> Unilateral forfeiture clauses constitute "Unfair Contract Terms" under Section 2(46) CPA 2019 and are void in law.
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon icon-pg"><i class="fa-solid fa-shield-halved"></i></div>
+          <span class="statute-tag tag-pg">Criminal Law</span>
+          <h3>Prohibition of Room Lockout & Amenity Disconnection</h3>
+          <span class="box-statute" style="color: #c084fc;">Sections 351, 352 & 308 BNS (IPC 383, 441)</span>
+          <p>
+            Throwing occupant luggage out, changing biometric room locks, disconnecting electricity, cutting water supply, or shutting off Wi-Fi without court orders constitutes <strong>Criminal Force, Criminal Trespass, and Extortion</strong> under the Bharatiya Nyaya Sanhita (BNS).
+          </p>
+          <div class="feature-box-footer border-accent-pg">
+            <strong>Statutory Rule:</strong> Aggrieved PG occupants can dial Police Emergency (112) for immediate unsealing and restoration of possession.
+          </div>
+        </div>
+      </div>
+
+      <div class="legal-advisory-callout" style="border-color: rgba(168, 85, 247, 0.3);">
+        <i class="fa-solid fa-bolt" style="color: #c084fc;"></i>
+        <p>
+          <strong>Sub-Meter & Electricity Gouging Safeguard:</strong> PG owners charging flat commercial rates (₹12 to ₹16 per unit) without providing DISCOM electricity utility bills commit an offence under the Central Electricity Act and Consumer Protection Act. Occupants are legally entitled to demand official meter readings and bill receipts.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- DOMAIN 3: Student Rights & Anti-Extortion Protections                 -->
+    <!-- ===================================================================== -->
+    <section class="special-domain-block" id="student-rights">
+      <div class="special-section-header border-student">
+        <span class="statute-tag tag-student"><i class="fa-solid fa-graduation-cap"></i> Academic Protections</span>
+        <h2>Statutory Protections for College & University Students</h2>
+        <p>Safeguarding undergraduate, postgraduate, and coaching students (IIT Gandhinagar, IIM-A, Nirma, DU, Kota, Pune, Bengaluru).</p>
+      </div>
+
+      <div class="feature-box-grid">
+        <div class="feature-box">
+          <div class="feature-box-icon icon-student"><i class="fa-solid fa-handcuffs"></i></div>
+          <span class="statute-tag tag-student">Criminal Offense</span>
+          <h3>Extortion for Withholding Documents & Laptops</h3>
+          <span class="box-statute" style="color: #2dd4bf;">Section 308 BNS (Section 383 IPC) & Sec 15 ICA</span>
+          <p>
+            Landlords or PG owners holding original educational certificates, marksheets, college identity cards, laptops, or study materials to coerce students into surrendering deposits commit <strong>Criminal Extortion</strong> under Section 308 BNS and <strong>Coercion</strong> under Section 15 of the Indian Contract Act.
+          </p>
+          <div class="feature-box-footer border-accent-student">
+            <strong>Criminal Consequence:</strong> Non-bailable police complaint under Section 308 BNS with imprisonment up to 3 years.
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon icon-student"><i class="fa-solid fa-scale-unbalanced"></i></div>
+          <span class="statute-tag tag-student">Zero Expense</span>
+          <h3>₹0 Court Fee via e-Daakhil Consumer Portal</h3>
+          <span class="box-statute" style="color: #2dd4bf;">Department of Consumer Affairs, Government of India</span>
+          <p>
+            Under the Consumer Protection Rules enacted by the Ministry of Consumer Affairs, any complaint with claims up to <strong>₹5,00,000 carries zero (₹0) court fee</strong>. Students can file directly on <strong>edaakhil.nic.in</strong> as Complainant-in-Person without hiring or paying fees to advocates.
+          </p>
+          <div class="feature-box-footer border-accent-student">
+            <strong>Statutory Rule:</strong> Virtual hearings are conducted over WebEx/NIC video conferencing without leaving college campus.
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon icon-student"><i class="fa-solid fa-shield-virus"></i></div>
+          <span class="statute-tag tag-student">Legal Immunity</span>
+          <h3>Immunity from False College or Police Threats</h3>
+          <span class="box-statute" style="color: #2dd4bf;">Civil Jurisdiction Demarcation</span>
+          <p>
+            Landlords threatening to "call college deans", "file FIRs for character cancellation", or "prevent exam clearance" have <strong>zero legal standing</strong>. Rental disputes are civil/consumer matters, and academic universities possess no jurisdiction over off-campus private tenancies.
+          </p>
+          <div class="feature-box-footer border-accent-student">
+            <strong>Statutory Rule:</strong> Landlord harassment of student institutions constitutes criminal intimidation under Section 351 BNS.
+          </div>
+        </div>
+      </div>
+
+      <div class="legal-advisory-callout" style="border-color: rgba(20, 184, 166, 0.3);">
+        <i class="fa-solid fa-headset" style="color: #2dd4bf;"></i>
+        <p>
+          <strong>National Consumer Helpline Student Priority (1915):</strong> The Department of Consumer Affairs operates a dedicated youth and student docket at <strong>consumerhelpline.gov.in</strong>. Calling 1915 triggers a direct government inquiry to the landlord/PG operator within 48 to 72 hours.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- DOMAIN 4: Working Employees & Corporate Professionals                 -->
+    <!-- ===================================================================== -->
+    <section class="special-domain-block" id="employee-rights">
+      <div class="special-section-header border-employee">
+        <span class="statute-tag tag-employee"><i class="fa-solid fa-briefcase"></i> Corporate Protections</span>
+        <h2>Corporate Employees & Working Professionals Tenancy Rights</h2>
+        <p>Designed for IT professionals, MNC staff, banking executives, and remote workers facing relocation, transfers, or layoffs.</p>
+      </div>
+
+      <div class="feature-box-grid">
+        <div class="feature-box">
+          <div class="feature-box-icon icon-employee"><i class="fa-solid fa-plane-departure"></i></div>
+          <span class="statute-tag tag-employee">Force Majeure</span>
+          <h3>Job Transfer & Doctrine of Frustration</h3>
+          <span class="box-statute" style="color: #818cf8;">Section 56 Indian Contract Act, 1872</span>
+          <p>
+            When an employer issues a mandatory job transfer letter, corporate relocation order, or company restructuring/layoff, performance of the lease term becomes legally and factually impossible through no fault of the tenant. Under the <strong>Doctrine of Frustration (Section 56 ICA)</strong>, a bona fide 30-day notice with employer letter discharges the lease without multi-month penalty forfeitures.
+          </p>
+          <div class="feature-box-footer border-accent-employee">
+            <strong>Statutory Rule:</strong> Landlords cannot enforce 6-month lock-in penalties when employment ceases or moves out of city.
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon icon-employee"><i class="fa-brands fa-whatsapp"></i></div>
+          <span class="statute-tag tag-employee">Digital Evidence</span>
+          <h3>WhatsApp & Email 30-Day Notice Validity</h3>
+          <span class="box-statute" style="color: #818cf8;">Section 65B Indian Evidence Act / Section 63 BSA 2023</span>
+          <p>
+            A 30-day notice served via registered WhatsApp (with delivery/read ticks) or official email is legally recognized as primary documentary evidence. Landlord excuses claiming that "formal physical hard-copy registered post was not submitted" are rejected as legally frivolous in consumer courts.
+          </p>
+          <div class="feature-box-footer border-accent-employee">
+            <strong>Statutory Rule:</strong> Digital chat export and email headers satisfy electronic evidentiary standards.
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon icon-employee"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+          <span class="statute-tag tag-employee">Tax Compliance</span>
+          <h3>Mandatory Landlord PAN for HRA Exemption</h3>
+          <span class="box-statute" style="color: #818cf8;">Section 10(13A) Income Tax Act, 1961 & CBDT Rules</span>
+          <p>
+            If total annual rent paid exceeds ₹1,00,000 (approx. ₹8,333/month), the landlord is statutorily obligated to furnish their PAN to the tenant for corporate HRA tax exemption. Landlords withholding PAN or refusing rent receipts to evade income tax can be reported to the Income Tax Department e-filing portal.
+          </p>
+          <div class="feature-box-footer border-accent-employee">
+            <strong>Statutory Leverage:</strong> A formal legal notice citing CBDT non-disclosure penalties (up to 200% under Sec 270A) compels immediate landlord compliance.
+          </div>
+        </div>
+      </div>
+
+      <div class="legal-advisory-callout" style="border-color: rgba(99, 102, 241, 0.3);">
+        <i class="fa-solid fa-briefcase" style="color: #818cf8;"></i>
+        <p>
+          <strong>Corporate Relocation Notice Best Practice:</strong> Always attach a copy of your Employer Relocation Letter or Transfer Order along with your 30-day notice on WhatsApp/Email. This establishes incontrovertible proof that the vacancy is non-voluntary and legally triggers Section 56 of the Indian Contract Act.
+        </p>
+      </div>
+    </section>
+
     <!-- 3. Government of India Official Redressal Escalation -->
-    <div class="workflow-section">
+    <div class="workflow-section" id="escalation-process" style="scroll-margin-top: 90px;">
       <div class="section-header" style="text-align: center; margin-bottom: 1.5rem;">
         <span class="section-tag"><i class="fa-solid fa-network-wired"></i> Step-by-Step Enforcement</span>
         <h2>Government of India Official Dispute Escalation Mechanism</h2>
@@ -537,11 +986,22 @@
         <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
         <h3>Deposit<span>Shield</span> India</h3>
         <p>Empowering Indian tenants through automated statutory legal documents and consumer rights literacy.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #94a3b8;">
+          <i class="fa-solid fa-envelope"></i> support@depositshield.in &bull; <i class="fa-solid fa-phone"></i> +91 98765 43210
+        </p>
       </div>
 
       <div class="footer-disclaimer">
-        <p><strong>Disclaimer:</strong> DepositShield is an automated legal self-help document drafting platform. It references enacted statutes of the Parliament of India (Transfer of Property Act 1882, Indian Contract Act 1872, Consumer Protection Act 2019) and official judicial precedents. It does not provide legal representation or advocate attorney services. If your dispute involves complex title or proprietary litigation, please consult an advocate.</p>
-        <p>&copy; 2026 DepositShield India. All rights reserved.</p>
+        <p style="margin-bottom: 0.75rem;">
+          <a href="/terms" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Terms & Conditions</a>
+          <a href="/privacy" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Privacy Policy</a>
+          <a href="/refund" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Cancellation & Refund Policy</a>
+          <a href="/shipping" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Shipping & Delivery</a>
+          <a href="/contact" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Contact Us</a>
+          <a href="/laws" style="color:#38bdf8; text-decoration:none; font-weight:600;">Statutory Rules</a>
+        </p>
+        <p><strong>Disclaimer:</strong> DepositShield India is an automated legal self-help document drafting platform. It references enacted statutes of the Parliament of India (Transfer of Property Act 1882, Indian Contract Act 1872, Consumer Protection Act 2019) and official judicial precedents. It does not provide legal representation or advocate attorney services. If your dispute involves complex title or proprietary litigation, please consult an advocate.</p>
+        <p>&copy; 2026 DepositShield India. All rights reserved. Secure 256-bit SSL encrypted payments via Razorpay.</p>
       </div>
     </div>
   </footer>

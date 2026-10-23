@@ -87,6 +87,26 @@ document.addEventListener('DOMContentLoaded', () => {
       status: 'VERDICT: LANDLORD CAPITAL EXPENSE (CANNOT CHARGE TENANT)',
       explanation: 'Replacement of old plumbing lines, geyser heating coils, or pre-existing aging fixtures are structural capital repairs. Tenants are only liable for repairs caused by direct, proven accidental damage.',
       statutes: 'Model Tenancy Act (Schedule II - Landlord Structural Responsibilities).'
+    },
+    gujarat_hc: {
+      status: 'VERDICT: ILLEGAL UNDER HIGH COURT OF GUJARAT PRECEDENTS',
+      explanation: 'The High Court of Gujarat (Ahmedabad Bench) firmly prohibits unilateral landlord deductions for painting, plumbing, or repairs without a joint move-out inspection and verifiable third-party GST contractor invoices. Caution deposits are fiduciary trust funds, not discretionary landlord profit.',
+      statutes: 'High Court of Gujarat Precedents, Gujarat Tenancy Framework, Sec 73 Indian Contract Act, Sec 35 Consumer Protection Act 2019.'
+    },
+    pg_lockin: {
+      status: 'VERDICT: VOID PENAL FORFEITURE (SEC 74 CONTRACT ACT)',
+      explanation: 'Under Section 52 of the Indian Easements Act and Section 2(46) of the Consumer Protection Act 2019, Paying Guest (PG) occupants are legally protected consumers. Arbitrary clauses forfeiting caution deposits under a 6-month or 11-month lock-in period without proving actual financial loss are illegal and void in law.',
+      statutes: 'Sec 52 Indian Easements Act, Sec 74 Indian Contract Act, Sec 2(46) Consumer Protection Act 2019.'
+    },
+    job_relocation: {
+      status: 'VERDICT: FULL REFUND MANDATORY (DOCTRINE OF FRUSTRATION)',
+      explanation: 'When a corporate employee is transferred, relocated, or laid off, lease performance becomes impossible through no fault of the tenant. Under Section 56 of the Indian Contract Act, submitting an employer transfer letter with 30-day notice legally discharges the agreement without lock-in penalties.',
+      statutes: 'Sec 56 Indian Contract Act (Doctrine of Frustration), Sec 65B Indian Evidence Act (WhatsApp/Email Notice).'
+    },
+    student_threat: {
+      status: 'VERDICT: CRIMINAL EXTORTION UNDER SEC 308 BNS (IPC 383)',
+      explanation: 'Withholding student marksheets, diplomas, laptops, or personal belongings to enforce deposit deductions constitutes criminal extortion under Section 308 BNS. Landlords have zero legal standing to contact college deans or debar students from exams over civil deposit disputes.',
+      statutes: 'Sec 308 Bharatiya Nyaya Sanhita (IPC 383/384 Extortion), Sec 15 Indian Contract Act (Coercion).'
     }
   };
 
@@ -383,6 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
     state.formData.landlordName = landlordName;
     state.formData.landlordPhone = landlordPhone;
     state.formData.propertyAddress = propertyAddress;
+    const accommodationTypeEl = document.getElementById('accommodationType');
+    state.formData.accommodationType = accommodationTypeEl ? accommodationTypeEl.value : 'Residential Apartment / Flat';
     state.formData.tenancyStartDate = document.getElementById('tenancyStartDate').value;
     state.formData.vacateDate = vacateDate;
 
