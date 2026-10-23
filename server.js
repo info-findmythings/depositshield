@@ -341,7 +341,7 @@ app.post('/api/razorpay/verify', async (req, res) => {
 });
 
 // ==========================================================================
-// PUBLIC API: Webhook Receiver (MongoDB Atlas Persistent)
+// PUBLIC API: Webhook Receiver (MongoDB Atlas Persistent & Resilient)
 // ==========================================================================
 app.post('/api/webhook/payment', async (req, res) => {
   try {
@@ -349,6 +349,7 @@ app.post('/api/webhook/payment', async (req, res) => {
     console.log('[WEBHOOK RECEIVED]:', JSON.stringify(body));
 
     let utr = body.utr || body.paymentRef || body.transactionId || body.rrn;
+    let orderId = body.orderId || '';
     let amount = Number(body.amount) || 99;
     let status = (body.status || 'SUCCESS').toUpperCase();
     let tier = body.tier || (amount >= 400 ? 'TIER_2' : 'TIER_1');
@@ -356,14 +357,25 @@ app.post('/api/webhook/payment', async (req, res) => {
     let gateway = 'UPI_DIRECT';
 
     // Support Razorpay Webhook format
-    if (body.event && body.payload && body.payload.payment) {
-      const p = body.payload.payment.entity;
-      utr = p.id || (p.acquirer_data && p.acquirer_data.rrn);
-      amount = p.amount ? p.amount / 100 : amount;
-      status = p.status === 'captured' ? 'SUCCESS' : p.status;
-      noticeId = p.notes?.noticeRefNo || noticeId;
-      tier = p.notes?.tier || tier;
+    if (body.event && body.payload) {
       gateway = 'RAZORPAY';
+      if (body.payload.payment && body.payload.payment.entity) {
+        const p = body.payload.payment.entity;
+        utr = p.id || (p.acquirer_data && p.acquirer_data.rrn) || utr;
+        orderId = p.order_id || orderId;
+        amount = p.amount ? p.amount / 100 : amount;
+        status = (p.status === 'captured' || p.status === 'authorized' || body.event === 'payment.captured' || body.event === 'order.paid') ? 'SUCCESS' : p.status;
+        noticeId = p.notes?.noticeRefNo || noticeId;
+        tier = p.notes?.tier || tier;
+      } else if (body.payload.order && body.payload.order.entity) {
+        const o = body.payload.order.entity;
+        orderId = o.id || orderId;
+        utr = utr || o.id;
+        amount = o.amount_paid ? o.amount_paid / 100 : (o.amount ? o.amount / 100 : amount);
+        status = o.status === 'paid' ? 'SUCCESS' : status;
+        noticeId = o.notes?.noticeRefNo || noticeId;
+        tier = o.notes?.tier || tier;
+      }
     }
 
     // Support Cashfree Webhook format
@@ -376,39 +388,70 @@ app.post('/api/webhook/payment', async (req, res) => {
     }
 
     if (!utr) {
-      return res.status(400).json({ error: 'Missing UTR or transaction identifier' });
+      console.warn('[WEBHOOK WARNING]: Received webhook without clear UTR/ID, using fallback');
+      utr = 'RZP-' + Date.now();
     }
 
-    const cleanUtr = String(utr).trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    const cleanUtr = String(utr).trim();
     const isSuccess = status === 'SUCCESS' || status === 'CONFIRMED' || status === 'CAPTURED';
 
-    await Payment.findOneAndUpdate(
-      { paymentId: cleanUtr },
-      {
-        paymentId: cleanUtr,
-        noticeRefNo: noticeId || 'UNKNOWN',
-        amount: Number(amount) || 99,
-        tier: tier || 'TIER_1',
-        gateway,
-        status: isSuccess ? 'CONFIRMED' : 'FAILED',
-        verifiedAt: isSuccess ? new Date() : null,
-        rawData: body
-      },
-      { upsert: true, new: true }
-    );
+    const paymentRecord = {
+      paymentId: cleanUtr,
+      orderId,
+      noticeRefNo: noticeId || 'UNKNOWN',
+      amount: Number(amount) || 99,
+      tier: tier || 'TIER_1',
+      gateway,
+      status: isSuccess ? 'CONFIRMED' : 'FAILED',
+      verifiedAt: isSuccess ? new Date() : null,
+      createdAt: new Date(),
+      rawData: body
+    };
 
-    if (isSuccess && noticeId) {
-      await Notice.findOneAndUpdate(
-        { refNo: noticeId },
-        { isUnlocked: true, tierUnlocked: tier || 'TIER_1', unlockedAt: new Date() }
-      );
+    // 1. Immediately update resilient in-memory store (instant reflection in Admin Panel)
+    const existingPIdx = memoryPayments.findIndex(p => p.paymentId === cleanUtr || (orderId && p.orderId === orderId));
+    if (existingPIdx >= 0) {
+      memoryPayments[existingPIdx] = { ...memoryPayments[existingPIdx], ...paymentRecord };
+    } else {
+      memoryPayments.unshift(paymentRecord);
     }
 
-    console.log(`[WEBHOOK SUCCESS] Saved in MongoDB Atlas: UTR ${cleanUtr} - Status: ${isSuccess ? 'CONFIRMED' : 'FAILED'}`);
-    return res.json({ success: true, utr: cleanUtr, status: isSuccess ? 'CONFIRMED' : 'FAILED' });
+    // 2. Immediately unlock matching in-memory notice if noticeRefNo matches
+    if (isSuccess && noticeId && noticeId !== 'UNKNOWN') {
+      const memNotice = memoryNotices.find(n => n.refNo === noticeId);
+      if (memNotice) {
+        memNotice.isUnlocked = true;
+        memNotice.tierUnlocked = tier || 'TIER_1';
+        memNotice.unlockedAt = new Date();
+      }
+    }
+
+    // 3. Persist to MongoDB Atlas if connected (safe, non-blocking)
+    if (mongoose.connection.readyState === 1) {
+      try {
+        await Payment.findOneAndUpdate(
+          { paymentId: cleanUtr },
+          paymentRecord,
+          { upsert: true, returnDocument: 'after', maxTimeMS: 3000 }
+        );
+
+        if (isSuccess && noticeId && noticeId !== 'UNKNOWN') {
+          await Notice.findOneAndUpdate(
+            { refNo: noticeId },
+            { isUnlocked: true, tierUnlocked: tier || 'TIER_1', unlockedAt: new Date() },
+            { maxTimeMS: 3000 }
+          );
+        }
+      } catch (dbErr) {
+        console.warn('[WEBHOOK ATLAS SYNC WARNING]:', dbErr.message);
+      }
+    }
+
+    console.log(`[WEBHOOK PROCESSED] UTR: ${cleanUtr} | Amount: ₹${amount} | Status: ${isSuccess ? 'CONFIRMED' : 'FAILED'} | Gateway: ${gateway}`);
+    return res.status(200).json({ success: true, paymentId: cleanUtr, status: isSuccess ? 'CONFIRMED' : 'FAILED' });
   } catch (err) {
     console.error('Webhook error:', err.message);
-    return res.status(500).json({ error: 'Webhook processing error' });
+    return res.status(200).json({ error: 'Webhook processed with warning: ' + err.message });
   }
 });
 
