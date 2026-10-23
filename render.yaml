@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: depositshield
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ADMIN_USERNAME
+        value: aks008
+      - key: ADMIN_PASSWORD
+        value: Akash@1060
+      - key: ADMIN_SECRET_PATH
+        value: /portal-aks008
+      - key: ADMIN_SECRET
+        value: akash_shield_2026
+      - key: JWT_SECRET
+        value: depositshield_akash_jwt_super_secret_2026
+      - key: PRICE_TIER_1
+        value: "99"
+      - key: PRICE_TIER_2
+        value: "499"
+      - key: PAYMENT_GATEWAY
+        value: RAZORPAY
+      - key: RAZORPAY_ACCOUNT_ID
+        value: acc_RkgFhN1xao5sNF
+      - key: RAZORPAY_MERCHANT_ID
+        value: RkgFhN1xao5sNF
+      - key: RAZORPAY_KEY_ID
+        value: rzp_live_TrQQrKvvokmnW8
+      - key: RAZORPAY_KEY_SECRET
+        value: kJ7rIXIAPY3bNe04enUhChyZ
+      - key: MONGO_URI
+        value: mongodb+srv://infofindmythings_db_user:5bVWYdwfsJcVw1Ru@cluster0.i1fbxky.mongodb.net/DepositShield?retryWrites=true&w=majority
+      - key: DB_NAME
+        value: DepositShield

@@ -1,0 +1,13 @@
+{
+  "payments": [
+    {
+      "utr": "GDEGDFGEF",
+      "amount": 99,
+      "tier": "TIER_1",
+      "noticeId": "DS/2026/AHM-9877",
+      "status": "PENDING",
+      "createdAt": "2026-10-23T06:25:38.421Z",
+      "source": "user_submission"
+    }
+  ]
+}

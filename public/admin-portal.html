@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DepositShield | Secure Admin Command Center</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/admin-portal.css">
+</head>
+<body>
+
+  <!-- ===================================================================== -->
+  <!-- 1. LOGIN SCREEN -->
+  <!-- ===================================================================== -->
+  <div class="login-wrapper" id="loginScreen">
+    <div class="login-card">
+      <div class="login-badge"><i class="fa-solid fa-lock"></i> RESTRICTED ACCESS</div>
+      <div class="brand-header">
+        <div class="brand-logo"><i class="fa-solid fa-shield-halved"></i></div>
+        <h2>DepositShield <span>Admin</span></h2>
+      </div>
+      <p class="login-sub">Internal Management, Payment Records & Revenue Engine</p>
+
+      <form id="adminLoginForm" class="login-form">
+        <div class="form-group">
+          <label for="adminUsername"><i class="fa-solid fa-user-shield"></i> Admin Username</label>
+          <input type="text" id="adminUsername" class="form-input" placeholder="e.g. aks008" autocomplete="off" required>
+        </div>
+
+        <div class="form-group">
+          <label for="adminPassword"><i class="fa-solid fa-key"></i> Password</label>
+          <input type="password" id="adminPassword" class="form-input" placeholder="••••••••••••" required>
+        </div>
+
+        <div class="login-error hidden" id="loginErrorMsg">
+          <i class="fa-solid fa-circle-exclamation"></i> <span id="errorText">Invalid username or password</span>
+        </div>
+
+        <button type="submit" class="btn-login" id="btnLoginSubmit">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Authenticate & Enter Dashboard
+        </button>
+      </form>
+      <div class="login-footer">
+        <span>Protected with MongoDB Atlas & JWT encryption</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 2. MAIN DASHBOARD SCREEN (Visible upon Login) -->
+  <!-- ===================================================================== -->
+  <div class="dashboard-wrapper hidden" id="dashboardScreen">
+    
+    <!-- Top Navigation Header -->
+    <header class="admin-header">
+      <div class="header-left">
+        <div class="header-brand">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>DepositShield <strong>Operations</strong></span>
+        </div>
+        <div class="db-status-badge">
+          <span class="pulse-dot"></span> MongoDB Atlas: <strong>DepositShield</strong> (Live)
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="admin-user-pill">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="activeUserLabel">aks008</span>
+        </div>
+        <a href="/" target="_blank" class="btn-public-preview" title="Open Public Website">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Live App
+        </a>
+        <button type="button" class="btn-logout" id="btnLogout">
+          <i class="fa-solid fa-power-off"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="dashboard-body">
+
+      <!-- KPI Summary Cards -->
+      <section class="kpi-grid">
+        <div class="kpi-card revenue-today">
+          <div class="kpi-icon"><i class="fa-solid fa-bolt"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-title">TODAY'S REVENUE</span>
+            <h3 class="kpi-val" id="kpiTodayRev">₹0</h3>
+            <span class="kpi-sub">Real-time daily collection</span>
+          </div>
+        </div>
+
+        <div class="kpi-card revenue-month">
+          <div class="kpi-icon"><i class="fa-solid fa-calendar-days"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-title">THIS MONTH</span>
+            <h3 class="kpi-val" id="kpiMonthRev">₹0</h3>
+            <span class="kpi-sub" id="kpiMonthOrders">0 confirmed orders</span>
+          </div>
+        </div>
+
+        <div class="kpi-card revenue-year">
+          <div class="kpi-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-title">YEARLY REVENUE</span>
+            <h3 class="kpi-val" id="kpiYearRev">₹0</h3>
+            <span class="kpi-sub" id="kpiYearLabel">2026 Financial Year</span>
+          </div>
+        </div>
+
+        <div class="kpi-card total-alltime">
+          <div class="kpi-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-title">TOTAL ALL-TIME</span>
+            <h3 class="kpi-val" id="kpiTotalRev">₹0</h3>
+            <span class="kpi-sub" id="kpiTotalOrders">0 Total Transactions</span>
+          </div>
+        </div>
+
+        <div class="kpi-card notice-count">
+          <div class="kpi-icon"><i class="fa-solid fa-file-contract"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-title">NOTICES DRAFTED</span>
+            <h3 class="kpi-val" id="kpiNoticesCount">0</h3>
+            <span class="kpi-sub" id="kpiUnlockedCount">0 notices unlocked</span>
+          </div>
+        </div>
+
+        <div class="kpi-card conversion-rate">
+          <div class="kpi-icon"><i class="fa-solid fa-percent"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-title">CONVERSION RATE</span>
+            <h3 class="kpi-val" id="kpiConversionRate">0%</h3>
+            <span class="kpi-sub">Draft-to-Paid ratio</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Navigation Tabs -->
+      <nav class="nav-tabs-bar">
+        <button type="button" class="nav-tab active" data-tab="tabSubmissions">
+          <i class="fa-solid fa-users"></i> User Tenancy Details (<span id="tabCountNotices">0</span>)
+        </button>
+        <button type="button" class="nav-tab" data-tab="tabPayments">
+          <i class="fa-solid fa-credit-card"></i> Payment & Webhooks (<span id="tabCountPayments">0</span>)
+        </button>
+        <button type="button" class="nav-tab" data-tab="tabInquiries">
+          <i class="fa-solid fa-phone-volume"></i> Inquiries & Leads (<span id="tabCountInquiries">0</span>)
+        </button>
+        <button type="button" class="nav-tab" data-tab="tabConfig">
+          <i class="fa-solid fa-sliders"></i> Price & Gateway Settings
+        </button>
+        <button type="button" class="nav-tab" data-tab="tabReports">
+          <i class="fa-solid fa-chart-pie"></i> Revenue Reports (Daily / Monthly / Yearly)
+        </button>
+      </nav>
+
+      <!-- TAB 1: User Tenancy Submissions -->
+      <section class="tab-content active" id="tabSubmissions">
+        <div class="section-card">
+          <div class="card-toolbar">
+            <div class="toolbar-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="searchSubmissions" class="search-input" placeholder="Search by Tenant Name, Phone, Email, Ref No, or City...">
+            </div>
+            <div class="toolbar-actions">
+              <button type="button" class="btn-refresh" id="btnRefreshSubmissions">
+                <i class="fa-solid fa-rotate-right"></i> Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ref No</th>
+                  <th>Date & Time</th>
+                  <th>Tenant Details</th>
+                  <th>Landlord Details</th>
+                  <th>City / District</th>
+                  <th>Withheld Amount</th>
+                  <th>Excuses</th>
+                  <th>Unlock Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="submissionsTableBody">
+                <tr><td colspan="9" class="empty-state">Loading MongoDB Atlas records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: Payments & Webhooks -->
+      <section class="tab-content" id="tabPayments">
+        <div class="section-card">
+          <div class="card-toolbar">
+            <div class="toolbar-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="searchPayments" class="search-input" placeholder="Search by UTR, Razorpay Payment ID, or Notice Ref...">
+            </div>
+            <div class="toolbar-filters">
+              <select id="filterPaymentStatus" class="select-filter">
+                <option value="ALL">All Statuses</option>
+                <option value="CONFIRMED">Confirmed Only</option>
+                <option value="PENDING">Pending Only</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Payment ID / UTR</th>
+                  <th>Order / Ref No</th>
+                  <th>Amount</th>
+                  <th>Tier</th>
+                  <th>Gateway</th>
+                  <th>Status</th>
+                  <th>Date & Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="paymentsTableBody">
+                <tr><td colspan="8" class="empty-state">Loading transactions from MongoDB Atlas...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2.5: Customer Inquiries & Leads -->
+      <section class="tab-content" id="tabInquiries">
+        <div class="section-card">
+          <div class="card-toolbar">
+            <div class="toolbar-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="searchInquiries" class="search-input" placeholder="Search by Customer Name, Phone Number, City, or Message...">
+            </div>
+            <div class="toolbar-filters">
+              <select id="filterInquiryStatus" class="select-filter">
+                <option value="ALL">All Inquiries</option>
+                <option value="NEW">New Leads Only</option>
+                <option value="CONTACTED">Contacted Only</option>
+              </select>
+            </div>
+            <div class="toolbar-actions">
+              <button type="button" class="btn-refresh" id="btnRefreshInquiries">
+                <i class="fa-solid fa-rotate-right"></i> Refresh Inquiries
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Inquiry ID & Date</th>
+                  <th>Customer Name</th>
+                  <th>Contact Number (Call / WhatsApp)</th>
+                  <th>City</th>
+                  <th>Withheld Amount</th>
+                  <th>Message / Dispute</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="inquiriesTableBody">
+                <tr><td colspan="8" class="empty-state">Loading customer inquiries...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: Price & Gateway Configuration -->
+      <section class="tab-content" id="tabConfig">
+        <div class="config-grid">
+          
+          <!-- Pricing Configuration -->
+          <div class="config-card">
+            <div class="config-card-header">
+              <i class="fa-solid fa-tags"></i>
+              <div>
+                <h3>Product Pricing Configuration</h3>
+                <p>Change prices live. Persisted permanently in MongoDB Atlas.</p>
+              </div>
+            </div>
+
+            <form id="pricingConfigForm" class="config-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cfgTier1Price">Tier 1: 7-Day Pre-Litigation Legal Notice (₹)</label>
+                  <input type="number" id="cfgTier1Price" class="form-input" min="1" step="1" required>
+                  <span class="form-hint">Default: ₹99</span>
+                </div>
+                <div class="form-group">
+                  <label for="cfgTier2Price">Tier 2: Consumer Court & Police Kit (₹)</label>
+                  <input type="number" id="cfgTier2Price" class="form-input" min="1" step="1" required>
+                  <span class="form-hint">Default: ₹499</span>
+                </div>
+              </div>
+
+              <div class="form-group" style="display: none;">
+                <label for="cfgUpiId">Backup UPI ID</label>
+                <input type="text" id="cfgUpiId" class="form-input" value="8000757744@upi">
+              </div>
+
+              <div class="checkbox-setting" style="display: none;">
+                <input type="checkbox" id="cfgDirectUpiEnabled">
+                <label for="cfgDirectUpiEnabled">Enable Direct UPI QR Payment Option</label>
+              </div>
+
+              <div class="gateway-status-pill active-rzp">
+                <i class="fa-solid fa-bolt text-warning"></i> Active Gateway: <strong>Razorpay Instant Checkout</strong> (100% Automated)
+              </div>
+
+              <button type="submit" class="btn-save-cfg" id="btnSavePricing">
+                <i class="fa-solid fa-floppy-disk"></i> Save Pricing Configuration
+              </button>
+            </form>
+          </div>
+
+          <!-- Razorpay Configuration -->
+          <div class="config-card">
+            <div class="config-card-header">
+              <i class="fa-solid fa-credit-card"></i>
+              <div>
+                <h3>Razorpay Payment Gateway Setup</h3>
+                <p>Connect your Razorpay account to enable instant card/UPI checkout.</p>
+              </div>
+            </div>
+
+            <form id="razorpayConfigForm" class="config-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Razorpay Account ID</label>
+                  <input type="text" id="cfgRzpAccountId" class="form-input readonly" value="acc_RkgFhN1xao5sNF" readonly>
+                </div>
+                <div class="form-group">
+                  <label>Razorpay Merchant ID</label>
+                  <input type="text" id="cfgRzpMerchantId" class="form-input readonly" value="RkgFhN1xao5sNF" readonly>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="cfgRzpKeyId">Razorpay Key ID</label>
+                <input type="text" id="cfgRzpKeyId" class="form-input" placeholder="rzp_live_... or rzp_test_...">
+                <span class="form-hint">From your Razorpay Dashboard &rarr; Settings &rarr; API Keys</span>
+              </div>
+
+              <div class="form-group">
+                <label for="cfgRzpKeySecret">Razorpay Key Secret</label>
+                <input type="password" id="cfgRzpKeySecret" class="form-input" placeholder="••••••••••••••••••••">
+                <span class="form-hint">Leave blank to keep existing secret unchanged</span>
+              </div>
+
+              <div class="checkbox-setting">
+                <input type="checkbox" id="cfgRazorpayEnabled">
+                <label for="cfgRazorpayEnabled">Enable Razorpay One-Click Checkout Popup</label>
+              </div>
+
+              <div class="webhook-info-box">
+                <strong><i class="fa-solid fa-link"></i> Your Razorpay Webhook URL:</strong>
+                <code id="displayWebhookUrl">https://[your-domain]/api/webhook/payment</code>
+                <p>Add this in Razorpay Dashboard &rarr; Settings &rarr; Webhooks with event: <code>payment.captured</code></p>
+              </div>
+
+              <button type="submit" class="btn-save-cfg" id="btnSaveRazorpay">
+                <i class="fa-solid fa-floppy-disk"></i> Save Razorpay Configuration
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 4: Revenue & Analytics Reports -->
+      <section class="tab-content" id="tabReports">
+        <div class="reports-grid">
+          
+          <!-- Daily Breakdown -->
+          <div class="report-card">
+            <div class="report-header">
+              <h3><i class="fa-solid fa-calendar-day"></i> Daily Revenue Breakdown (Past 30 Days)</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table small">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Confirmed Orders</th>
+                    <th>Revenue</th>
+                  </tr>
+                </thead>
+                <tbody id="dailyReportTableBody">
+                  <tr><td colspan="3" class="empty-state">Loading daily report...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Monthly & Yearly Breakdown -->
+          <div class="report-card">
+            <div class="report-header">
+              <h3><i class="fa-solid fa-calendar-week"></i> Monthly Revenue Report (Current Year)</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table small">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Orders</th>
+                    <th>Revenue</th>
+                  </tr>
+                </thead>
+                <tbody id="monthlyReportTableBody">
+                  <tr><td colspan="3" class="empty-state">Loading monthly report...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="yearly-summary-box" style="margin-top: 1.5rem;">
+              <h4><i class="fa-solid fa-trophy"></i> Full Year Summary</h4>
+              <div class="yearly-stat-row">
+                <span>Total 2026 Revenue:</span>
+                <strong id="yearlySummaryRev">₹0</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Notice Details Modal (for Admin to inspect full submission) -->
+  <div class="admin-modal-backdrop hidden" id="noticeDetailsModal">
+    <div class="admin-modal-card">
+      <button type="button" class="admin-modal-close" id="btnCloseNoticeModal">&times;</button>
+      <div class="admin-modal-header">
+        <h3 id="modalNoticeTitle">Notice Details</h3>
+        <span class="ref-tag" id="modalNoticeRef"></span>
+      </div>
+      <div class="admin-modal-body" id="modalNoticeContent">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <div id="toastNotification" class="toast-popup hidden"></div>
+
+  <script src="/admin-portal.js"></script>
+</body>
+</html>
