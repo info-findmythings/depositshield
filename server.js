@@ -13,7 +13,7 @@ const Notice = require('./models/Notice');
 const Payment = require('./models/Payment');
 const Settings = require('./models/Settings');
 const Inquiry = require('./models/Inquiry');
-const { sendAdminPaymentNotification, sendCustomerNoticeEmail, sendAdminInquiryNotification } = require('./services/emailService');
+const { sendAdminPaymentNotification, sendCustomerNoticeEmail, sendAdminInquiryNotification, sendAdminAcquisitionNotification } = require('./services/emailService');
 const {
   generateNoticePdf,
   generateCourtPetitionPdf,
@@ -211,6 +211,61 @@ app.post('/api/inquiry', async (req, res) => {
   } catch (err) {
     console.error('Inquiry error:', err.message);
     return res.status(500).json({ error: 'Failed to process inquiry. Please try again.' });
+  }
+});
+
+// ==========================================================================
+// PUBLIC API: Startup Buyer Acquisition Offer
+// ==========================================================================
+const memoryAcquisitionOffers = [];
+
+app.post('/api/acquisition-offer', async (req, res) => {
+  try {
+    const { name, email, phone, offerAmount, paymentMethod, message } = req.body;
+    if (!name || (!email && !phone)) {
+      return res.status(400).json({ error: 'Name and either email or phone number are required.' });
+    }
+
+    const offerId = 'ACQ-' + Date.now().toString().slice(-6);
+    const record = {
+      offerId,
+      name: String(name).trim(),
+      email: email ? String(email).trim() : 'N/A',
+      phone: phone ? String(phone).trim() : 'N/A',
+      offerAmount: offerAmount ? String(offerAmount).trim() : '$7,500 USD',
+      paymentMethod: paymentMethod ? String(paymentMethod).trim() : 'Escrow.com / Wire',
+      message: message ? String(message).trim() : '',
+      createdAt: new Date()
+    };
+
+    memoryAcquisitionOffers.unshift(record);
+
+    // Also store as an inquiry so it appears in the admin portal leads tab!
+    memoryInquiries.unshift({
+      inquiryId: offerId,
+      name: `[BUYER OFFER] ${record.name}`,
+      phone: record.phone,
+      city: `Offer: ${record.offerAmount}`,
+      amountWithheld: 0,
+      message: `STARTUP ACQUISITION OFFER: ${record.offerAmount} via ${record.paymentMethod}. Email: ${record.email}. Note: ${record.message}`,
+      status: 'NEW',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    // Send high-priority notification to admin email
+    sendAdminAcquisitionNotification(record).catch(err => {
+      console.warn('[ACQUISITION EMAIL NOTICE]:', err.message);
+    });
+
+    return res.json({
+      success: true,
+      message: 'Your acquisition offer has been transmitted directly to the founder. We will contact you within 2-4 hours to finalize details and Escrow.',
+      offerId
+    });
+  } catch (err) {
+    console.error('Acquisition offer error:', err.message);
+    return res.status(500).json({ error: 'Failed to submit offer. Please contact directly via WhatsApp.' });
   }
 });
 
@@ -1211,6 +1266,12 @@ app.get('/shipping', (req, res) => {
 });
 app.get('/reel', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'reel.html'));
+});
+app.get('/acquisition', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'acquisition.html'));
+});
+app.get('/for-sale', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'acquisition.html'));
 });
 
 // Fallback to SPA homepage

@@ -730,9 +730,94 @@ async function sendAdminInquiryNotification(inquiry) {
   }
 }
 
+/**
+ * Send High-Priority Startup Buyer Acquisition Offer Notification to Admin
+ */
+async function sendAdminAcquisitionNotification(offer) {
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.EMAIL_USER || 'akashrupareliya321@gmail.com';
+  const transporter = getTransporter();
+
+  const cleanPhone = String(offer.phone || '').replace(/[^\d]/g, '');
+  const waMsg = encodeURIComponent(
+    `Hi ${offer.name || 'there'}, this is Akash from DepositShield India regarding your startup acquisition offer (${offer.offerAmount || '$7,500 USD'}). Let's discuss terms and asset transfer.`
+  );
+  const waUrl = cleanPhone.length >= 10
+    ? `https://wa.me/${cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone}?text=${waMsg}`
+    : `https://wa.me/?text=${waMsg}`;
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #0f172a; margin: 0; padding: 24px; }
+    .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border: 2px solid #f59e0b; }
+    .header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 24px; color: #ffffff; text-align: center; }
+    .header h2 { margin: 0; font-size: 20px; font-weight: 800; }
+    .body { padding: 26px 30px; }
+    .info-table { width: 100%; border-collapse: collapse; margin-bottom: 22px; }
+    .info-table td { padding: 10px 8px; font-size: 14px; border-bottom: 1px solid #f1f5f9; }
+    .info-table td.label { font-weight: 600; color: #64748b; width: 35%; }
+    .info-table td.val { font-weight: 700; color: #0f172a; word-break: break-all; }
+    .msg-box { background: #fef3c7; border: 1.5px solid #f59e0b; border-radius: 8px; padding: 14px; font-size: 13.5px; color: #92400e; line-height: 1.55; margin-bottom: 22px; }
+    .btn-wrap { text-align: center; margin: 24px 0 10px; }
+    .btn-wa { display: inline-block; background: #22c55e; color: #ffffff !important; text-decoration: none; font-size: 14px; font-weight: 700; padding: 12px 22px; border-radius: 8px; margin-right: 8px; }
+    .btn-email { display: inline-block; background: #0f172a; color: #ffffff !important; text-decoration: none; font-size: 14px; font-weight: 700; padding: 12px 22px; border-radius: 8px; }
+    .footer { text-align: center; font-size: 12px; color: #94a3b8; padding: 14px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h2>🚀 STARTUP ACQUISITION OFFER RECEIVED</h2>
+      <div style="font-size: 13px; opacity: 0.95; margin-top: 4px;">DepositShield India Turnkey M&A Desk</div>
+    </div>
+    <div class="body">
+      <table class="info-table">
+        <tr><td class="label">Offer ID:</td><td class="val">${offer.offerId || 'OFFER-' + Date.now()}</td></tr>
+        <tr><td class="label">Offer Amount:</td><td class="val" style="color: #d97706; font-size: 17px;"><strong>${offer.offerAmount || 'Unspecified'}</strong></td></tr>
+        <tr><td class="label">Buyer Name:</td><td class="val">${offer.name || 'Anonymous Buyer'}</td></tr>
+        <tr><td class="label">Buyer Email:</td><td class="val">${offer.email || 'N/A'}</td></tr>
+        <tr><td class="label">Buyer Phone/WhatsApp:</td><td class="val"><strong>${cleanPhone ? '+' + cleanPhone : 'N/A'}</strong></td></tr>
+        <tr><td class="label">Settlement Mode:</td><td class="val">${offer.paymentMethod || 'Escrow.com / Direct Bank Wire'}</td></tr>
+      </table>
+
+      <div style="font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px;">BUYER NOTE & TRANSFER TERMS:</div>
+      <div class="msg-box">${offer.message || 'The buyer is ready to acquire the codebase, domain, and assets.'}</div>
+
+      <div class="btn-wrap">
+        <a href="${waUrl}" class="btn-wa" target="_blank">💬 Chat on WhatsApp</a>
+        <a href="mailto:${offer.email}?subject=DepositShield%20Acquisition%20Offer" class="btn-email">✉️ Reply via Email</a>
+      </div>
+    </div>
+    <div class="footer">
+      High Priority Acquisition Alert &bull; Delivered to ${adminEmail}
+    </div>
+  </div>
+</body>
+</html>`;
+
+  try {
+    const fromName = process.env.FROM_NAME || 'DepositShield M&A';
+    const fromEmail = process.env.FROM_EMAIL || process.env.EMAIL_USER;
+    const info = await transporter.sendMail({
+      from: `"${fromName}" <${fromEmail}>`,
+      to: adminEmail,
+      subject: `🚨 [BUYER OFFER] ${offer.offerAmount || '$7,500'} for DepositShield from ${offer.name || 'Buyer'}`,
+      html
+    });
+    console.log('[ADMIN ACQUISITION NOTIFICATION SENT]:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (err) {
+    console.error('[ADMIN ACQUISITION NOTIFICATION ERROR]:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
 module.exports = {
   getTransporter,
   sendAdminPaymentNotification,
   sendCustomerNoticeEmail,
-  sendAdminInquiryNotification
+  sendAdminInquiryNotification,
+  sendAdminAcquisitionNotification
 };
