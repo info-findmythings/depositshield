@@ -1269,123 +1269,121 @@
           </div>
         </div>
 
-        <!-- Standard Razorpay CTA View -->
-        <div id="standardRzpView">
-          <div class="razorpay-action-wrapper">
-            <button type="button" class="btn-pay-razorpay-primary" id="btnPayRazorpay">
-              <i class="fa-solid fa-bolt"></i> Pay with Razorpay (Instant Unlock)
-            </button>
+        <!-- Customer Email Capture Field -->
+        <div class="checkout-email-group" style="background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 8px; padding: 14px 16px; margin-bottom: 18px;">
+          <label for="checkoutUserEmail" style="display: block; font-size: 13px; font-weight: 700; color: #f8fafc; margin-bottom: 6px;">
+            <i class="fa-solid fa-envelope" style="color: #38bdf8; margin-right: 5px;"></i> Delivery Email Address <span style="color: #f43f5e;">*</span>
+          </label>
+          <input type="email" id="checkoutUserEmail" class="form-input" placeholder="Enter your email to receive notice PDF" required style="width: 100%; box-sizing: border-box; background: #0b1329; border: 1px solid #38bdf8; color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 14px;">
+          <span style="font-size: 11.5px; color: #94a3b8; display: block; margin-top: 5px;">
+            <i class="fa-solid fa-circle-info" style="color: #38bdf8;"></i> Your official signed 2-Page Legal Demand Notice PDF will be automatically delivered to this email.
+          </span>
+        </div>
 
-            <div class="rzp-accepted-methods">
-              <div class="methods-title"><i class="fa-solid fa-lock"></i> Accepted via Razorpay:</div>
-              <div class="methods-icons">
-                <span class="method-tag"><i class="fa-brands fa-google-pay"></i> Google Pay</span>
-                <span class="method-tag"><i class="fa-solid fa-mobile-screen"></i> PhonePe</span>
-                <span class="method-tag"><i class="fa-solid fa-wallet"></i> Paytm / UPI</span>
-                <span class="method-tag"><i class="fa-regular fa-credit-card"></i> Cards</span>
-                <span class="method-tag"><i class="fa-solid fa-building-columns"></i> NetBanking</span>
+        <!-- Checkout View: Direct UPI & Gateway -->
+        <div id="standardRzpView">
+          <!-- Direct UPI Payment Box (0% Fees • Instant Direct Remittance) -->
+          <div class="direct-upi-box" style="background: linear-gradient(145deg, #0f172a, #1e293b); border: 1.5px solid #38bdf8; border-radius: 12px; padding: 18px; margin-bottom: 18px; text-align: center;">
+            <div style="display: inline-block; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; margin-bottom: 10px;">
+              ⚡ FASTEST OPTION • DIRECT UPI PAYMENT
+            </div>
+            <h4 style="margin: 0 0 6px; font-size: 15px; color: #ffffff;">Pay via any UPI App (GPay, PhonePe, Paytm)</h4>
+            <p style="margin: 0 0 14px; font-size: 12px; color: #94a3b8;">Scan QR on desktop or tap your UPI app on mobile to pay directly.</p>
+
+            <!-- Dynamic QR Code & UPI ID -->
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 14px;">
+              <div style="background: #ffffff; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: inline-block;">
+                <img id="directUpiQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3D8000757744%40upi%26pn%3DDepositShield%26am%3D99%26cu%3DINR" alt="UPI QR Code" style="width: 150px; height: 150px; display: block;">
               </div>
+
+              <div style="display: flex; align-items: center; gap: 8px; background: #0b1329; border: 1px solid #334155; padding: 6px 12px; border-radius: 6px;">
+                <span style="font-size: 12px; color: #94a3b8;">UPI ID:</span>
+                <strong id="displayUpiId" style="font-size: 13.5px; color: #34d399; font-family: monospace;">8000757744@upi</strong>
+                <button type="button" id="btnCopyUpiId" style="background: #1e3a8a; border: none; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">
+                  <i class="fa-solid fa-copy"></i> Copy
+                </button>
+              </div>
+            </div>
+
+            <!-- Mobile UPI Intent Buttons -->
+            <div class="mobile-upi-quick-links" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+              <a id="linkGPay" href="upi://pay?pa=8000757744@upi&pn=DepositShield&am=99&cu=INR" class="method-tag" style="text-decoration: none; cursor: pointer; color: #f8fafc; background: #1e293b; border: 1px solid #475569; padding: 6px 12px; border-radius: 6px; font-size: 12px;">
+                <i class="fa-brands fa-google-pay" style="color: #4285f4;"></i> GPay
+              </a>
+              <a id="linkPhonePe" href="upi://pay?pa=8000757744@upi&pn=DepositShield&am=99&cu=INR" class="method-tag" style="text-decoration: none; cursor: pointer; color: #f8fafc; background: #1e293b; border: 1px solid #475569; padding: 6px 12px; border-radius: 6px; font-size: 12px;">
+                <i class="fa-solid fa-mobile-screen" style="color: #673ab7;"></i> PhonePe
+              </a>
+              <a id="linkPaytm" href="upi://pay?pa=8000757744@upi&pn=DepositShield&am=99&cu=INR" class="method-tag" style="text-decoration: none; cursor: pointer; color: #f8fafc; background: #1e293b; border: 1px solid #475569; padding: 6px 12px; border-radius: 6px; font-size: 12px;">
+                <i class="fa-solid fa-wallet" style="color: #00b9f1;"></i> Paytm
+              </a>
+            </div>
+
+            <!-- UTR Input & Submit -->
+            <div style="background: #0b1329; border: 1px solid #334155; border-radius: 8px; padding: 14px; text-align: left;">
+              <label for="inputUpiUtr" style="display: block; font-size: 12.5px; font-weight: 700; color: #f8fafc; margin-bottom: 6px;">
+                <i class="fa-solid fa-receipt" style="color: #34d399;"></i> Enter 12-Digit UPI Ref / UTR Number: <span style="color: #f43f5e;">*</span>
+              </label>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <input type="text" id="inputUpiUtr" maxlength="16" placeholder="e.g. 429618294821" style="flex: 1; min-width: 160px; background: #1e293b; border: 1.5px solid #38bdf8; color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 14px; font-family: monospace; font-weight: 700; letter-spacing: 1px;">
+                <button type="button" id="btnSubmitUpiUtr" class="btn-pay-razorpay-primary" style="margin: 0; width: auto; padding: 10px 20px; background: linear-gradient(135deg, #059669, #10b981); white-space: nowrap; font-size: 13.5px; border-radius: 6px;">
+                  <i class="fa-solid fa-circle-check"></i> Submit Reference & Unlock
+                </button>
+              </div>
+              <span style="font-size: 11px; color: #94a3b8; display: block; margin-top: 6px;">
+                Open your GPay / PhonePe / Paytm transaction history to copy the 12-digit UTR.
+              </span>
             </div>
           </div>
 
-          <div class="rzp-security-note">
-            <i class="fa-solid fa-circle-check text-success"></i>
-            <span>Payments are processed directly by <strong>Razorpay</strong>. Documents unlock automatically immediately after transaction completion.</span>
+          <!-- Secondary Razorpay Option (if card or netbanking needed) -->
+          <div style="text-align: center; margin-top: 10px;">
+            <button type="button" class="btn-pay-razorpay-primary" id="btnPayRazorpay" style="background: #1e293b; border: 1px solid #475569; font-size: 13px; padding: 10px 18px;">
+              <i class="fa-regular fa-credit-card"></i> Or Pay with Card / NetBanking via Razorpay
+            </button>
           </div>
         </div>
 
-        <!-- INTERACTIVE DEMO PAYMENT SCREEN (Presented when running in local / demo sandbox mode) -->
-        <div class="demo-payment-screen hidden" id="demoPaymentScreen">
-          <div class="demo-screen-header">
-            <div class="demo-screen-title">
-              <i class="fa-solid fa-credit-card text-sky"></i>
-              <span>Select Payment Method (Demo Gateway)</span>
-            </div>
-            <span class="demo-screen-badge"><i class="fa-solid fa-flask"></i> Interactive Sandbox</span>
+        <!-- POST-PAYMENT SCREEN (Presented once UTR is submitted) -->
+        <div class="payment-pending-screen hidden" id="paymentPendingScreen" style="text-align: center; padding: 20px 10px;">
+          <div style="width: 68px; height: 68px; margin: 0 auto 16px; border-radius: 50%; background: rgba(56, 189, 248, 0.1); border: 3px solid #38bdf8; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-hourglass-half" style="font-size: 28px; color: #38bdf8; animation: pulse 2s infinite;"></i>
           </div>
 
-          <div class="demo-amount-display">
-            <span class="label">Amount Payable:</span>
-            <span class="val" id="demoPayableAmountDisplay">₹99</span>
+          <div style="display: inline-block; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); font-size: 11.5px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase;">
+            ✓ Reference Submitted • Awaiting Bank Credit Confirmation
           </div>
 
-          <!-- Payment Method Selector Tabs -->
-          <div class="demo-method-tabs">
-            <button type="button" class="btn-demo-method active" id="btnTabUpi" data-tab="demoUpiTab">
-              <i class="fa-solid fa-qrcode"></i> UPI / QR
-            </button>
-            <button type="button" class="btn-demo-method" id="btnTabCard" data-tab="demoCardTab">
-              <i class="fa-regular fa-credit-card"></i> Card
-            </button>
-            <button type="button" class="btn-demo-method" id="btnTabNetbanking" data-tab="demoNetbankingTab">
-              <i class="fa-solid fa-building-columns"></i> NetBanking
-            </button>
+          <h3 style="font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">Payment Reference Received!</h3>
+          
+          <div style="background: #0b1329; border: 1px solid #334155; border-radius: 8px; padding: 10px 16px; margin-bottom: 18px; font-size: 13px; color: #cbd5e1; display: inline-block;">
+            UTR: <strong id="submittedUtrDisplay" style="color: #38bdf8; font-family: monospace;">---</strong> &bull; Amount: <strong id="submittedAmountDisplay" style="color: #34d399;">₹99</strong>
           </div>
 
-          <!-- Panel 1: UPI -->
-          <div class="demo-tab-panel active" id="demoUpiTab">
-            <div class="demo-field-group">
-              <label>Select UPI App:</label>
-              <div class="demo-upi-grid">
-                <button type="button" class="btn-upi-app selected" data-app="Google Pay"><i class="fa-brands fa-google-pay"></i> GPay</button>
-                <button type="button" class="btn-upi-app" data-app="PhonePe"><i class="fa-solid fa-mobile-screen"></i> PhonePe</button>
-                <button type="button" class="btn-upi-app" data-app="Paytm"><i class="fa-solid fa-wallet"></i> Paytm</button>
-                <button type="button" class="btn-upi-app" data-app="BHIM"><i class="fa-solid fa-building"></i> BHIM</button>
-              </div>
-            </div>
-            <div class="demo-field-group">
-              <label for="demoUpiIdInput">Or Enter UPI ID / VPA:</label>
-              <input type="text" id="demoUpiIdInput" class="demo-field-input" value="tenant@okaxis" placeholder="username@upi">
-            </div>
+          <!-- Dual Delivery Guidance Box -->
+          <div style="background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; padding: 16px; border-radius: 0 8px 8px 0; text-align: left; margin-bottom: 16px;">
+            <p style="margin: 0 0 6px; font-size: 14px; color: #f8fafc; font-weight: 700;">
+              <i class="fa-solid fa-desktop" style="color: #34d399; margin-right: 5px;"></i> Option 1: Stay on this page
+            </p>
+            <p style="margin: 0 0 12px; font-size: 12.5px; color: #cbd5e1; line-height: 1.5;">
+              Your official documents and instant PDF download will <strong>automatically unlock right here</strong> as soon as bank credit is confirmed (usually within 1–5 minutes).
+            </p>
+
+            <p style="margin: 0 0 6px; font-size: 14px; color: #f8fafc; font-weight: 700;">
+              <i class="fa-solid fa-envelope" style="color: #38bdf8; margin-right: 5px;"></i> Option 2: Check your email in 5–10 minutes
+            </p>
+            <p style="margin: 0; font-size: 12.5px; color: #cbd5e1; line-height: 1.5;">
+              Alternatively, our system will automatically email your signed <strong>Legal Notice PDF as an attachment</strong> directly to <strong id="targetEmailDisplay" style="color: #38bdf8;">your email</strong> within <strong>5–10 minutes</strong>.
+            </p>
           </div>
 
-          <!-- Panel 2: Cards -->
-          <div class="demo-tab-panel" id="demoCardTab">
-            <div class="demo-field-group">
-              <label for="demoCardNum">Card Number:</label>
-              <input type="text" id="demoCardNum" class="demo-field-input" value="4111 2222 3333 4444" readonly>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-              <div class="demo-field-group">
-                <label for="demoCardExp">Expiry Date:</label>
-                <input type="text" id="demoCardExp" class="demo-field-input" value="12/28" readonly>
-              </div>
-              <div class="demo-field-group">
-                <label for="demoCardCvv">CVV:</label>
-                <input type="password" id="demoCardCvv" class="demo-field-input" value="123" readonly>
-              </div>
-            </div>
+          <!-- Spam Folder Notice -->
+          <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 12px 14px; font-size: 12px; color: #fde68a; text-align: left; margin-bottom: 18px;">
+            <i class="fa-solid fa-triangle-exclamation" style="margin-right: 4px;"></i> <strong>Important:</strong> If our email doesn't appear in your Primary Inbox after 5–10 minutes, please make sure to check your <strong>Spam or Promotions</strong> folder as well.
           </div>
 
-          <!-- Panel 3: NetBanking -->
-          <div class="demo-tab-panel" id="demoNetbankingTab">
-            <div class="demo-field-group">
-              <label for="demoBankSelect">Choose Bank:</label>
-              <select id="demoBankSelect" class="demo-field-input">
-                <option value="HDFC">HDFC Bank</option>
-                <option value="SBI">State Bank of India (SBI)</option>
-                <option value="ICICI">ICICI Bank</option>
-                <option value="AXIS">Axis Bank</option>
-                <option value="KOTAK">Kotak Mahindra Bank</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="demo-pay-actions" id="demoPayActionButtons">
-            <button type="button" class="btn-demo-pay-cancel" id="btnCancelDemoPayment">
-              &larr; Back
-            </button>
-            <button type="button" class="btn-demo-pay-now" id="btnAuthorizeDemoPayment">
-              <i class="fa-solid fa-lock"></i> Authorize & Pay ₹99
-            </button>
-          </div>
-
-          <!-- Bank Authorization In-Flight Overlay -->
-          <div class="bank-auth-overlay hidden" id="bankAuthOverlay">
-            <div class="bank-auth-spinner"></div>
-            <h4 style="font-size: 1rem; color: #f8fafc; margin-bottom: 0.35rem;">Connecting to Issuing Bank...</h4>
-            <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">Simulating 3D-Secure 2.0 OTP authentication & Razorpay Webhook verification.</p>
+          <div style="display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 12px; color: #94a3b8;">
+            <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite;"></div>
+            <span>Auto-verifying live status with banking switch...</span>
           </div>
         </div>
       </div>
@@ -1505,102 +1503,38 @@
     </div>
   </section>
 
-  <!-- Customer Inquiry / Callback Request Section -->
+  <!-- 100% Automated SaaS Self-Service Document Delivery Section (Razorpay Compliant SaaS) -->
   <section class="inquiry-section" id="inquirySection">
     <div class="section-container">
-      <div class="inquiry-container-card">
-        <div class="inquiry-left">
-          <div class="section-tag"><i class="fa-solid fa-headset"></i> Free Tenancy Assistance</div>
-          <h2>Need Help Recovering Your Rental Deposit?</h2>
-          <p class="inquiry-desc">
-            Landlord refusing to refund, making fake deductions for painting/cleaning, or blocked your calls? Drop your contact number below. Our rental dispute assistance team will review your case and reach out to you via Call or WhatsApp.
+      <div class="inquiry-container-card" style="grid-template-columns: 1fr;">
+        <div class="inquiry-left" style="max-width: 100%; text-align: center; margin: 0 auto;">
+          <div class="section-tag" style="margin: 0 auto 14px;"><i class="fa-solid fa-bolt"></i> 100% Automated Self-Service SaaS Platform</div>
+          <h2>Instant Document Generation & Dual Delivery</h2>
+          <p class="inquiry-desc" style="max-width: 700px; margin: 0 auto 24px;">
+            DepositShield is an algorithmic legal document drafting software. You do not need to wait for lawyers or callbacks. Input your tenancy dispute details, and our software engine instantly formats your court-admissible pre-litigation demand notice under Indian Central Tenancy Law.
           </p>
-          <div class="inquiry-perks">
+          <div class="inquiry-perks" style="justify-content: center; max-width: 800px; margin: 0 auto;">
             <div class="inquiry-perk">
-              <i class="fa-solid fa-circle-check"></i>
+              <i class="fa-solid fa-desktop text-sky"></i>
               <div>
-                <strong>100% Confidential</strong>
-                <span>Your contact details are strictly kept private and secure.</span>
-              </div>
-            </div>
-            <div class="inquiry-perk">
-              <i class="fa-solid fa-bolt"></i>
-              <div>
-                <strong>Prompt Response</strong>
-                <span>Our dispute coordinator reviews your case and reaches out within 2–4 hours.</span>
+                <strong>Instant Browser Unlock</strong>
+                <span>Download your ready-to-print PDF notice immediately on screen.</span>
               </div>
             </div>
             <div class="inquiry-perk">
-              <i class="fa-solid fa-scale-balanced"></i>
+              <i class="fa-solid fa-envelope-circle-check text-success"></i>
               <div>
-                <strong>Backed by Indian Central Tenancy Law</strong>
-                <span>Clear guidance on Section 108 TPA, Contract Act & Consumer Court steps.</span>
+                <strong>Automated Email Backup</strong>
+                <span>PDF notice with court & police escalation kit delivered straight to your email.</span>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div class="inquiry-right">
-          <div class="inquiry-form-card">
-            <div class="inquiry-card-header">
-              <div class="inq-icon"><i class="fa-solid fa-phone-volume"></i></div>
+            <div class="inquiry-perk">
+              <i class="fa-solid fa-scale-balanced text-primary"></i>
               <div>
-                <h3>Request a Callback</h3>
-                <p>Enter your details and our team will contact you soon.</p>
+                <strong>Party-in-Person Legal Standing</strong>
+                <span>Constitutional right to serve legal demand without mandatory advocate retainers.</span>
               </div>
             </div>
-
-            <form id="inquiryForm" class="inquiry-form">
-              <div class="form-group">
-                <label for="inqName">Your Full Name <span class="required">*</span></label>
-                <div class="input-icon-wrapper">
-                  <i class="fa-solid fa-user input-icon"></i>
-                  <input type="text" id="inqName" class="form-input" placeholder="e.g. Rahul Sharma" required>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="inqPhone">Contact Number (WhatsApp/Call) <span class="required">*</span></label>
-                <div class="input-icon-wrapper">
-                  <span class="input-prefix">+91</span>
-                  <input type="tel" id="inqPhone" class="form-input with-prefix" placeholder="9876543210" maxlength="10" pattern="[0-9]{10}" required>
-                </div>
-                <span class="form-hint">Our team will call or WhatsApp you on this number</span>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="inqCity">City</label>
-                  <select id="inqCity" class="form-input">
-                    <option value="Bengaluru">Bengaluru</option>
-                    <option value="Ahmedabad (Gujarat)">Ahmedabad (Gujarat)</option>
-                    <option value="Gandhinagar (Gujarat)">Gandhinagar (Gujarat)</option>
-                    <option value="Surat (Gujarat)">Surat (Gujarat)</option>
-                    <option value="Vadodara (Gujarat)">Vadodara (Gujarat)</option>
-                    <option value="Pune">Pune</option>
-                    <option value="Mumbai">Mumbai</option>
-                    <option value="Delhi NCR">Delhi NCR</option>
-                    <option value="Hyderabad">Hyderabad</option>
-                    <option value="Chennai">Chennai</option>
-                    <option value="Kolkata">Kolkata</option>
-                    <option value="Other">Other City</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="inqAmount">Deposit Withheld (₹)</label>
-                  <input type="number" id="inqAmount" class="form-input" placeholder="e.g. 35000" min="0">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="inqMessage">Describe Landlord Issue (Optional)</label>
-                <textarea id="inqMessage" class="form-input form-textarea" rows="2" placeholder="e.g. Landlord deducted ₹30,000 for repainting after 2 years of tenancy and stopped answering calls."></textarea>
-              </div>
-
-              <button type="submit" class="btn-submit-inquiry" id="btnSubmitInquiry">
-                <i class="fa-solid fa-paper-plane"></i> Request Immediate Callback
-              </button>
-            </form>
           </div>
         </div>
       </div>
@@ -1702,68 +1636,6 @@
       </div>
     </div>
   </footer>
-
-  <!-- Floating Callback Request Button -->
-  <button type="button" class="floating-callback-btn" id="floatingCallbackBtn" title="Need Free Assistance? Request Callback">
-    <div class="floating-pulse"></div>
-    <i class="fa-solid fa-phone-volume"></i>
-    <span>Request Callback</span>
-  </button>
-
-  <!-- Customer Inquiry Success Popup Modal -->
-  <div class="modal-backdrop hidden" id="inquirySuccessModal">
-    <div class="modal-card inquiry-popup-card" id="inquirySuccessCard">
-      <button type="button" class="modal-close" id="btnCloseInquiryModal">&times;</button>
-      
-      <div class="inquiry-popup-body">
-        <div class="inquiry-popup-icon-wrap">
-          <div class="inquiry-popup-icon">
-            <i class="fa-solid fa-circle-check"></i>
-          </div>
-        </div>
-        
-        <div class="inquiry-popup-badge">
-          <i class="fa-solid fa-shield-halved"></i> INQUIRY CONFIRMED
-        </div>
-        
-        <h3 id="popupInquiryTitle">Our Team Will Contact You Soon!</h3>
-        
-        <p class="inquiry-popup-desc">
-          Thank you, <strong id="popupInquiryName">Rahul</strong>! We have received your inquiry. One of our tenant legal assistance coordinators will review your dispute details and contact you on:
-        </p>
-
-        <div class="inquiry-contact-highlight">
-          <i class="fa-solid fa-phone"></i>
-          <span id="popupInquiryPhone">+91 9876543210</span>
-        </div>
-
-        <div class="inquiry-popup-info-box">
-          <div class="info-row">
-            <i class="fa-solid fa-clock text-warning"></i>
-            <div>
-              <strong>Average Response Time:</strong> Within 2 to 4 hours (Mon–Sat)
-            </div>
-          </div>
-          <div class="info-row">
-            <i class="fa-brands fa-whatsapp text-success"></i>
-            <div>
-              <strong>Mode of Contact:</strong> Direct Phone Call or WhatsApp message
-            </div>
-          </div>
-        </div>
-
-        <p class="inquiry-popup-note">
-          Meanwhile, you can generate your court-admissible <strong>7-Day Pre-Litigation Legal Notice</strong> on this website in under 2 minutes.
-        </p>
-
-        <div class="inquiry-popup-actions">
-          <button type="button" class="btn-popup-primary" id="btnGotItInquiry">
-            <i class="fa-solid fa-check"></i> Got It, Thank You!
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- Main JavaScript File -->
   <script src="/app.js"></script>

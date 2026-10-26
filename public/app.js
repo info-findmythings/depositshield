@@ -643,9 +643,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function openRazorpayModal() {
     setPaymentTier(activePaymentTier);
     const standardRzpView = document.getElementById('standardRzpView');
+    const paymentPendingScreen = document.getElementById('paymentPendingScreen');
     const demoPaymentScreen = document.getElementById('demoPaymentScreen');
     if (demoPaymentScreen) demoPaymentScreen.classList.add('hidden');
+    if (paymentPendingScreen) paymentPendingScreen.classList.add('hidden');
     if (standardRzpView) standardRzpView.classList.remove('hidden');
+
+    const checkoutEmailInput = document.getElementById('checkoutUserEmail');
+    if (checkoutEmailInput && (!checkoutEmailInput.value || checkoutEmailInput.value === 'N/A')) {
+      checkoutEmailInput.value = (state.formData.tenantEmail && state.formData.tenantEmail !== 'N/A') ? state.formData.tenantEmail : '';
+    }
 
     if (upiModalBackdrop) {
       upiModalBackdrop.classList.remove('hidden');
@@ -657,8 +664,10 @@ document.addEventListener('DOMContentLoaded', () => {
       upiModalBackdrop.classList.add('hidden');
     }
     const standardRzpView = document.getElementById('standardRzpView');
+    const paymentPendingScreen = document.getElementById('paymentPendingScreen');
     const demoPaymentScreen = document.getElementById('demoPaymentScreen');
     if (demoPaymentScreen) demoPaymentScreen.classList.add('hidden');
+    if (paymentPendingScreen) paymentPendingScreen.classList.add('hidden');
     if (standardRzpView) standardRzpView.classList.remove('hidden');
   }
 
@@ -667,6 +676,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tier1Price = state.config.priceInr || 99;
     const tier2Price = state.config.tier2PriceInr || 499;
     const chosenPrice = tier === 'TIER_2' ? tier2Price : tier1Price;
+    const upiId = state.config.upiId || '8000757744@upi';
 
     const modalTitle = document.getElementById('modalTitle');
     const modalDesc = document.getElementById('modalDesc');
@@ -676,13 +686,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const summaryPlanSubtitle = document.getElementById('summaryPlanSubtitle');
     const tabT1Price = document.getElementById('tabTier1PriceDisplay');
     const tabT2Price = document.getElementById('tabTier2PriceDisplay');
-    const demoPayableAmountDisplay = document.getElementById('demoPayableAmountDisplay');
-    const btnAuthorizeDemoPayment = document.getElementById('btnAuthorizeDemoPayment');
+    const btnPayRazorpay = document.getElementById('btnPayRazorpay');
+
+    // Update Direct UPI QR & Link
+    const qrImg = document.getElementById('directUpiQrImg');
+    if (qrImg) {
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3D${encodeURIComponent(upiId)}%26pn%3DDepositShield%26am%3D${chosenPrice}%26cu%3DINR`;
+    }
+
+    const displayUpi = document.getElementById('displayUpiId');
+    if (displayUpi) displayUpi.textContent = upiId;
+
+    const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=DepositShield&am=${chosenPrice}&cu=INR`;
+    const linkGPay = document.getElementById('linkGPay');
+    const linkPhonePe = document.getElementById('linkPhonePe');
+    const linkPaytm = document.getElementById('linkPaytm');
+    if (linkGPay) linkGPay.href = upiUri;
+    if (linkPhonePe) linkPhonePe.href = upiUri;
+    if (linkPaytm) linkPaytm.href = upiUri;
 
     if (tabT1Price) tabT1Price.textContent = `₹${tier1Price}`;
     if (tabT2Price) tabT2Price.textContent = `₹${tier2Price}`;
-    if (demoPayableAmountDisplay) demoPayableAmountDisplay.textContent = `₹${chosenPrice}`;
-    if (btnAuthorizeDemoPayment) btnAuthorizeDemoPayment.innerHTML = `<i class="fa-solid fa-lock"></i> Authorize & Pay ₹${chosenPrice}`;
 
     if (tabTier1Notice && tabTier2Kit) {
       tabTier1Notice.classList.toggle('active', tier === 'TIER_1');
@@ -691,20 +715,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (tier === 'TIER_2') {
       if (modalTitle) modalTitle.textContent = 'Unlock Notice + Consumer Court & Police Kit';
-      if (modalDesc) modalDesc.textContent = 'Instant auto-unlock via Razorpay (UPI, GPay, PhonePe, Cards, NetBanking)';
+      if (modalDesc) modalDesc.textContent = 'Instant download on screen + Automated PDF delivery to your email';
       if (summaryPlanTitle) summaryPlanTitle.textContent = 'Notice + Consumer Court & Police Kit';
       if (summaryPlanPrice) summaryPlanPrice.textContent = `₹${tier2Price}`;
       if (summaryPlanSubtitle) summaryPlanSubtitle.textContent = 'Includes 2-Page Notice + Form 1 Court Petition + Police Complaint + Affidavit';
       if (modalAmountVal) modalAmountVal.textContent = `₹${tier2Price} Only`;
-      if (btnPayRazorpay) btnPayRazorpay.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Pay ₹${tier2Price} with Razorpay (Instant Unlock)`;
+      if (btnPayRazorpay) btnPayRazorpay.innerHTML = `<i class="fa-regular fa-credit-card"></i> Or Pay ₹${tier2Price} with Card / NetBanking via Razorpay`;
     } else {
-      if (modalTitle) modalTitle.textContent = 'Unlock Your Official Legal Notice';
-      if (modalDesc) modalDesc.textContent = 'Instant auto-unlock via Razorpay (UPI, GPay, PhonePe, Cards, NetBanking)';
+      if (modalTitle) modalTitle.textContent = 'Unlock Your Official Legal Demand Notice';
+      if (modalDesc) modalDesc.textContent = 'Instant download on screen + Automated PDF delivery to your email';
       if (summaryPlanTitle) summaryPlanTitle.textContent = '7-Day Pre-Litigation Legal Demand Notice';
       if (summaryPlanPrice) summaryPlanPrice.textContent = `₹${tier1Price}`;
       if (summaryPlanSubtitle) summaryPlanSubtitle.textContent = 'Includes 2-Page Notice + WhatsApp Format + Speed Post Template';
       if (modalAmountVal) modalAmountVal.textContent = `₹${tier1Price} Only`;
-      if (btnPayRazorpay) btnPayRazorpay.innerHTML = `<i class="fa-solid fa-bolt"></i> Pay ₹${tier1Price} with Razorpay (Instant Unlock)`;
+      if (btnPayRazorpay) btnPayRazorpay.innerHTML = `<i class="fa-regular fa-credit-card"></i> Or Pay ₹${tier1Price} with Card / NetBanking via Razorpay`;
     }
   }
 
@@ -765,109 +789,147 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
-  // Interactive Demo Payment Screen Controls
+  // Direct UPI Payment Controls & Live Status Polling
   // ==========================================================================
-  const btnTabUpi = document.getElementById('btnTabUpi');
-  const btnTabCard = document.getElementById('btnTabCard');
-  const btnTabNetbanking = document.getElementById('btnTabNetbanking');
-  const demoTabs = [
-    { btn: btnTabUpi, panel: document.getElementById('demoUpiTab') },
-    { btn: btnTabCard, panel: document.getElementById('demoCardTab') },
-    { btn: btnTabNetbanking, panel: document.getElementById('demoNetbankingTab') }
-  ];
+  let upiPollInterval = null;
 
-  demoTabs.forEach(item => {
-    if (item.btn && item.panel) {
-      item.btn.addEventListener('click', () => {
-        demoTabs.forEach(t => {
-          if (t.btn) t.btn.classList.remove('active');
-          if (t.panel) t.panel.classList.remove('active');
+  // 1. Copy UPI ID button
+  const btnCopyUpiId = document.getElementById('btnCopyUpiId');
+  if (btnCopyUpiId) {
+    btnCopyUpiId.addEventListener('click', () => {
+      const upiText = (document.getElementById('displayUpiId')?.textContent || '8000757744@upi').trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(upiText).then(() => {
+          showToast('UPI ID copied: ' + upiText);
+        }).catch(() => {
+          showToast('UPI ID: ' + upiText);
         });
-        item.btn.classList.add('active');
-        item.panel.classList.add('active');
-      });
-    }
-  });
-
-  // UPI App Selection
-  document.querySelectorAll('.btn-upi-app').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.btn-upi-app').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      const appName = btn.getAttribute('data-app');
-      const upiInput = document.getElementById('demoUpiIdInput');
-      if (upiInput) {
-        const handle = appName === 'Google Pay' ? 'okaxis' : appName === 'PhonePe' ? 'ybl' : appName === 'Paytm' ? 'paytm' : 'upi';
-        upiInput.value = `${state.formData.tenantPhone || 'tenant'}@${handle}`;
+      } else {
+        showToast('UPI ID: ' + upiText);
       }
-    });
-  });
-
-  // Back button on Demo Payment Screen
-  const btnCancelDemoPayment = document.getElementById('btnCancelDemoPayment');
-  if (btnCancelDemoPayment) {
-    btnCancelDemoPayment.addEventListener('click', () => {
-      const standardRzpView = document.getElementById('standardRzpView');
-      const demoPaymentScreen = document.getElementById('demoPaymentScreen');
-      if (demoPaymentScreen) demoPaymentScreen.classList.add('hidden');
-      if (standardRzpView) standardRzpView.classList.remove('hidden');
     });
   }
 
-  // Authorize & Pay button on Demo Payment Screen
-  const btnAuthorizeDemoPayment = document.getElementById('btnAuthorizeDemoPayment');
-  if (btnAuthorizeDemoPayment) {
-    btnAuthorizeDemoPayment.addEventListener('click', () => {
-      const bankAuthOverlay = document.getElementById('bankAuthOverlay');
-      const demoPayActionButtons = document.getElementById('demoPayActionButtons');
-      const payAmount = currentDemoPayAmount || (activePaymentTier === 'TIER_2' ? (state.config.tier2PriceInr || 499) : (state.config.priceInr || 99));
+  // 2. Submit UPI UTR / Reference Number
+  const btnSubmitUpiUtr = document.getElementById('btnSubmitUpiUtr');
+  if (btnSubmitUpiUtr) {
+    btnSubmitUpiUtr.addEventListener('click', async () => {
+      const emailInput = document.getElementById('checkoutUserEmail');
+      const emailVal = emailInput ? emailInput.value.trim() : '';
+      const utrInput = document.getElementById('inputUpiUtr');
+      const utrVal = utrInput ? utrInput.value.trim().toUpperCase() : '';
+      const chosenPrice = activePaymentTier === 'TIER_2' ? (state.config.tier2PriceInr || 499) : (state.config.priceInr || 99);
 
-      if (demoPayActionButtons) demoPayActionButtons.classList.add('hidden');
-      if (bankAuthOverlay) bankAuthOverlay.classList.remove('hidden');
+      if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
+        showToast('Please enter a valid email address to receive your notice PDF.', 'error');
+        if (emailInput) {
+          emailInput.focus();
+          emailInput.style.borderColor = '#ef4444';
+        }
+        return;
+      }
+      if (emailInput) emailInput.style.borderColor = '#38bdf8';
 
-      setTimeout(() => {
-        const simulatedPaymentId = 'pay_rzp_' + Math.random().toString(36).substring(2, 12).toUpperCase();
-        fetch('/api/razorpay/verify', {
+      if (!utrVal || utrVal.length < 8) {
+        showToast('Please enter your genuine 12-digit UPI UTR / Reference number from PhonePe, GPay, or Paytm.', 'error');
+        if (utrInput) {
+          utrInput.focus();
+          utrInput.style.borderColor = '#ef4444';
+        }
+        return;
+      }
+      if (utrInput) utrInput.style.borderColor = '#38bdf8';
+
+      // Save latest notice inputs with customer email
+      state.formData.tenantEmail = emailVal;
+      fetch('/api/save-notice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state.formData)
+      }).catch(() => {});
+
+      btnSubmitUpiUtr.disabled = true;
+      btnSubmitUpiUtr.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting Reference...';
+
+      try {
+        const res = await fetch('/api/verify-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            razorpay_payment_id: simulatedPaymentId,
-            razorpay_order_id: currentDemoOrderId || ('order_demo_' + Date.now()),
-            razorpay_signature: 'sig_simulated_ok',
-            noticeRefNo: state.formData.refNo,
+            paymentRef: utrVal,
+            noticeId: state.formData.refNo,
+            amount: chosenPrice,
             tier: activePaymentTier,
-            amount: payAmount
+            customerEmail: emailVal,
+            customerPhone: state.formData.tenantPhone
           })
-        })
-        .then(res => res.json())
-        .then(verifyData => {
-          if (bankAuthOverlay) bankAuthOverlay.classList.add('hidden');
-          if (demoPayActionButtons) demoPayActionButtons.classList.remove('hidden');
-
-          const standardRzpView = document.getElementById('standardRzpView');
-          const demoPaymentScreen = document.getElementById('demoPaymentScreen');
-          if (demoPaymentScreen) demoPaymentScreen.classList.add('hidden');
-          if (standardRzpView) standardRzpView.classList.remove('hidden');
-
-          if (verifyData.verified) {
-            if (activePaymentTier === 'TIER_2') {
-              unlockTier2UI();
-              showToast(`Payment of ₹${payAmount} confirmed via Razorpay! Notice + Court & Police Kit unlocked.`, 'success');
-            } else {
-              unlockNoticeUI();
-              showToast(`Payment of ₹${payAmount} confirmed via Razorpay! Legal Notice unlocked.`, 'success');
-            }
-            closeRazorpayModal();
-          } else {
-            showToast('Payment verification error', 'error');
-          }
-        })
-        .catch(() => {
-          if (bankAuthOverlay) bankAuthOverlay.classList.add('hidden');
-          if (demoPayActionButtons) demoPayActionButtons.classList.remove('hidden');
-          showToast('Verification server timeout', 'error');
         });
-      }, 1200);
+
+        const data = await res.json();
+        btnSubmitUpiUtr.disabled = false;
+        btnSubmitUpiUtr.innerHTML = '<i class="fa-solid fa-circle-check"></i> Submit Reference & Unlock';
+
+        if (!res.ok && data.error === 'INVALID_UTR') {
+          showToast(data.message || 'Invalid UTR reference number', 'error');
+          return;
+        }
+
+        // Case A: Already confirmed by admin or instant authorization
+        if (data.verified) {
+          if (activePaymentTier === 'TIER_2') {
+            unlockTier2UI();
+          } else {
+            unlockNoticeUI();
+          }
+          showToast('Payment verified! Official legal documents unlocked.');
+          closeRazorpayModal();
+          return;
+        }
+
+        // Case B: Payment PENDING -> Transition to Dual Delivery Waiting Screen
+        const standardRzpView = document.getElementById('standardRzpView');
+        const pendingScreen = document.getElementById('paymentPendingScreen');
+        const utrDisplay = document.getElementById('submittedUtrDisplay');
+        const amtDisplay = document.getElementById('submittedAmountDisplay');
+        const emailDisplay = document.getElementById('targetEmailDisplay');
+
+        if (utrDisplay) utrDisplay.textContent = utrVal;
+        if (amtDisplay) amtDisplay.textContent = `₹${chosenPrice}`;
+        if (emailDisplay) emailDisplay.textContent = emailVal;
+
+        if (standardRzpView) standardRzpView.classList.add('hidden');
+        if (pendingScreen) pendingScreen.classList.remove('hidden');
+
+        showToast('Payment reference received! Awaiting bank confirmation.');
+
+        // Live status polling every 4 seconds
+        if (upiPollInterval) clearInterval(upiPollInterval);
+        upiPollInterval = setInterval(async () => {
+          try {
+            const pollRes = await fetch(`/api/payment-status/${encodeURIComponent(utrVal)}`);
+            const pollData = await pollRes.json();
+            if (pollData.verified) {
+              clearInterval(upiPollInterval);
+              upiPollInterval = null;
+              if (activePaymentTier === 'TIER_2') {
+                unlockTier2UI();
+                showToast(`Payment of ₹${chosenPrice} confirmed! Notice + Court & Police Kit unlocked!`, 'success');
+              } else {
+                unlockNoticeUI();
+                showToast(`Payment of ₹${chosenPrice} confirmed! Official legal notice unlocked!`, 'success');
+              }
+              setTimeout(() => {
+                closeRazorpayModal();
+              }, 1200);
+            }
+          } catch (e) { }
+        }, 4000);
+
+      } catch (err) {
+        btnSubmitUpiUtr.disabled = false;
+        btnSubmitUpiUtr.innerHTML = '<i class="fa-solid fa-circle-check"></i> Submit Reference & Unlock';
+        showToast('Error communicating with verification server. Please try again.', 'error');
+      }
     });
   }
 
@@ -1366,99 +1428,6 @@ ${d.tenantName}`;
       }
     });
   });
-
-  // ==========================================================================
-  // Customer Inquiry & Callback Form
-  // ==========================================================================
-  const inquiryForm = document.getElementById('inquiryForm');
-  const inquirySuccessModal = document.getElementById('inquirySuccessModal');
-  const btnCloseInquiryModal = document.getElementById('btnCloseInquiryModal');
-  const btnGotItInquiry = document.getElementById('btnGotItInquiry');
-  const floatingCallbackBtn = document.getElementById('floatingCallbackBtn');
-
-  if (floatingCallbackBtn) {
-    floatingCallbackBtn.addEventListener('click', () => {
-      const inqSec = document.getElementById('inquirySection');
-      if (inqSec) {
-        inqSec.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(() => {
-          const nameInput = document.getElementById('inqName');
-          if (nameInput) nameInput.focus();
-        }, 500);
-      }
-    });
-  }
-
-  if (inquiryForm) {
-    inquiryForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const btnSubmit = document.getElementById('btnSubmitInquiry');
-      const name = document.getElementById('inqName').value.trim();
-      const phone = document.getElementById('inqPhone').value.trim();
-      const city = document.getElementById('inqCity').value;
-      const amount = document.getElementById('inqAmount').value.trim();
-      const message = document.getElementById('inqMessage').value.trim();
-
-      if (!name || !phone) {
-        showToast('Please provide your name and contact number', 'error');
-        return;
-      }
-
-      if (phone.length < 10) {
-        showToast('Please enter a valid 10-digit mobile number', 'error');
-        return;
-      }
-
-      btnSubmit.disabled = true;
-      btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
-
-      fetch('/api/inquiry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          phone,
-          city,
-          amountWithheld: amount,
-          message
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        btnSubmit.disabled = false;
-        btnSubmit.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Request Immediate Callback`;
-
-        if (data.success) {
-          // Populate success popup
-          document.getElementById('popupInquiryName').textContent = name;
-          document.getElementById('popupInquiryPhone').textContent = `+91 ${phone}`;
-          if (inquirySuccessModal) inquirySuccessModal.classList.remove('hidden');
-
-          // Reset form
-          inquiryForm.reset();
-        } else {
-          showToast(data.error || 'Failed to submit inquiry', 'error');
-        }
-      })
-      .catch(() => {
-        btnSubmit.disabled = false;
-        btnSubmit.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Request Immediate Callback`;
-        showToast('Connection error. Please try again.', 'error');
-      });
-    });
-  }
-
-  function closeInquiryPopup() {
-    if (inquirySuccessModal) inquirySuccessModal.classList.add('hidden');
-  }
-
-  if (btnCloseInquiryModal) btnCloseInquiryModal.addEventListener('click', closeInquiryPopup);
-  if (btnGotItInquiry) btnGotItInquiry.addEventListener('click', closeInquiryPopup);
-  if (inquirySuccessModal) {
-    inquirySuccessModal.addEventListener('click', (e) => {
-      if (e.target === inquirySuccessModal) closeInquiryPopup();
-    });
-  }
 
   // Toast Helper
   function showToast(message, type = 'success') {

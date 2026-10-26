@@ -13,6 +13,8 @@ const Notice = require('./models/Notice');
 const Payment = require('./models/Payment');
 const Settings = require('./models/Settings');
 const Inquiry = require('./models/Inquiry');
+const { sendAdminPaymentNotification, sendCustomerNoticeEmail } = require('./services/emailService');
+const { generateNoticePdf } = require('./services/pdfService');
 
 // Set non-blocking buffer timeout for MongoDB Atlas
 mongoose.set('bufferTimeoutMS', 2500);
@@ -460,7 +462,7 @@ app.post('/api/webhook/payment', async (req, res) => {
 // ==========================================================================
 app.post('/api/verify-payment', async (req, res) => {
   try {
-    const { paymentRef, noticeId, amount, tier } = req.body;
+    const { paymentRef, noticeId, amount, tier, customerEmail, customerPhone } = req.body;
 
     if (!paymentRef || String(paymentRef).trim().length < 8) {
       return res.status(400).json({
@@ -484,7 +486,7 @@ app.post('/api/verify-payment', async (req, res) => {
       });
     }
 
-    const existing = await Payment.findOne({ paymentId: cleanUtr });
+    let existing = await Payment.findOne({ paymentId: cleanUtr });
 
     // CASE 1: Payment already CONFIRMED by Webhook, Razorpay, or Admin
     if (existing && existing.status === 'CONFIRMED') {
@@ -506,29 +508,171 @@ app.post('/api/verify-payment', async (req, res) => {
       });
     }
 
-    // CASE 2: Payment is PENDING
-    if (!existing) {
-      await Payment.create({
+    // Update customer email on notice if provided
+    let noticeDoc = null;
+    if (noticeId) {
+      const noticeUpdates = {};
+      if (customerEmail && customerEmail.includes('@')) noticeUpdates.tenantEmail = customerEmail.trim();
+      if (customerPhone) noticeUpdates.tenantPhone = customerPhone.trim();
+      
+      noticeDoc = await Notice.findOneAndUpdate(
+        { refNo: noticeId },
+        { $set: noticeUpdates },
+        { new: true }
+      );
+    }
+
+    // CASE 2: Payment is PENDING - Create or update Payment record
+    let paymentRecord = existing;
+    if (!paymentRecord) {
+      paymentRecord = await Payment.create({
         paymentId: cleanUtr,
         noticeRefNo: noticeId || 'UNKNOWN',
         amount: Number(amount) || 99,
         tier: tier || 'TIER_1',
         gateway: 'UPI_DIRECT',
-        status: 'PENDING'
+        status: 'PENDING',
+        customerPhone: customerPhone ? String(customerPhone).trim() : (noticeDoc?.tenantPhone || ''),
+        customerEmail: customerEmail ? String(customerEmail).trim() : (noticeDoc?.tenantEmail || '')
       });
+    } else {
+      if (customerEmail && !paymentRecord.customerEmail) {
+        paymentRecord.customerEmail = customerEmail.trim();
+      }
+      if (customerPhone && !paymentRecord.customerPhone) {
+        paymentRecord.customerPhone = customerPhone.trim();
+      }
+      await paymentRecord.save();
     }
 
+    // Generate Quick Approval URL with signed token for 1-click email action
+    const quickToken = jwt.sign(
+      { paymentId: cleanUtr, action: 'approve' },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    const appBaseUrl = process.env.APP_URL || 'https://depositshield.onrender.com';
+    const quickApproveUrl = `${appBaseUrl}/api/admin/quick-approve?token=${quickToken}&pid=${cleanUtr}`;
+
+    // Trigger Admin Alert Email asynchronously
+    sendAdminPaymentNotification({
+      payment: paymentRecord,
+      notice: noticeDoc || { refNo: noticeId, tenantName: 'Customer', amountWithheld: 'N/A' },
+      quickApproveUrl
+    }).catch(err => console.warn('[ADMIN NOTIFICATION ERROR]:', err.message));
+
     const config = await getSettings();
+    const finalEmail = customerEmail || paymentRecord.customerEmail || noticeDoc?.tenantEmail || '';
+
     return res.json({
-      success: false,
+      success: true,
       verified: false,
       status: 'PENDING',
       utr: cleanUtr,
-      message: `Payment is awaiting bank credit confirmation on ${config.upiId}. As soon as credit is confirmed, your documents will unlock instantly.`
+      customerEmail: finalEmail,
+      message: `Payment reference submitted! We are verifying credit on ${config.upiId || 'our bank account'}. Please stay on this page to auto-unlock, or check your email (${finalEmail || 'your inbox'}) in 5–10 minutes for your Legal Notice PDF.`
     });
   } catch (err) {
     console.error('verify-payment error:', err.message);
     return res.status(500).json({ success: false, verified: false, message: 'Server verification error' });
+  }
+});
+
+// Quick 1-Click Admin Approval via secure Email Link
+app.get('/api/admin/quick-approve', async (req, res) => {
+  try {
+    const { token, pid } = req.query;
+    if (!token || !pid) {
+      return res.status(400).send('<h3>Invalid or missing approval parameters.</h3>');
+    }
+
+    const cleanUtr = String(pid).trim().toUpperCase();
+
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      if (decoded.paymentId !== cleanUtr || decoded.action !== 'approve') {
+        return res.status(401).send('<h3>Unauthorized approval request.</h3>');
+      }
+    } catch (jwtErr) {
+      return res.status(401).send('<h3>Approval link has expired or is invalid. Please login to the admin dashboard.</h3>');
+    }
+
+    // Confirm Payment
+    const payment = await Payment.findOneAndUpdate(
+      { paymentId: cleanUtr },
+      {
+        status: 'CONFIRMED',
+        verifiedAt: new Date(),
+        gateway: 'ADMIN_EMAIL_APPROVED'
+      },
+      { new: true }
+    );
+
+    if (!payment) {
+      return res.status(404).send('<h3>Payment record not found for UTR: ' + cleanUtr + '</h3>');
+    }
+
+    // Unlock Notice
+    let notice = null;
+    const ref = payment.noticeRefNo;
+    if (ref && ref !== 'UNKNOWN') {
+      notice = await Notice.findOneAndUpdate(
+        { refNo: ref },
+        { isUnlocked: true, tierUnlocked: payment.tier || 'TIER_1', unlockedAt: new Date() },
+        { new: true }
+      );
+    }
+
+    // Generate court-ready PDF and dispatch email with PDF attachment
+    let emailStatusMessage = 'Live web portal document has been unlocked.';
+    if (notice) {
+      try {
+        const pdfBuffer = await generateNoticePdf(notice);
+        const emailResult = await sendCustomerNoticeEmail({ notice, payment, pdfBuffer });
+        if (emailResult.success) {
+          const sentTo = payment.customerEmail || notice.tenantEmail;
+          emailStatusMessage = `Official 2-Page Legal Demand Notice PDF has been sent to <strong>${sentTo}</strong> (Attachments included).`;
+        }
+      } catch (pdfErr) {
+        console.error('[PDF GENERATION / EMAIL ERROR]:', pdfErr.message);
+      }
+    }
+
+    return res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Payment Approved - DepositShield Admin</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 24px; box-sizing: border-box; }
+          .card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 40px 32px; max-width: 520px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+          .icon { width: 72px; height: 72px; background: #059669; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 36px; color: #ffffff; margin-bottom: 24px; box-shadow: 0 0 24px rgba(5, 150, 105, 0.4); }
+          h2 { margin: 0 0 8px; font-size: 24px; color: #ffffff; font-weight: 700; }
+          .badge { display: inline-block; background: #064e3b; color: #34d399; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; margin: 12px 0 20px; border: 1px solid #059669; }
+          p { margin: 8px 0; color: #94a3b8; font-size: 14.5px; line-height: 1.6; }
+          .status-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 16px; margin: 20px 0; font-size: 13.5px; color: #cbd5e1; }
+          .btn { display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; padding: 13px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-top: 14px; transition: background 0.2s; }
+          .btn:hover { background: #1d4ed8; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <div class="icon">✓</div>
+          <h2>Payment Successfully Approved!</h2>
+          <div class="badge">UTR: ${cleanUtr} • ₹${payment.amount} CONFIRMED</div>
+          <div class="status-box">
+            ${emailStatusMessage}
+          </div>
+          <p>The customer's session has been authorized. If they stayed on the website, their legal notice unlocked automatically.</p>
+          <a href="/portal-aks008" class="btn">Go to Admin Dashboard</a>
+        </div>
+      </body>
+      </html>
+    `);
+  } catch (err) {
+    return res.status(500).send('<h3>Approval Error: ' + err.message + '</h3>');
   }
 });
 
@@ -816,8 +960,9 @@ app.post('/api/admin/manual-approve', authenticateAdmin, async (req, res) => {
     const { paymentId, noticeRefNo } = req.body;
     if (!paymentId) return res.status(400).json({ error: 'Missing paymentId' });
 
+    const cleanUtr = String(paymentId).trim().toUpperCase();
     const payment = await Payment.findOneAndUpdate(
-      { paymentId },
+      { paymentId: cleanUtr },
       {
         status: 'CONFIRMED',
         verifiedAt: new Date(),
@@ -827,14 +972,31 @@ app.post('/api/admin/manual-approve', authenticateAdmin, async (req, res) => {
     );
 
     const ref = noticeRefNo || payment.noticeRefNo;
+    let notice = null;
     if (ref && ref !== 'UNKNOWN') {
-      await Notice.findOneAndUpdate(
+      notice = await Notice.findOneAndUpdate(
         { refNo: ref },
-        { isUnlocked: true, tierUnlocked: payment.tier || 'TIER_1', unlockedAt: new Date() }
+        { isUnlocked: true, tierUnlocked: payment.tier || 'TIER_1', unlockedAt: new Date() },
+        { new: true }
       );
     }
 
-    return res.json({ success: true, message: `Payment ${paymentId} approved and notice unlocked!` });
+    // Trigger PDF generation and email dispatch asynchronously
+    let emailDispatched = false;
+    if (notice) {
+      try {
+        const pdfBuffer = await generateNoticePdf(notice);
+        const emailRes = await sendCustomerNoticeEmail({ notice, payment, pdfBuffer });
+        emailDispatched = emailRes.success;
+      } catch (pdfErr) {
+        console.error('[MANUAL APPROVE PDF/EMAIL WARNING]:', pdfErr.message);
+      }
+    }
+
+    return res.json({
+      success: true,
+      message: `Payment ${cleanUtr} confirmed! Document unlocked${emailDispatched ? ' & PDF sent to customer email.' : '.'}`
+    });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

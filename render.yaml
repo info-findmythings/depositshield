@@ -36,3 +36,19 @@ services:
         value: mongodb+srv://infofindmythings_db_user:5bVWYdwfsJcVw1Ru@cluster0.i1fbxky.mongodb.net/DepositShield?retryWrites=true&w=majority
       - key: DB_NAME
         value: DepositShield
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USER
+        value: noreply.findmythings@gmail.com
+      - key: EMAIL_PASS
+        value: "dwrq jbwk eusq bdfp"
+      - key: FROM_NAME
+        value: DepositShield India
+      - key: FROM_EMAIL
+        value: noreply.findmythings@gmail.com
+      - key: ADMIN_NOTIFICATION_EMAIL
+        value: noreply.findmythings@gmail.com
+      - key: APP_URL
+        value: https://depositshield.onrender.com
