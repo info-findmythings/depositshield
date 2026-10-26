@@ -582,6 +582,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === noticeDetailsModal) noticeDetailsModal.classList.add('hidden');
   });
 
+  // Copy Sales Reply Template
+  const btnCopySalesReply = document.getElementById('btnCopySalesReply');
+  if (btnCopySalesReply) {
+    btnCopySalesReply.addEventListener('click', () => {
+      const text = document.getElementById('salesReplyTemplate').value;
+      navigator.clipboard.writeText(text);
+      showToast('Copied Reddit conversion pitch to clipboard!');
+    });
+  }
+
+  // Copy Startup Sale Listing
+  const btnCopyStartupListing = document.getElementById('btnCopyStartupListing');
+  if (btnCopyStartupListing) {
+    btnCopyStartupListing.addEventListener('click', () => {
+      const text = document.getElementById('startupSaleTemplate').value;
+      navigator.clipboard.writeText(text);
+      showToast('Copied Acquisition Listing Memorandum to clipboard!');
+    });
+  }
+
   function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/[&<>"']/g, m => ({
