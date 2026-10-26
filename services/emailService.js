@@ -588,7 +588,7 @@ Please find attached formal Pre-Litigation Legal Demand Notice regarding the unl
         <p class="step-desc">
           If your landlord threatens, intimidates, or dishonestly mismanages the caution deposit entrusted to them for safe custody:
           <br><br>
-          Print the attached <code>${policeComplaintFilename}</code>. Submit it to the Station House Officer (SHO) of the local police station jurisdiction where the rental property is situated, or file online via your State Police Citizen Portal under <strong>Section 316 of Bharatiya Nyaya Sanhita, 2023 (formerly IPC Section 405/406)</strong>.
+          Print the attached <code>${policeComplaintFilename}</code>. Submit it to the Station House Officer (SHO) of the local police station jurisdiction where the rental property is situated, or file online via your State Police Citizen Portal under <strong>Section 173 of Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023</strong> read with <strong>Section 316 of Bharatiya Nyaya Sanhita (BNS), 2023</strong>.
           <br><br>
           Under settled law, caution deposits are held strictly in fiduciary trust and remain the tenant's property; converting or refusing to refund trust funds constitutes Criminal Breach of Trust. The police notice/summons to the landlord almost invariably compels immediate refund.
         </p>

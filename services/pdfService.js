@@ -469,17 +469,15 @@ function generatePoliceComplaintPdf(notice) {
       doc.text(`POLICE STATION JURISDICTION: LOCAL AREA POLICE STATION`, leftMargin, curY);
       curY = doc.y + 2;
       doc.text(`DISTRICT / COMMISSIONERATE: ${(notice.city || 'LOCAL DISTRICT').toUpperCase()}`, leftMargin, curY);
-      curY = doc.y + 8;
-
-      // Subject Box
+      cur      // Subject Box
       const pSubjY = curY;
-      doc.roundedRect(leftMargin, pSubjY, contentWidth, 30, 3).fillAndStroke('#fef2f2', '#f87171');
+      doc.roundedRect(leftMargin, pSubjY, contentWidth, 34, 3).fillAndStroke('#fef2f2', '#f87171');
       doc.fillColor('#991b1b').font('Helvetica-Bold').fontSize(7.5).text(
-        `SUBJECT: FORMAL CRIMINAL COMPLAINT UNDER SECTION 316 OF BHARATIYA NYAYA SANHITA, 2023 (FORMERLY SECTION 405/406 IPC)\n` +
+        `SUBJECT: FORMAL CRIMINAL COMPLAINT UNDER SECTION 173 BHARATIYA NAGARIK SURAKSHA SANHITA (BNSS), 2023 READ WITH SECTION 316 BHARATIYA NYAYA SANHITA (BNS), 2023 (FORMERLY SEC 405/406 IPC)\n` +
         `FOR CRIMINAL BREACH OF TRUST AND DISHONEST MISAPPROPRIATION OF CAUTION DEPOSIT OF RS. ${formatINR(notice.amountWithheld)}/-`,
         leftMargin + 8, pSubjY + 6, { width: contentWidth - 16, align: 'left' }
       );
-      curY = pSubjY + 30 + 10;
+      curY = pSubjY + 34 + 10;
 
       // Salutation
       doc.fillColor('#0f172a').font('Helvetica-Bold').fontSize(8).text('RESPECTED SIR / MADAM,', leftMargin, curY);
@@ -489,8 +487,8 @@ function generatePoliceComplaintPdf(notice) {
         `I, the undersigned Complainant, ${notice.tenantName}, residing at ${notice.city || 'India'} (Mobile: +91 ${notice.tenantPhone || 'N/A'}), state as follows:\n\n` +
         `1. ENTRUSTMENT OF MOVABLE PROPERTY (AMANAT): That I was an authorized tenant in the residential property owned by the accused person, namely ${notice.landlordName} (Mobile: ${notice.landlordPhone || 'Recorded on Tenancy Agreement'}), situated at "${notice.propertyAddress}". At the start of the tenancy, I entrusted the accused with an advance caution security deposit of Rs. ${formatINR(notice.depositPaid)}/- purely in fiduciary capacity for safe custody.\n\n` +
         `2. DISHONEST CONVERSION & MISAPPROPRIATION: That on ${notice.vacateDate}, I peacefully delivered vacant physical possession and keys of the premises to the accused in habitable, undamaged condition. However, following key handover, the accused dishonestly converted and refused to refund the sum of Rs. ${formatINR(notice.amountWithheld)}/-, with fraudulent intention to cause wrongful loss to me and wrongful personal gain to himself.\n\n` +
-        `3. STATUTORY INGREDIENTS UNDER SECTION 316 BNS / 405 IPC: That despite service of a formal 7-Day Pre-Litigation Legal Demand Notice (Ref: ${notice.refNo}), the accused has retained the entrusted funds without legal authority. This act satisfies all ingredients of Criminal Breach of Trust under Section 316 of Bharatiya Nyaya Sanhita, 2023 (IPC Section 405/406).\n\n` +
-        `PRAYER: It is humbly requested that an official General Diary (GD) entry be registered, an inquiry be instituted, and the accused be summoned to the Police Station to return the lawful caution deposit forthwith.`;
+        `3. STATUTORY COGNIZANCE UNDER SECTION 173 BNSS 2023 & SECTION 316 BNS 2023: That despite service of a formal 7-Day Pre-Litigation Legal Demand Notice (Ref: ${notice.refNo}), the accused has retained the entrusted funds without legal authority. This act satisfies all ingredients of Criminal Breach of Trust under Section 316 of Bharatiya Nyaya Sanhita, 2023 (formerly IPC Section 405/406) and is cognizable under Section 173 of Bharatiya Nagarik Suraksha Sanhita, 2023. Banking UPI records and handover proofs are certified under Section 63 of Bharatiya Sakshya Adhiniyam, 2023.\n\n` +
+        `PRAYER: It is humbly requested that an official General Diary (GD) entry be registered, an inquiry be instituted under Section 173 BNSS 2023, and the accused be summoned to the Police Station to return the lawful caution deposit forthwith.`;
 
       doc.font('Helvetica').fontSize(7.5).fillColor('#1e293b').lineGap(2).text(policeBody, leftMargin, curY, { width: contentWidth });
       curY = doc.y + 12;
@@ -502,7 +500,7 @@ function generatePoliceComplaintPdf(notice) {
 
       const sigLineY = curY + 20;
       doc.moveTo(leftMargin + contentWidth - 180, sigLineY).lineTo(leftMargin + contentWidth, sigLineY).stroke('#0f172a');
-      doc.font('Helvetica-Bold').fontSize(8).text('COMPLAINANT SIGNATURE', leftMargin + contentWidth - 180, sigLineY + 4);
+      doc.font('Helvetica-Bold').fontSize(8.5).text('COMPLAINANT SIGNATURE', leftMargin + contentWidth - 180, sigLineY + 4);
       doc.font('Helvetica').fontSize(7.5).text(notice.tenantName, leftMargin + contentWidth - 180, sigLineY + 14);
 
       // Police Station Acknowledgment Stamp Box
@@ -520,7 +518,7 @@ function generatePoliceComplaintPdf(notice) {
 
       // Footer
       doc.font('Helvetica').fontSize(7).fillColor('#64748b').text(
-        `Police Complaint for Criminal Breach of Trust • Section 316 BNS / 405 IPC • Page 1 of 1`,
+        `Police Complaint for Criminal Breach of Trust • Section 316 BNS 2023 & Section 173 BNSS 2023 • Page 1 of 1`,
         leftMargin, 792, { width: contentWidth, align: 'center', lineBreak: false }
       );
 
