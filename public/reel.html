@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DepositShield India | Instagram Reel Video Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Tiro+Devanagari+Hindi&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --card-bg: #111827;
+      --primary: #38bdf8;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Outfit', 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .studio-header {
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 1.5rem;
+    }
+
+    .studio-header .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .studio-header h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+
+    .studio-header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .main-workspace {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      max-width: 1050px;
+      width: 100%;
+    }
+
+    /* 9:16 Reel Player Container */
+    .reel-container {
+      width: 360px;
+      height: 640px;
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(56, 189, 248, 0.25);
+      border: 4px solid #1e293b;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Hidden Internal Canvas for 1080x1920 MP4/WebM High-Def Recording */
+    #renderCanvas {
+      display: none;
+    }
+
+    /* Scene Container */
+    .reel-scene-viewport {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .reel-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.5s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .reel-layer.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .reel-bg-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1);
+      transition: transform 7s ease-out;
+    }
+
+    .reel-layer.active .reel-bg-img {
+      transform: scale(1.08);
+    }
+
+    .reel-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 85%);
+    }
+
+    /* Top Reel Instagram-style Status Bar */
+    .reel-top-bar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .reel-progress-segments {
+      display: flex;
+      gap: 4px;
+      height: 3px;
+    }
+
+    .progress-segment {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 4px;
+      transition: width 0.1s linear;
+    }
+
+    .reel-creator-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .creator-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .creator-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.9rem;
+      border: 2px solid #fff;
+    }
+
+    .creator-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .live-badge {
+      background: #ef4444;
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      animation: pulseLive 1.5s infinite;
+    }
+
+    @keyframes pulseLive {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.95); }
+    }
+
+    /* Text & Content Elements Inside Scene */
+    .scene-content {
+      position: absolute;
+      inset: 0;
+      padding: 60px 20px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      z-index: 20;
+    }
+
+    .kinetic-tag {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .tag-red { background: #ef4444; color: #fff; }
+    .tag-yellow { background: #f59e0b; color: #000; }
+    .tag-green { background: #10b981; color: #fff; }
+
+    .kinetic-title {
+      font-size: 1.45rem;
+      font-weight: 900;
+      line-height: 1.3;
+      color: #ffffff;
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9);
+      margin-bottom: 12px;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .kinetic-title .highlight-yellow {
+      color: #fde047;
+      text-decoration: underline;
+      text-decoration-color: #f59e0b;
+    }
+
+    .kinetic-title .highlight-red {
+      color: #f87171;
+      background: rgba(239, 68, 68, 0.25);
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+
+    .kinetic-title .highlight-green {
+      color: #34d399;
+    }
+
+    .kinetic-subtext {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: #e2e8f0;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      margin-bottom: 14px;
+    }
+
+    /* WhatsApp Message Simulation Box */
+    .fake-whatsapp-box {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      animation: floatMsg 3s ease-in-out infinite;
+    }
+
+    @keyframes floatMsg {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .fake-whatsapp-box .sender {
+      color: #38bdf8;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .fake-whatsapp-box .msg {
+      font-size: 0.82rem;
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+
+    /* Law Badges Grid in Scene 3 */
+    .law-cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .mini-law-card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(8px);
+    }
+
+    .mini-law-card .icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .mini-law-card .text strong {
+      display: block;
+      color: #ffffff;
+      font-size: 0.78rem;
+    }
+
+    .mini-law-card .text span {
+      color: #cbd5e1;
+      font-size: 0.68rem;
+    }
+
+    /* Victory Bank Alert in Scene 5 */
+    .bank-alert-card {
+      background: linear-gradient(135deg, rgba(6, 78, 59, 0.95), rgba(15, 23, 42, 0.95));
+      border: 1.5px solid #10b981;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bank-alert-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #10b981;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .bank-alert-info h4 {
+      font-size: 0.8rem;
+      color: #a7f3d0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bank-alert-info .amt {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .bank-alert-info .status {
+      font-size: 0.68rem;
+      color: #6ee7b7;
+    }
+
+    .cta-banner {
+      background: #38bdf8;
+      color: #042f2e;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Right Studio Control Panel */
+    .studio-panel {
+      flex: 1;
+      min-width: 320px;
+      max-width: 480px;
+      background: var(--card-bg);
+      border: 1px solid #1f2937;
+      border-radius: 20px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .panel-section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .playback-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-control {
+      flex: 1;
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #334155;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-control:hover {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    .btn-control.primary {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border-color: #38bdf8;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
+    }
+
+    .btn-control.primary:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+    }
+
+    .btn-download-video {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      border: none;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-download-video:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+    }
+
+    /* Scene Switcher Buttons */
+    .scene-selector {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+
+    .scene-tab {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 8px 4px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .scene-tab.active {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+    }
+
+    /* Script & Voice Prompts Box */
+    .script-box {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 12px;
+      max-height: 140px;
+      overflow-y: auto;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .script-box p {
+      margin-bottom: 6px;
+    }
+
+    .audio-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .sound-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 16px;
+    }
+
+    .sound-bar {
+      width: 3px;
+      background: #38bdf8;
+      border-radius: 2px;
+      height: 4px;
+      transition: height 0.1s;
+    }
+
+    .sound-bars.playing .sound-bar:nth-child(1) { animation: jump 0.6s infinite ease-in-out; }
+    .sound-bars.playing .sound-bar:nth-child(2) { animation: jump 0.8s infinite ease-in-out 0.2s; }
+    .sound-bars.playing .sound-bar:nth-child(3) { animation: jump 0.5s infinite ease-in-out 0.4s; }
+    .sound-bars.playing .sound-bar:nth-child(4) { animation: jump 0.7s infinite ease-in-out 0.1s; }
+
+    @keyframes jump {
+      0%, 100% { height: 4px; }
+      50% { height: 16px; }
+    }
+
+    .recording-status {
+      display: none;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #f87171;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .recording-status.active {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="studio-header">
+    <div class="badge"><i class="fa-solid fa-film"></i> Official Instagram Reel Studio</div>
+    <h1>DepositShield AI Video Awareness Studio</h1>
+    <p>Watch, customize, and directly download this high-converting 9:16 Instagram Reel in Hindi.</p>
+  </header>
+
+  <div class="main-workspace">
+    <!-- 9:16 Reel Player -->
+    <div class="reel-container" id="reelContainer">
+      
+      <!-- Top Status & Progress Bar -->
+      <div class="reel-top-bar">
+        <div class="reel-progress-segments">
+          <div class="progress-segment"><div class="progress-fill" id="fill0"></div></div>
+          <div class="progress-segment"><div class="progress-fill" id="fill1"></div></div>
+          <div class="progress-segment"><div class="progress-fill" id="fill2"></div></div>
+          <div class="progress-segment"><div class="progress-fill" id="fill3"></div></div>
+          <div class="progress-segment"><div class="progress-fill" id="fill4"></div></div>
+        </div>
+
+        <div class="reel-creator-header">
+          <div class="creator-info">
+            <div class="creator-avatar"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="creator-name">depositshield.in</div>
+          </div>
+          <div class="live-badge">TENANT ALERT</div>
+        </div>
+      </div>
+
+      <!-- Viewport containing 5 Cinematic Scenes -->
+      <div class="reel-scene-viewport">
+
+        <!-- SCENE 1: The Frustrated Hook -->
+        <div class="reel-layer active" id="scene0">
+          <img src="/assets/reel_hook.jpg" class="reel-bg-img" alt="Frustrated Tenant">
+          <div class="reel-gradient-overlay"></div>
+          <div class="scene-content">
+            <div class="kinetic-tag tag-red">🚨 REALITY CHECK</div>
+            <h2 class="kinetic-title">क्या आपका Landlord भी <span class="highlight-yellow">₹35,000 Painting</span> के नाम पे काट रहा है?</h2>
+            
+            <div class="fake-whatsapp-box">
+              <div class="sender"><i class="fa-brands fa-whatsapp"></i> Landlord (WhatsApp)</div>
+              <div class="msg">"Deducting ₹35,000 for repaint + ₹10,000 deep clean. Non-negotiable."</div>
+            </div>
+
+            <p class="kinetic-subtext">हर महीने हज़ारों किरायेदारों का डिपॉजिट ऐसे ही हड़प लिया जाता है...</p>
+          </div>
+        </div>
+
+        <!-- SCENE 2: The Shocking Law Warning -->
+        <div class="reel-layer" id="scene1">
+          <img src="/assets/reel_hook.jpg" class="reel-bg-img" style="filter: brightness(0.6) saturate(1.4);" alt="Illegal Warning">
+          <div class="reel-gradient-overlay" style="background: linear-gradient(180deg, rgba(127,29,29,0.7) 0%, rgba(15,23,42,0.95) 80%);"></div>
+          <div class="scene-content">
+            <div class="kinetic-tag tag-yellow">🛑 RUKO! DON'T PAY!</div>
+            <h2 class="kinetic-title">यह डिडक्शन <span class="highlight-red">100% ILLEGAL</span> है!</h2>
+            <p class="kinetic-subtext">
+              Indian Law के मुताबिक, बिना ओरिजिनल <strong>GST Contractor Bill</strong> और <strong>Inspection Report</strong> के मकान मालिक एक रुपया भी नहीं काट सकता!
+            </p>
+            <div class="fake-whatsapp-box" style="border-color: #ef4444; background: rgba(239,68,68,0.15);">
+              <div class="msg" style="color: #fca5a5;"><i class="fa-solid fa-triangle-exclamation"></i> Fake handwritten estimates = Cheating under Sec 318 BNS!</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCENE 3: The 3 Statutory Weapons -->
+        <div class="reel-layer" id="scene2">
+          <div style="position:absolute; inset:0; background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%);"></div>
+          <div class="reel-gradient-overlay"></div>
+          <div class="scene-content">
+            <div class="kinetic-tag tag-yellow">⚖️ YOUR LEGAL SHIELD (2026)</div>
+            <h2 class="kinetic-title">ये 3 कानून आपका <span class="highlight-yellow">पूरा पैसा वापस</span> दिलाएंगे:</h2>
+
+            <div class="law-cards-grid">
+              <div class="mini-law-card">
+                <div class="icon"><i class="fa-solid fa-paint-roller"></i></div>
+                <div class="text">
+                  <strong>Section 108(m) TPA 1882</strong>
+                  <span>Normal wear & tear is owner's duty, not tenant!</span>
+                </div>
+              </div>
+
+              <div class="mini-law-card" style="border-color: rgba(239,68,68,0.5);">
+                <div class="icon" style="background: rgba(239,68,68,0.2); color:#f87171;"><i class="fa-solid fa-handcuffs"></i></div>
+                <div class="text">
+                  <strong>Section 316 BNS 2023</strong>
+                  <span>Withholding deposit is Criminal Breach of Trust!</span>
+                </div>
+              </div>
+
+              <div class="mini-law-card" style="border-color: rgba(56,189,248,0.5);">
+                <div class="icon" style="background: rgba(56,189,248,0.2); color:#38bdf8;"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                <div class="text">
+                  <strong>Section 63 BSA 2023</strong>
+                  <span>WhatsApp chats & UPI logs are valid court proof!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCENE 4: DepositShield in 3 Minutes -->
+        <div class="reel-layer" id="scene3">
+          <div style="position:absolute; inset:0; background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%);"></div>
+          <div class="reel-gradient-overlay"></div>
+          <div class="scene-content">
+            <div class="kinetic-tag tag-green">🛡️ DEPOSITSHIELD INDIA</div>
+            <h2 class="kinetic-title">वकील को <span class="highlight-yellow">₹15,000</span> देने की बिल्कुल ज़रूरत नहीं!</h2>
+            <p class="kinetic-subtext">
+              सीधा <strong>DepositShield.in</strong> पर जाओ, अपनी डिटेल्स डालो, और 3 मिनट में पाओ:
+            </p>
+
+            <div class="law-cards-grid">
+              <div class="mini-law-card" style="border-color: #10b981;">
+                <div class="icon" style="background: rgba(16,185,129,0.2); color:#34d399;"><i class="fa-solid fa-file-contract"></i></div>
+                <div class="text">
+                  <strong>Official Legal Demand Notice</strong>
+                  <span>7-Day Peremptory Ultimatum (₹199 Plan)</span>
+                </div>
+              </div>
+              <div class="mini-law-card" style="border-color: #38bdf8;">
+                <div class="icon" style="background: rgba(56,189,248,0.2); color:#38bdf8;"><i class="fa-solid fa-gavel"></i></div>
+                <div class="text">
+                  <strong>e-Daakhil Court & Police Dossier</strong>
+                  <span>100% Court-Admissible Guarantee (₹499 Plan)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCENE 5: The Victory & Call To Action -->
+        <div class="reel-layer" id="scene4">
+          <img src="/assets/reel_success.jpg" class="reel-bg-img" alt="Success & Refund">
+          <div class="reel-gradient-overlay"></div>
+          <div class="scene-content">
+            
+            <div class="bank-alert-card">
+              <div class="bank-alert-icon"><i class="fa-solid fa-check-double"></i></div>
+              <div class="bank-alert-info">
+                <h4>Verified Bank Refund Alert</h4>
+                <div class="amt">₹65,000.00</div>
+                <div class="status">Deposit Credited to Account via UPI • Success</div>
+              </div>
+            </div>
+
+            <h2 class="kinetic-title" style="font-size: 1.25rem;">अपना हक मत छोड़ो! <span class="highlight-green">Recover Your Deposit Legally!</span></h2>
+
+            <div class="cta-banner">
+              👉 Visit: depositshield.onrender.com
+              <div style="font-size: 0.75rem; margin-top: 3px; font-weight: 600;">Comment "DEPOSIT" below for direct notice link!</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Control Panel -->
+    <div class="studio-panel">
+      <div class="panel-section-title"><i class="fa-solid fa-sliders"></i> Reel Playback & Export Studio</div>
+
+      <!-- Playback Buttons -->
+      <div class="playback-controls">
+        <button class="btn-control primary" id="btnPlayPause"><i class="fa-solid fa-play"></i> <span id="playText">Play Reel</span></button>
+        <button class="btn-control" id="btnRestart"><i class="fa-solid fa-rotate-left"></i> Restart</button>
+        <button class="btn-control" id="btnAudioToggle"><i class="fa-solid fa-volume-high"></i> Audio</button>
+      </div>
+
+      <div class="audio-indicator">
+        <div class="sound-bars" id="soundBars">
+          <div class="sound-bar"></div>
+          <div class="sound-bar"></div>
+          <div class="sound-bar"></div>
+          <div class="sound-bar"></div>
+        </div>
+        <span id="audioStatusText">Synthesized Sound Effects & Riser Beats Active</span>
+      </div>
+
+      <!-- Scene Jump Selector -->
+      <div>
+        <label style="font-size: 0.8rem; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 6px;">SCENE SELECTOR</label>
+        <div class="scene-selector">
+          <button class="scene-tab active" data-scene="0">1. Hook</button>
+          <button class="scene-tab" data-scene="1">2. Alert</button>
+          <button class="scene-tab" data-scene="2">3. Laws</button>
+          <button class="scene-tab" data-scene="3">4. Shield</button>
+          <button class="scene-tab" data-scene="4">5. Victory</button>
+        </div>
+      </div>
+
+      <!-- Hindi Voiceover Reference -->
+      <div>
+        <label style="font-size: 0.8rem; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 6px;">HINDI NARRATION SCRIPT</label>
+        <div class="script-box" id="scriptBox">
+          <p><strong>0:00 - 0:07:</strong> "क्या आपका Landlord भी flat खाली करते वक्त ₹30,000–₹40,000 painting और cleaning के नाम पे काट रहा है?"</p>
+          <p><strong>0:07 - 0:15:</strong> "रुकिए! एक रुपया भी मत छोड़ना! Indian Law के तहत बिना original GST contractor bill के Landlord ₹1 भी नहीं काट सकता!"</p>
+          <p><strong>0:15 - 0:26:</strong> "Section 108 TPA कहता है normal wear-and-tear owner की ज़िम्मेदारी है, और deposit रोकना Sec 316 BNS में Criminal Breach of Trust है!"</p>
+          <p><strong>0:26 - 0:34:</strong> "वकील पे ₹15,000 waste मत करो! DepositShield.in पर 3 मिनट में Court-admissible Legal Notice generate करो!"</p>
+          <p><strong>0:34 - 0:42:</strong> "Comment करो 'DEPOSIT' और मैं direct link DM कर दूंगा! अपने flatmates के साथ अभी share करो!"</p>
+        </div>
+      </div>
+
+      <div class="recording-status" id="recordingStatus">
+        <i class="fa-solid fa-circle-dot" style="animation: pulseLive 1s infinite;"></i>
+        <span>Recording Full HD 9:16 Video... Please wait (~35s)</span>
+      </div>
+
+      <!-- Export Button -->
+      <button class="btn-download-video" id="btnDownloadVideo">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+        <span>Download Video File (.webm / .mp4)</span>
+      </button>
+
+      <a href="/" style="color: #38bdf8; text-decoration: none; font-size: 0.85rem; text-align: center; font-weight: 600;">
+        <i class="fa-solid fa-arrow-left"></i> Return to DepositShield Homepage
+      </a>
+    </div>
+  </div>
+
+  <!-- Internal Hidden Canvas for 1080x1920 MP4 Video Rendering -->
+  <canvas id="renderCanvas" width="1080" height="1920"></canvas>
+
+  <script>
+    // Audio Synthesizer using Web Audio API (Bass drop, alert horn, victory chime)
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.3, gainVal = 0.2) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) { }
+    }
+
+    function playAlertHorn() {
+      if (!audioEnabled) return;
+      playTone(440, 'sawtooth', 0.15, 0.25);
+      setTimeout(() => playTone(330, 'sawtooth', 0.25, 0.25), 180);
+    }
+
+    function playSuccessChime() {
+      if (!audioEnabled) return;
+      playTone(523.25, 'triangle', 0.2, 0.2); // C5
+      setTimeout(() => playTone(659.25, 'triangle', 0.2, 0.2), 120); // E5
+      setTimeout(() => playTone(783.99, 'triangle', 0.4, 0.25), 240); // G5
+    }
+
+    function playBassWhoosh() {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+      } catch (e) {}
+    }
+
+    // Timeline Configuration (5 Scenes)
+    const sceneDurations = [7000, 8000, 11000, 8000, 8000]; // in ms
+    let currentScene = 0;
+    let isPlaying = false;
+    let timerId = null;
+    let progressInterval = null;
+    let sceneStartTime = 0;
+
+    const layers = [
+      document.getElementById('scene0'),
+      document.getElementById('scene1'),
+      document.getElementById('scene2'),
+      document.getElementById('scene3'),
+      document.getElementById('scene4')
+    ];
+
+    const fills = [
+      document.getElementById('fill0'),
+      document.getElementById('fill1'),
+      document.getElementById('fill2'),
+      document.getElementById('fill3'),
+      document.getElementById('fill4')
+    ];
+
+    const sceneTabs = document.querySelectorAll('.scene-tab');
+    const btnPlayPause = document.getElementById('btnPlayPause');
+    const playText = document.getElementById('playText');
+    const btnRestart = document.getElementById('btnRestart');
+    const btnAudioToggle = document.getElementById('btnAudioToggle');
+    const soundBars = document.getElementById('soundBars');
+
+    function setScene(index) {
+      currentScene = index;
+      layers.forEach((layer, i) => {
+        if (i === index) {
+          layer.classList.add('active');
+        } else {
+          layer.classList.remove('active');
+        }
+      });
+
+      sceneTabs.forEach((tab, i) => {
+        if (i === index) tab.classList.add('active');
+        else tab.classList.remove('active');
+      });
+
+      // Update segment fills
+      fills.forEach((fill, i) => {
+        if (i < index) fill.style.width = '100%';
+        else if (i > index) fill.style.width = '0%';
+        else fill.style.width = '0%';
+      });
+
+      // Trigger scene sound effect
+      if (index === 0) playBassWhoosh();
+      if (index === 1) playAlertHorn();
+      if (index === 2) playBassWhoosh();
+      if (index === 3) playTone(587, 'sine', 0.25, 0.2);
+      if (index === 4) playSuccessChime();
+
+      sceneStartTime = Date.now();
+    }
+
+    function nextScene() {
+      if (currentScene < layers.length - 1) {
+        setScene(currentScene + 1);
+        runCurrentSceneTimer();
+      } else {
+        // Finished full cycle
+        pauseReel();
+        setScene(0);
+      }
+    }
+
+    function runCurrentSceneTimer() {
+      clearTimeout(timerId);
+      clearInterval(progressInterval);
+
+      const duration = sceneDurations[currentScene];
+      sceneStartTime = Date.now();
+
+      progressInterval = setInterval(() => {
+        if (!isPlaying) return;
+        const elapsed = Date.now() - sceneStartTime;
+        const pct = Math.min(100, (elapsed / duration) * 100);
+        fills[currentScene].style.width = pct + '%';
+      }, 50);
+
+      timerId = setTimeout(() => {
+        if (isPlaying) nextScene();
+      }, duration);
+    }
+
+    function playReel() {
+      initAudio();
+      isPlaying = true;
+      playText.textContent = 'Pause';
+      btnPlayPause.querySelector('i').className = 'fa-solid fa-pause';
+      soundBars.classList.add('playing');
+      runCurrentSceneTimer();
+    }
+
+    function pauseReel() {
+      isPlaying = false;
+      clearTimeout(timerId);
+      clearInterval(progressInterval);
+      playText.textContent = 'Play Reel';
+      btnPlayPause.querySelector('i').className = 'fa-solid fa-play';
+      soundBars.classList.remove('playing');
+    }
+
+    btnPlayPause.addEventListener('click', () => {
+      if (isPlaying) pauseReel();
+      else playReel();
+    });
+
+    btnRestart.addEventListener('click', () => {
+      pauseReel();
+      setScene(0);
+      playReel();
+    });
+
+    btnAudioToggle.addEventListener('click', () => {
+      audioEnabled = !audioEnabled;
+      btnAudioToggle.innerHTML = audioEnabled 
+        ? '<i class="fa-solid fa-volume-high"></i> Audio' 
+        : '<i class="fa-solid fa-volume-xmark"></i> Muted';
+    });
+
+    sceneTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        pauseReel();
+        const target = parseInt(tab.getAttribute('data-scene'), 10);
+        setScene(target);
+      });
+    });
+
+    // =========================================================================
+    // Video Recorder: Exports full 1080x1920 WebM/MP4 Video file directly!
+    // =========================================================================
+    const btnDownloadVideo = document.getElementById('btnDownloadVideo');
+    const recordingStatus = document.getElementById('recordingStatus');
+    const canvas = document.getElementById('renderCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const hookImg = new Image();
+    hookImg.src = '/assets/reel_hook.jpg';
+    const successImg = new Image();
+    successImg.src = '/assets/reel_success.jpg';
+
+    btnDownloadVideo.addEventListener('click', async () => {
+      if (btnDownloadVideo.disabled) return;
+      btnDownloadVideo.disabled = true;
+      recordingStatus.classList.add('active');
+
+      pauseReel();
+      setScene(0);
+
+      const stream = canvas.captureStream(30);
+      let recorder;
+      let recordedChunks = [];
+
+      try {
+        recorder = new MediaRecorder(stream, {
+          mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+            ? 'video/webm;codecs=vp9'
+            : 'video/webm'
+        });
+      } catch (e) {
+        recorder = new MediaRecorder(stream);
+      }
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'DepositShield_Instagram_Reel_Hindi_1080x1920.webm';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 100);
+
+        recordingStatus.classList.remove('active');
+        btnDownloadVideo.disabled = false;
+        alert('🎉 Video generated & downloaded successfully! Check your Downloads folder.');
+      };
+
+      recorder.start();
+
+      // Render 1080x1920 frames into canvas scene by scene
+      const renderStartTime = Date.now();
+      const totalDuration = sceneDurations.reduce((a, b) => a + b, 0);
+
+      const renderInterval = setInterval(() => {
+        const elapsed = Date.now() - renderStartTime;
+        if (elapsed >= totalDuration) {
+          clearInterval(renderInterval);
+          recorder.stop();
+          return;
+        }
+
+        // Determine current scene based on elapsed
+        let acc = 0;
+        let sIdx = 0;
+        for (let i = 0; i < sceneDurations.length; i++) {
+          acc += sceneDurations[i];
+          if (elapsed < acc) {
+            sIdx = i;
+            break;
+          }
+        }
+
+        if (sIdx !== currentScene) {
+          setScene(sIdx);
+        }
+
+        // Draw Canvas Frame
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, 1080, 1920);
+
+        if (sIdx === 0 || sIdx === 1) {
+          if (hookImg.complete) {
+            ctx.drawImage(hookImg, 0, 0, 1080, 1920);
+          }
+        } else if (sIdx === 4) {
+          if (successImg.complete) {
+            ctx.drawImage(successImg, 0, 0, 1080, 1920);
+          }
+        } else {
+          const grad = ctx.createLinearGradient(0, 0, 1080, 1920);
+          grad.addColorStop(0, '#0f172a');
+          grad.addColorStop(1, '#0284c7');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, 1080, 1920);
+        }
+
+        // Dark gradient overlay
+        const overlay = ctx.createLinearGradient(0, 0, 0, 1920);
+        overlay.addColorStop(0, 'rgba(0,0,0,0.7)');
+        overlay.addColorStop(0.5, 'rgba(0,0,0,0.2)');
+        overlay.addColorStop(1, 'rgba(0,0,0,0.92)');
+        ctx.fillStyle = overlay;
+        ctx.fillRect(0, 0, 1080, 1920);
+
+        // Header watermark
+        ctx.font = 'bold 38px Outfit, sans-serif';
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillText('🛡️ DepositShield India | @depositshield.in', 70, 120);
+
+        // Progress bar at top
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.fillRect(70, 150, 940, 8);
+        const progressPct = Math.min(1, elapsed / totalDuration);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(70, 150, 940 * progressPct, 8);
+
+        // Scene Specific Typography
+        ctx.fillStyle = '#ffffff';
+        if (sIdx === 0) {
+          ctx.font = 'bold 64px Outfit, sans-serif';
+          ctx.fillText('क्या आपका Landlord भी', 70, 1420);
+          ctx.fillStyle = '#fde047';
+          ctx.fillText('₹35,000 Painting के नाम पे', 70, 1500);
+          ctx.fillStyle = '#f87171';
+          ctx.fillText('काट रहा है?', 70, 1580);
+          ctx.fillStyle = '#cbd5e1';
+          ctx.font = '36px Inter, sans-serif';
+          ctx.fillText('WhatsApp: "Deducting ₹35k repaint. Non-negotiable."', 70, 1680);
+        } else if (sIdx === 1) {
+          ctx.fillStyle = '#ef4444';
+          ctx.font = 'bold 80px Outfit, sans-serif';
+          ctx.fillText('🛑 100% ILLEGAL!', 70, 1400);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 52px Outfit, sans-serif';
+          ctx.fillText('बिना GST Bill और Contractor Receipt के', 70, 1500);
+          ctx.fillText('मकान मालिक ₹1 भी नहीं काट सकता!', 70, 1570);
+          ctx.fillStyle = '#fca5a5';
+          ctx.font = '36px Inter, sans-serif';
+          ctx.fillText('Handwritten estimates = Cheating under Sec 318 BNS!', 70, 1670);
+        } else if (sIdx === 2) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = 'bold 56px Outfit, sans-serif';
+          ctx.fillText('⚖️ 3 POWERFUL LAWS (2026):', 70, 1340);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 44px Outfit, sans-serif';
+          ctx.fillText('1. Sec 108(m) TPA 1882: Wear & Tear is Owner Duty', 70, 1440);
+          ctx.fillText('2. Sec 316 BNS 2023: Criminal Breach of Trust', 70, 1530);
+          ctx.fillText('3. Sec 63 BSA 2023: WhatsApp Blue-Ticks Valid Evidence', 70, 1620);
+        } else if (sIdx === 3) {
+          ctx.fillStyle = '#34d399';
+          ctx.font = 'bold 60px Outfit, sans-serif';
+          ctx.fillText('🛡️ DepositShield India', 70, 1360);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 50px Outfit, sans-serif';
+          ctx.fillText('वकील को ₹15,000 देने की ज़रूरत नहीं!', 70, 1450);
+          ctx.fillStyle = '#cbd5e1';
+          ctx.font = '40px Inter, sans-serif';
+          ctx.fillText('3 मिनट में बनाओ Statutory Legal Notice & Consumer Petition', 70, 1540);
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillText('₹199 Starter & ₹499 Full Escalation Suite', 70, 1620);
+        } else if (sIdx === 4) {
+          ctx.fillStyle = '#10b981';
+          ctx.font = 'bold 64px Outfit, sans-serif';
+          ctx.fillText('🔔 REFUND CREDITED VIA UPI', 70, 1380);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 88px Outfit, sans-serif';
+          ctx.fillText('₹65,000.00', 70, 1480);
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = 'bold 48px Outfit, sans-serif';
+          ctx.fillText('👉 Visit: depositshield.onrender.com', 70, 1600);
+          ctx.fillStyle = '#fde047';
+          ctx.font = '36px Inter, sans-serif';
+          ctx.fillText('Comment "DEPOSIT" below for direct link!', 70, 1680);
+        }
+
+      }, 33); // ~30 fps
+    });
+
+    // Auto-start reel on initial load after 1 second
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        playReel();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

@@ -1204,6 +1204,9 @@ app.get('/contact', (req, res) => {
 app.get('/shipping', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'shipping.html'));
 });
+app.get('/reel', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'reel.html'));
+});
 
 // Fallback to SPA homepage
 app.use((req, res) => {
