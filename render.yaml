@@ -49,6 +49,6 @@ services:
       - key: FROM_EMAIL
         value: noreply.findmythings@gmail.com
       - key: ADMIN_NOTIFICATION_EMAIL
-        value: noreply.findmythings@gmail.com
+        value: akashrupareliya321@gmail.com
       - key: APP_URL
         value: https://depositshield.onrender.com

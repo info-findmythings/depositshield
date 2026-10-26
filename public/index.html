@@ -1270,74 +1270,74 @@
         </div>
 
         <!-- Customer Email Capture Field -->
-        <div class="checkout-email-group" style="background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 8px; padding: 14px 16px; margin-bottom: 18px;">
-          <label for="checkoutUserEmail" style="display: block; font-size: 13px; font-weight: 700; color: #f8fafc; margin-bottom: 6px;">
+        <div class="checkout-email-group" style="background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;">
+          <label for="checkoutUserEmail" style="display: block; font-size: 12.5px; font-weight: 700; color: #f8fafc; margin-bottom: 4px;">
             <i class="fa-solid fa-envelope" style="color: #38bdf8; margin-right: 5px;"></i> Delivery Email Address <span style="color: #f43f5e;">*</span>
           </label>
-          <input type="email" id="checkoutUserEmail" class="form-input" placeholder="Enter your email to receive notice PDF" required style="width: 100%; box-sizing: border-box; background: #0b1329; border: 1px solid #38bdf8; color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 14px;">
-          <span style="font-size: 11.5px; color: #94a3b8; display: block; margin-top: 5px;">
-            <i class="fa-solid fa-circle-info" style="color: #38bdf8;"></i> Your official signed 2-Page Legal Demand Notice PDF will be automatically delivered to this email.
+          <input type="email" id="checkoutUserEmail" class="form-input" placeholder="Enter your email to receive notice PDF" required style="width: 100%; box-sizing: border-box; background: #0b1329; border: 1px solid #38bdf8; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13.5px;">
+          <span style="font-size: 11px; color: #94a3b8; display: block; margin-top: 4px;">
+            <i class="fa-solid fa-circle-info" style="color: #38bdf8;"></i> Your official signed 2-Page Legal Notice PDF will be automatically delivered here.
           </span>
         </div>
 
         <!-- Checkout View: Direct UPI & Gateway -->
         <div id="standardRzpView">
           <!-- Direct UPI Payment Box (0% Fees • Instant Direct Remittance) -->
-          <div class="direct-upi-box" style="background: linear-gradient(145deg, #0f172a, #1e293b); border: 1.5px solid #38bdf8; border-radius: 12px; padding: 18px; margin-bottom: 18px; text-align: center;">
-            <div style="display: inline-block; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; margin-bottom: 10px;">
+          <div class="direct-upi-box" style="background: linear-gradient(145deg, #0f172a, #1e293b); border: 1.5px solid #38bdf8; border-radius: 12px; padding: 14px; margin-bottom: 12px; text-align: center;">
+            <div style="display: inline-block; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; margin-bottom: 8px;">
               ⚡ FASTEST OPTION • DIRECT UPI PAYMENT
             </div>
-            <h4 style="margin: 0 0 6px; font-size: 15px; color: #ffffff;">Pay via any UPI App (GPay, PhonePe, Paytm)</h4>
-            <p style="margin: 0 0 14px; font-size: 12px; color: #94a3b8;">Scan QR on desktop or tap your UPI app on mobile to pay directly.</p>
+            <h4 style="margin: 0 0 4px; font-size: 14px; color: #ffffff;">Pay via any UPI App (GPay, PhonePe, Paytm)</h4>
+            <p style="margin: 0 0 10px; font-size: 11.5px; color: #94a3b8;">Scan QR on desktop or tap your UPI app on mobile to pay directly.</p>
 
             <!-- Dynamic QR Code & UPI ID -->
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 14px;">
-              <div style="background: #ffffff; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: inline-block;">
-                <img id="directUpiQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3D8000757744%40upi%26pn%3DDepositShield%26am%3D99%26cu%3DINR" alt="UPI QR Code" style="width: 150px; height: 150px; display: block;">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px;">
+              <div style="background: #ffffff; padding: 6px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: inline-block;">
+                <img id="directUpiQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=upi%3A%2F%2Fpay%3Fpa%3D8000757744%40upi%26pn%3DDepositShield%26am%3D99%26cu%3DINR" alt="UPI QR Code" style="width: 125px; height: 125px; display: block;">
               </div>
 
-              <div style="display: flex; align-items: center; gap: 8px; background: #0b1329; border: 1px solid #334155; padding: 6px 12px; border-radius: 6px;">
-                <span style="font-size: 12px; color: #94a3b8;">UPI ID:</span>
-                <strong id="displayUpiId" style="font-size: 13.5px; color: #34d399; font-family: monospace;">8000757744@upi</strong>
-                <button type="button" id="btnCopyUpiId" style="background: #1e3a8a; border: none; color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 6px; background: #0b1329; border: 1px solid #334155; padding: 4px 10px; border-radius: 6px;">
+                <span style="font-size: 11.5px; color: #94a3b8;">UPI ID:</span>
+                <strong id="displayUpiId" style="font-size: 12.5px; color: #34d399; font-family: monospace;">8000757744@upi</strong>
+                <button type="button" id="btnCopyUpiId" style="background: #1e3a8a; border: none; color: #ffffff; padding: 3px 6px; border-radius: 4px; font-size: 10.5px; cursor: pointer;">
                   <i class="fa-solid fa-copy"></i> Copy
                 </button>
               </div>
             </div>
 
             <!-- Mobile UPI Intent Buttons -->
-            <div class="mobile-upi-quick-links" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
-              <a id="linkGPay" href="upi://pay?pa=8000757744@upi&pn=DepositShield&am=99&cu=INR" class="method-tag" style="text-decoration: none; cursor: pointer; color: #f8fafc; background: #1e293b; border: 1px solid #475569; padding: 6px 12px; border-radius: 6px; font-size: 12px;">
+            <div class="mobile-upi-quick-links" style="display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+              <a id="linkGPay" href="upi://pay?pa=8000757744@upi&pn=DepositShield&am=99&cu=INR" class="method-tag" style="text-decoration: none; cursor: pointer; color: #f8fafc; background: #1e293b; border: 1px solid #475569; padding: 4px 10px; border-radius: 6px; font-size: 11.5px;">
                 <i class="fa-brands fa-google-pay" style="color: #4285f4;"></i> GPay
               </a>
-              <a id="linkPhonePe" href="upi://pay?pa=8000757744@upi&pn=DepositShield&am=99&cu=INR" class="method-tag" style="text-decoration: none; cursor: pointer; color: #f8fafc; background: #1e293b; border: 1px solid #475569; padding: 6px 12px; border-radius: 6px; font-size: 12px;">
+              <a id="linkPhonePe" href="upi://pay?pa=8000757744@upi&pn=DepositShield&am=99&cu=INR" class="method-tag" style="text-decoration: none; cursor: pointer; color: #f8fafc; background: #1e293b; border: 1px solid #475569; padding: 4px 10px; border-radius: 6px; font-size: 11.5px;">
                 <i class="fa-solid fa-mobile-screen" style="color: #673ab7;"></i> PhonePe
               </a>
-              <a id="linkPaytm" href="upi://pay?pa=8000757744@upi&pn=DepositShield&am=99&cu=INR" class="method-tag" style="text-decoration: none; cursor: pointer; color: #f8fafc; background: #1e293b; border: 1px solid #475569; padding: 6px 12px; border-radius: 6px; font-size: 12px;">
+              <a id="linkPaytm" href="upi://pay?pa=8000757744@upi&pn=DepositShield&am=99&cu=INR" class="method-tag" style="text-decoration: none; cursor: pointer; color: #f8fafc; background: #1e293b; border: 1px solid #475569; padding: 4px 10px; border-radius: 6px; font-size: 11.5px;">
                 <i class="fa-solid fa-wallet" style="color: #00b9f1;"></i> Paytm
               </a>
             </div>
 
             <!-- UTR Input & Submit -->
-            <div style="background: #0b1329; border: 1px solid #334155; border-radius: 8px; padding: 14px; text-align: left;">
-              <label for="inputUpiUtr" style="display: block; font-size: 12.5px; font-weight: 700; color: #f8fafc; margin-bottom: 6px;">
+            <div style="background: #0b1329; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; text-align: left;">
+              <label for="inputUpiUtr" style="display: block; font-size: 12px; font-weight: 700; color: #f8fafc; margin-bottom: 4px;">
                 <i class="fa-solid fa-receipt" style="color: #34d399;"></i> Enter 12-Digit UPI Ref / UTR Number: <span style="color: #f43f5e;">*</span>
               </label>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <input type="text" id="inputUpiUtr" maxlength="16" placeholder="e.g. 429618294821" style="flex: 1; min-width: 160px; background: #1e293b; border: 1.5px solid #38bdf8; color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 14px; font-family: monospace; font-weight: 700; letter-spacing: 1px;">
-                <button type="button" id="btnSubmitUpiUtr" class="btn-pay-razorpay-primary" style="margin: 0; width: auto; padding: 10px 20px; background: linear-gradient(135deg, #059669, #10b981); white-space: nowrap; font-size: 13.5px; border-radius: 6px;">
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <input type="text" id="inputUpiUtr" maxlength="16" placeholder="e.g. 429618294821" style="flex: 1; min-width: 140px; background: #1e293b; border: 1.5px solid #38bdf8; color: #fff; padding: 8px 10px; border-radius: 6px; font-size: 13.5px; font-family: monospace; font-weight: 700; letter-spacing: 1px;">
+                <button type="button" id="btnSubmitUpiUtr" class="btn-pay-razorpay-primary" style="margin: 0; width: auto; padding: 8px 14px; background: linear-gradient(135deg, #059669, #10b981); white-space: nowrap; font-size: 12.5px; border-radius: 6px;">
                   <i class="fa-solid fa-circle-check"></i> Submit Reference & Unlock
                 </button>
               </div>
-              <span style="font-size: 11px; color: #94a3b8; display: block; margin-top: 6px;">
+              <span style="font-size: 10.5px; color: #94a3b8; display: block; margin-top: 4px;">
                 Open your GPay / PhonePe / Paytm transaction history to copy the 12-digit UTR.
               </span>
             </div>
           </div>
 
           <!-- Secondary Razorpay Option (if card or netbanking needed) -->
-          <div style="text-align: center; margin-top: 10px;">
-            <button type="button" class="btn-pay-razorpay-primary" id="btnPayRazorpay" style="background: #1e293b; border: 1px solid #475569; font-size: 13px; padding: 10px 18px;">
+          <div style="text-align: center; margin-top: 8px;">
+            <button type="button" class="btn-pay-razorpay-primary" id="btnPayRazorpay" style="background: #1e293b; border: 1px solid #475569; font-size: 12px; padding: 8px 14px;">
               <i class="fa-regular fa-credit-card"></i> Or Pay with Card / NetBanking via Razorpay
             </button>
           </div>

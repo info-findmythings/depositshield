@@ -1107,24 +1107,40 @@ a {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 999;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 2.5rem 1rem 3.5rem;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-backdrop::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-backdrop::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.modal-backdrop::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
 }
 
 .modal-card {
   background: var(--bg-secondary);
   border: 1px solid var(--card-border);
   border-radius: var(--radius-lg);
-  padding: 2.25rem;
-  max-width: 440px;
+  padding: 1.75rem 1.5rem;
+  max-width: 490px;
   width: 100%;
   position: relative;
+  margin: auto;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   animation: modalPop 0.25s ease-out;
 }
