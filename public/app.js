@@ -715,20 +715,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (tier === 'TIER_2') {
       if (modalTitle) modalTitle.textContent = 'Unlock Notice + Consumer Court & Police Kit';
-      if (modalDesc) modalDesc.textContent = 'Instant download on screen + Automated PDF delivery to your email';
+      if (modalDesc) modalDesc.textContent = 'Instant auto-unlock via Razorpay (UPI, GPay, PhonePe, Cards, NetBanking)';
       if (summaryPlanTitle) summaryPlanTitle.textContent = 'Notice + Consumer Court & Police Kit';
       if (summaryPlanPrice) summaryPlanPrice.textContent = `₹${tier2Price}`;
       if (summaryPlanSubtitle) summaryPlanSubtitle.textContent = 'Includes 2-Page Notice + Form 1 Court Petition + Police Complaint + Affidavit';
       if (modalAmountVal) modalAmountVal.textContent = `₹${tier2Price} Only`;
-      if (btnPayRazorpay) btnPayRazorpay.innerHTML = `<i class="fa-regular fa-credit-card"></i> Or Pay ₹${tier2Price} with Card / NetBanking via Razorpay`;
+      if (btnPayRazorpay) btnPayRazorpay.innerHTML = `<i class="fa-solid fa-lock"></i> Pay ₹${tier2Price} Securely via Razorpay`;
     } else {
       if (modalTitle) modalTitle.textContent = 'Unlock Your Official Legal Demand Notice';
-      if (modalDesc) modalDesc.textContent = 'Instant download on screen + Automated PDF delivery to your email';
+      if (modalDesc) modalDesc.textContent = 'Instant auto-unlock via Razorpay (UPI, GPay, PhonePe, Cards, NetBanking)';
       if (summaryPlanTitle) summaryPlanTitle.textContent = '7-Day Pre-Litigation Legal Demand Notice';
       if (summaryPlanPrice) summaryPlanPrice.textContent = `₹${tier1Price}`;
       if (summaryPlanSubtitle) summaryPlanSubtitle.textContent = 'Includes 2-Page Notice + WhatsApp Format + Speed Post Template';
       if (modalAmountVal) modalAmountVal.textContent = `₹${tier1Price} Only`;
-      if (btnPayRazorpay) btnPayRazorpay.innerHTML = `<i class="fa-regular fa-credit-card"></i> Or Pay ₹${tier1Price} with Card / NetBanking via Razorpay`;
+      if (btnPayRazorpay) btnPayRazorpay.innerHTML = `<i class="fa-solid fa-lock"></i> Pay ₹${tier1Price} Securely via Razorpay`;
     }
   }
 
@@ -940,14 +940,28 @@ document.addEventListener('DOMContentLoaded', () => {
     btnPayRazorpay.addEventListener('click', () => {
       const payAmount = activePaymentTier === 'TIER_2' ? (state.config.tier2PriceInr || 499) : (state.config.priceInr || 99);
 
+      // Validate delivery email address
+      const checkoutEmailInput = document.getElementById('checkoutUserEmail');
+      const enteredEmail = checkoutEmailInput ? checkoutEmailInput.value.trim() : (state.formData.tenantEmail || '');
+      if (!enteredEmail || !enteredEmail.includes('@') || !enteredEmail.includes('.')) {
+        showToast('Please enter a valid email address to receive your official notice PDF.', 'error');
+        if (checkoutEmailInput) {
+          checkoutEmailInput.focus();
+          checkoutEmailInput.style.borderColor = '#f43f5e';
+        }
+        return;
+      }
+      if (checkoutEmailInput) checkoutEmailInput.style.borderColor = '#38bdf8';
+      state.formData.tenantEmail = enteredEmail;
+
       btnPayRazorpay.disabled = true;
-      btnPayRazorpay.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Initializing Razorpay Checkout...';
+      btnPayRazorpay.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Launching Secure Razorpay Checkout...';
 
       // Ensure form data is recorded in MongoDB Atlas first
       fetch('/api/save-notice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(state.formData)
+        body: JSON.stringify({ ...state.formData, tenantEmail: enteredEmail })
       }).catch(() => {});
 
       // Request order creation from server
@@ -960,7 +974,7 @@ document.addEventListener('DOMContentLoaded', () => {
           noticeRefNo: state.formData.refNo,
           customerName: state.formData.tenantName,
           customerPhone: state.formData.tenantPhone,
-          customerEmail: state.formData.tenantEmail
+          customerEmail: enteredEmail
         })
       })
       .then(r => r.json())
@@ -980,10 +994,16 @@ document.addEventListener('DOMContentLoaded', () => {
             amount: orderData.amount,
             currency: orderData.currency || 'INR',
             name: 'DepositShield India',
-            description: activePaymentTier === 'TIER_2' ? 'Consumer Court & Police Escalation Kit' : '7-Day Pre-Litigation Legal Demand Notice',
+            description: activePaymentTier === 'TIER_2' ? 'Notice + Consumer Court & Police Kit' : '7-Day Pre-Litigation Legal Demand Notice',
             order_id: orderData.orderId,
+            modal: {
+              ondismiss: function () {
+                btnPayRazorpay.disabled = false;
+                setPaymentTier(activePaymentTier);
+              }
+            },
             handler: function (response) {
-              btnPayRazorpay.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying Payment...';
+              btnPayRazorpay.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying Payment & Dispatching PDF...';
               fetch('/api/razorpay/verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -993,29 +1013,37 @@ document.addEventListener('DOMContentLoaded', () => {
                   razorpay_signature: response.razorpay_signature,
                   noticeRefNo: state.formData.refNo,
                   tier: activePaymentTier,
-                  amount: payAmount
+                  amount: payAmount,
+                  customerEmail: enteredEmail,
+                  customerPhone: state.formData.tenantPhone
                 })
               })
               .then(res => res.json())
               .then(verifyData => {
                 if (verifyData.verified) {
+                  unlockNoticeUI();
                   if (activePaymentTier === 'TIER_2') {
                     unlockTier2UI();
-                    showToast('Razorpay payment verified! Consumer Court & Police Kit unlocked.');
+                    showToast(`✓ Payment Verified! Official Notice + Kit unlocked & PDF emailed to ${enteredEmail}`);
                   } else {
-                    unlockNoticeUI();
-                    showToast('Razorpay payment verified! Official legal notice unlocked.');
+                    showToast(`✓ Payment Verified! Legal Demand Notice unlocked & PDF emailed to ${enteredEmail}`);
                   }
                   closeRazorpayModal();
                 } else {
-                  showToast('Payment verification failed. Please try again.', 'error');
+                  showToast('Payment verification failed. Please contact support.', 'error');
+                  btnPayRazorpay.disabled = false;
+                  setPaymentTier(activePaymentTier);
                 }
               })
-              .catch(() => showToast('Server verification error', 'error'));
+              .catch(() => {
+                showToast('Server verification error. Please refresh.', 'error');
+                btnPayRazorpay.disabled = false;
+                setPaymentTier(activePaymentTier);
+              });
             },
             prefill: {
               name: state.formData.tenantName,
-              email: state.formData.tenantEmail !== 'N/A' ? state.formData.tenantEmail : '',
+              email: enteredEmail,
               contact: state.formData.tenantPhone
             },
             theme: {

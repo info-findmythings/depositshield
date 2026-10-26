@@ -258,7 +258,7 @@ app.post('/api/razorpay/create-order', async (req, res) => {
 
 app.post('/api/razorpay/verify', async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, noticeRefNo, tier, amount } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, noticeRefNo, tier, amount, customerEmail, customerPhone } = req.body;
     const config = await getSettings();
 
     if (!razorpay_payment_id) {
@@ -277,6 +277,8 @@ app.post('/api/razorpay/verify', async (req, res) => {
       }
     }
 
+    const cleanEmail = customerEmail && customerEmail.includes('@') ? customerEmail.trim() : '';
+
     const paymentRecord = {
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id || '',
@@ -285,6 +287,8 @@ app.post('/api/razorpay/verify', async (req, res) => {
       tier: tier || 'TIER_1',
       gateway: 'RAZORPAY',
       status: 'CONFIRMED',
+      customerEmail: cleanEmail,
+      customerPhone: customerPhone || '',
       verifiedAt: new Date(),
       createdAt: new Date(),
       rawData: req.body
@@ -298,14 +302,16 @@ app.post('/api/razorpay/verify', async (req, res) => {
       memoryPayments.unshift(paymentRecord);
     }
 
-    const localNotice = memoryNotices.find(n => n.refNo === noticeRefNo);
+    let localNotice = memoryNotices.find(n => n.refNo === noticeRefNo);
     if (localNotice) {
       localNotice.isUnlocked = true;
       localNotice.tierUnlocked = tier || 'TIER_1';
       localNotice.unlockedAt = new Date();
+      if (cleanEmail) localNotice.tenantEmail = cleanEmail;
     }
 
     // Record verified payment in MongoDB Atlas if connected
+    let noticeDoc = null;
     if (mongoose.connection.readyState === 1) {
       try {
         await Payment.findOneAndUpdate(
@@ -315,13 +321,17 @@ app.post('/api/razorpay/verify', async (req, res) => {
         );
 
         if (noticeRefNo) {
-          await Notice.findOneAndUpdate(
+          const updateFields = {
+            isUnlocked: true,
+            tierUnlocked: tier || 'TIER_1',
+            unlockedAt: new Date()
+          };
+          if (cleanEmail) updateFields.tenantEmail = cleanEmail;
+
+          noticeDoc = await Notice.findOneAndUpdate(
             { refNo: noticeRefNo },
-            {
-              isUnlocked: true,
-              tierUnlocked: tier || 'TIER_1',
-              unlockedAt: new Date()
-            }
+            updateFields,
+            { new: true }
           );
         }
       } catch (err) {
@@ -329,16 +339,65 @@ app.post('/api/razorpay/verify', async (req, res) => {
       }
     }
 
+    const effectiveNotice = noticeDoc || localNotice;
+
+    // Generate court-ready PDF and dispatch email with PDF attachment
+    let emailSent = false;
+    if (effectiveNotice) {
+      try {
+        const pdfBuffer = await generateNoticePdf(effectiveNotice);
+        const emailResult = await sendCustomerNoticeEmail({
+          notice: effectiveNotice,
+          payment: paymentRecord,
+          pdfBuffer
+        });
+        emailSent = emailResult.success;
+      } catch (pdfErr) {
+        console.error('[RAZORPAY PDF/EMAIL ERROR]:', pdfErr.message);
+      }
+    }
+
+    // Send admin alert asynchronously
+    sendAdminPaymentNotification({
+      payment: paymentRecord,
+      notice: effectiveNotice || { refNo: noticeRefNo, tenantName: 'Customer', amountWithheld: 'N/A' }
+    }).catch(err => console.warn('[RAZORPAY ADMIN ALERT ERROR]:', err.message));
+
     return res.json({
       success: true,
       verified: true,
       status: 'CONFIRMED',
       token: 'DS-RZP-' + razorpay_payment_id,
-      message: 'Razorpay payment verified successfully!'
+      emailSent,
+      message: 'Razorpay payment verified successfully! Legal notice unlocked.'
     });
   } catch (err) {
     console.error('Razorpay verification error:', err.message);
     return res.status(500).json({ success: false, verified: false, message: 'Payment verification failed' });
+  }
+});
+
+// Download Court-Ready PDF directly by Notice Ref No
+app.get('/api/notice/:refNo/pdf', async (req, res) => {
+  try {
+    const { refNo } = req.params;
+    let notice = null;
+    if (mongoose.connection.readyState === 1) {
+      notice = await Notice.findOne({ refNo });
+    }
+    if (!notice) {
+      notice = memoryNotices.find(n => n.refNo === refNo);
+    }
+    if (!notice) {
+      return res.status(404).send('<h3>Notice record not found.</h3>');
+    }
+
+    const pdfBuffer = await generateNoticePdf(notice);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="Legal_Demand_Notice_${String(refNo).replace(/[^a-zA-Z0-9]/g, '_')}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).send('<h3>Error generating PDF: ' + err.message + '</h3>');
   }
 });
 

@@ -37,6 +37,40 @@ async function sendAdminPaymentNotification({ payment, notice, quickApproveUrl }
 
   const transporter = getTransporter();
 
+  const isRazorpay = payment.gateway === 'RAZORPAY' || payment.status === 'CONFIRMED';
+  const appUrl = process.env.APP_URL || 'https://depositshield.onrender.com';
+  const portalUrl = `${appUrl}/portal-aks008`;
+
+  const headerTitle = isRazorpay ? '🎉 New Razorpay Payment Confirmed!' : '🚨 New Payment Reference Received';
+  const badgeText = isRazorpay ? 'CONFIRMED VIA RAZORPAY • PDF EMAILED' : 'Awaiting Admin Verification';
+  const badgeStyle = isRazorpay 
+    ? 'background: #064e3b; color: #34d399; border: 1px solid #059669;' 
+    : 'background: #fbbf24; color: #78350f;';
+
+  const actionButtons = isRazorpay ? `
+      <div class="btn-wrap">
+        <div style="background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 8px; padding: 12px; margin-bottom: 14px; color: #065f46; font-size: 13.5px; font-weight: 600;">
+          ✓ Payment was verified instantly. Official 2-Page Legal Demand Notice PDF was automatically generated and emailed to the customer.
+        </div>
+        <a href="${portalUrl}" class="btn-approve" style="background: #0284c7; box-shadow: 0 4px 10px rgba(2,132,199,0.3);" target="_blank">
+          Open Admin Dashboard
+        </a>
+      </div>
+  ` : `
+      <div class="btn-wrap">
+        <a href="${quickApproveUrl || portalUrl}" class="btn-approve" target="_blank">
+          ✓ Approve Payment & Send Notice PDF
+        </a>
+        <br>
+        <a href="${portalUrl}" class="btn-portal" target="_blank">
+          Or View Full Admin Dashboard
+        </a>
+      </div>
+      <p style="font-size: 11.5px; color: #64748b; text-align: center; margin-top: 14px;">
+        Checking this button will automatically mark the payment as CONFIRMED, unlock the customer's portal, and immediately dispatch the official Legal Notice PDF to their email.
+      </p>
+  `;
+
   const html = `
 <!DOCTYPE html>
 <html>
@@ -47,7 +81,7 @@ async function sendAdminPaymentNotification({ payment, notice, quickApproveUrl }
     .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
     .header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); padding: 24px 30px; text-align: center; color: #ffffff; }
     .header h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
-    .badge { display: inline-block; background: #fbbf24; color: #78350f; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-top: 8px; text-transform: uppercase; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-top: 8px; text-transform: uppercase; }
     .body { padding: 28px 30px; }
     .amount-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; text-align: center; margin-bottom: 24px; }
     .amount-box .amt { font-size: 28px; font-weight: 800; color: #15803d; }
@@ -65,20 +99,24 @@ async function sendAdminPaymentNotification({ payment, notice, quickApproveUrl }
 <body>
   <div class="card">
     <div class="header">
-      <h2>🚨 New Payment Reference Received</h2>
-      <div class="badge">Awaiting Admin Verification</div>
+      <h2>${headerTitle}</h2>
+      <div class="badge" style="${badgeStyle}">${badgeText}</div>
     </div>
     <div class="body">
       <div class="amount-box">
-        <div style="font-size: 12px; color: #166534; font-weight: 600;">CLAIMED PAYMENT AMOUNT</div>
+        <div style="font-size: 12px; color: #166534; font-weight: 600;">RECEIVED PAYMENT AMOUNT</div>
         <div class="amt">₹${payment.amount}</div>
         <div style="font-size: 12px; color: #475569;">Plan: <strong>${payment.tier === 'TIER_2' ? 'Notice + Court & Police Kit (₹499)' : 'Starter Legal Notice (₹99)'}</strong></div>
       </div>
 
       <table class="info-table">
         <tr>
-          <td class="label">UPI UTR / Reference:</td>
+          <td class="label">Payment ID / Gateway Ref:</td>
           <td class="val"><span class="utr-highlight">${payment.paymentId}</span></td>
+        </tr>
+        <tr>
+          <td class="label">Gateway / Method:</td>
+          <td class="val"><strong style="color: #0284c7;">${payment.gateway || 'RAZORPAY'}</strong></td>
         </tr>
         <tr>
           <td class="label">Tenant / Customer:</td>
@@ -106,18 +144,7 @@ async function sendAdminPaymentNotification({ payment, notice, quickApproveUrl }
         </tr>
       </table>
 
-      <div class="btn-wrap">
-        <a href="${quickApproveUrl}" class="btn-approve" target="_blank">
-          ✓ Approve Payment & Send Notice PDF
-        </a>
-        <br>
-        <a href="${quickApproveUrl.split('/api')[0]}/portal-aks008" class="btn-portal" target="_blank">
-          Or View Full Admin Dashboard
-        </a>
-      </div>
-      <p style="font-size: 11.5px; color: #64748b; text-align: center; margin-top: 14px;">
-        Checking this button will automatically mark the payment as CONFIRMED, unlock the customer's portal, and immediately dispatch the official Legal Notice PDF to their email.
-      </p>
+      ${actionButtons}
     </div>
     <div class="footer">
       DepositShield India Real-Time Revenue Engine • System Notification
@@ -130,7 +157,9 @@ async function sendAdminPaymentNotification({ payment, notice, quickApproveUrl }
   if (!transporter) {
     console.log('[EMAIL SIMULATION - ADMIN ALERT]:', {
       to: adminEmail,
-      subject: `🚨 [DepositShield] New Payment Received: ₹${payment.amount} - UTR ${payment.paymentId}`,
+      subject: isRazorpay 
+        ? `🎉 [Razorpay Success] ₹${payment.amount} from ${notice.tenantName || 'Customer'} (${payment.paymentId})`
+        : `🚨 [DepositShield] New Payment Received: ₹${payment.amount} - UTR ${payment.paymentId}`,
       quickApproveUrl
     });
     return { success: true, simulated: true };
@@ -138,10 +167,14 @@ async function sendAdminPaymentNotification({ payment, notice, quickApproveUrl }
 
   try {
     const fromEmail = process.env.FROM_EMAIL || process.env.EMAIL_USER || process.env.SMTP_USER;
+    const subject = isRazorpay
+      ? `🎉 [Razorpay Success] ₹${payment.amount} from ${notice.tenantName || 'Customer'} (${payment.paymentId})`
+      : `🚨 New Payment Submitted: ₹${payment.amount} from ${notice.tenantName || 'Customer'} (UTR: ${payment.paymentId})`;
+
     const info = await transporter.sendMail({
       from: `"DepositShield Alerts" <${fromEmail}>`,
       to: adminEmail,
-      subject: `🚨 New Payment Submitted: ₹${payment.amount} from ${notice.tenantName || 'Customer'} (UTR: ${payment.paymentId})`,
+      subject,
       html
     });
     console.log('[ADMIN ALERT EMAIL SENT]:', info.messageId);
