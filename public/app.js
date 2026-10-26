@@ -601,9 +601,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Page 2 Notice
       document.getElementById('noticeDateP2').textContent = d.currentDate;
-      document.getElementById('noticeWithheldP2').textContent = formattedWithheld;
-      const nUpi = document.getElementById('noticeTenantUpi');
-      if (nUpi) nUpi.textContent = `${d.tenantPhone}@upi (${d.tenantName})`;
+      const nWithheldP2 = document.getElementById('noticeWithheldP2');
+      if (nWithheldP2) nWithheldP2.textContent = formattedWithheld;
+      const nRemit = document.getElementById('noticeWithheldRemitP2');
+      if (nRemit) nRemit.textContent = formattedWithheld;
       document.getElementById('noticePlaceP2').textContent = placeClean;
       document.getElementById('noticeDateSignP2').textContent = d.currentDate;
       document.getElementById('noticeSignNameP2').textContent = d.tenantName;
