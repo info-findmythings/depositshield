@@ -192,7 +192,9 @@ async function sendAdminPaymentNotification({ payment, notice, quickApproveUrl }
 }
 
 /**
- * Send Complete Case Dossier with ALL 4 Court & Police PDFs Attached to Customer and CC Admin
+ * Send Complete Case Dossier to Customer and CC Admin
+ * - If user buys ₹499 Plan (TIER_2): Attaches ALL 4 Court & Police PDFs (Notice + Petition + Complaint + Affidavit)
+ * - If user buys ₹99 Plan (TIER_1): Attaches ONLY the 1 Legal Demand Notice PDF
  */
 async function sendCustomerNoticeEmail({ notice, payment, pdfBuffer }) {
   const customerEmail = payment.customerEmail || notice.tenantEmail;
@@ -205,6 +207,10 @@ async function sendCustomerNoticeEmail({ notice, payment, pdfBuffer }) {
   const formatINR = (amt) => Number(amt || 0).toLocaleString('en-IN');
   const appUrl = process.env.APP_URL || 'https://depositshield.onrender.com';
   const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.EMAIL_USER || 'akashrupareliya321@gmail.com';
+
+  const isTier2 = (payment.tier === 'TIER_2') || 
+                  (Number(payment.amount) >= 400) || 
+                  (notice.tierUnlocked === 'TIER_2');
 
   const cleanTenant = (notice.tenantName || 'Tenant').replace(/[^a-zA-Z0-9]/g, '_');
   const cleanLandlord = (notice.landlordName || 'Landlord').replace(/[^a-zA-Z0-9]/g, '_');
@@ -220,27 +226,12 @@ async function sendCustomerNoticeEmail({ notice, payment, pdfBuffer }) {
   const downloadPoliceUrl = `${appUrl}/api/notice/${notice.refNo}/police-complaint.pdf`;
   const downloadAffidavitUrl = `${appUrl}/api/notice/${notice.refNo}/affidavit.pdf`;
 
-  // Generate ALL 4 official documents concurrently so user has every single file in their email
-  let [noticeBuf, courtPetitionBuf, policeComplaintBuf, affidavitBuf] = await Promise.all([
-    pdfBuffer ? Promise.resolve(pdfBuffer) : generateNoticePdf(notice).catch(err => {
-      console.warn('[NOTICE PDF GEN ERROR]:', err.message);
-      return null;
-    }),
-    generateCourtPetitionPdf(notice).catch(err => {
-      console.warn('[COURT PETITION PDF GEN ERROR]:', err.message);
-      return null;
-    }),
-    generatePoliceComplaintPdf(notice).catch(err => {
-      console.warn('[POLICE COMPLAINT PDF GEN ERROR]:', err.message);
-      return null;
-    }),
-    generateAffidavitPdf(notice).catch(err => {
-      console.warn('[AFFIDAVIT PDF GEN ERROR]:', err.message);
-      return null;
-    })
-  ]);
+  // Always generate Notice PDF
+  const noticeBuf = pdfBuffer || await generateNoticePdf(notice).catch(err => {
+    console.warn('[NOTICE PDF GEN ERROR]:', err.message);
+    return null;
+  });
 
-  // Build attachments list
   const attachments = [];
   if (noticeBuf) {
     attachments.push({
@@ -249,29 +240,161 @@ async function sendCustomerNoticeEmail({ notice, payment, pdfBuffer }) {
       contentType: 'application/pdf'
     });
   }
-  if (courtPetitionBuf) {
-    attachments.push({
-      filename: courtPetitionFilename,
-      content: courtPetitionBuf,
-      contentType: 'application/pdf'
-    });
-  }
-  if (policeComplaintBuf) {
-    attachments.push({
-      filename: policeComplaintFilename,
-      content: policeComplaintBuf,
-      contentType: 'application/pdf'
-    });
-  }
-  if (affidavitBuf) {
-    attachments.push({
-      filename: affidavitFilename,
-      content: affidavitBuf,
-      contentType: 'application/pdf'
-    });
+
+  // IF USER BOUGHT ₹499 PLAN (TIER_2): Generate and attach ALL 3 remaining Court & Police PDFs!
+  let courtPetitionBuf = null;
+  let policeComplaintBuf = null;
+  let affidavitBuf = null;
+
+  if (isTier2) {
+    [courtPetitionBuf, policeComplaintBuf, affidavitBuf] = await Promise.all([
+      generateCourtPetitionPdf(notice).catch(err => {
+        console.warn('[COURT PETITION PDF GEN ERROR]:', err.message);
+        return null;
+      }),
+      generatePoliceComplaintPdf(notice).catch(err => {
+        console.warn('[POLICE COMPLAINT PDF GEN ERROR]:', err.message);
+        return null;
+      }),
+      generateAffidavitPdf(notice).catch(err => {
+        console.warn('[AFFIDAVIT PDF GEN ERROR]:', err.message);
+        return null;
+      })
+    ]);
+
+    if (courtPetitionBuf) {
+      attachments.push({
+        filename: courtPetitionFilename,
+        content: courtPetitionBuf,
+        contentType: 'application/pdf'
+      });
+    }
+    if (policeComplaintBuf) {
+      attachments.push({
+        filename: policeComplaintFilename,
+        content: policeComplaintBuf,
+        contentType: 'application/pdf'
+      });
+    }
+    if (affidavitBuf) {
+      attachments.push({
+        filename: affidavitFilename,
+        content: affidavitBuf,
+        contentType: 'application/pdf'
+      });
+    }
   }
 
   const dateIssuedStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Custom UI content based on Plan (₹499 Tier 2 vs ₹99 Tier 1)
+  const headerSubtitle = isTier2 
+    ? 'Official Recovery Dossier • ₹499 Full Court & Police Escalation Suite' 
+    : 'Official Pre-Litigation Legal Demand Notice • ₹99 Starter Plan';
+
+  const confirmPillText = isTier2
+    ? '✓ ₹499 PLAN CONFIRMED • ALL 4 COURT & POLICE PDFS ATTACHED'
+    : '✓ ₹99 PLAN CONFIRMED • OFFICIAL 2-PAGE LEGAL DEMAND NOTICE ATTACHED';
+
+  const introText = isTier2
+    ? `Your payment of <strong>₹${payment.amount}</strong> for the <strong>Full Court & Police Escalation Suite (₹499 Plan)</strong> has been successfully verified.<br><br><strong>ALL 4 OFFICIAL GOVERNMENT-APPROVED COURT & POLICE ACTION DOCUMENTS ARE ATTACHED DIRECTLY TO THIS EMAIL AS READY-TO-PRINT PDFS.</strong> Even if you did not download them on our website, you have everything right here in your inbox to enforce your legal rights and recover your withheld caution deposit of <strong>₹${formatINR(notice.amountWithheld)}/-</strong>.`
+    : `Your payment of <strong>₹${payment.amount}</strong> for the <strong>Starter Legal Demand Notice (₹99 Plan)</strong> has been successfully verified.<br><br><strong>YOUR OFFICIAL COURT-ADMISSIBLE 2-PAGE PRE-LITIGATION LEGAL DEMAND NOTICE IS ATTACHED DIRECTLY TO THIS EMAIL (${noticeFilename}).</strong> Even if you did not download it on our website, you have your complete legal notice right here in your inbox ready to serve upon your landlord.`;
+
+  const attachedDocsHtml = isTier2 ? `
+      <!-- 4 Attached Documents Section for ₹499 Plan -->
+      <div class="attachments-card">
+        <h3>📎 4 OFFICIAL LEGAL DOCUMENTS ATTACHED DIRECTLY TO THIS EMAIL</h3>
+        
+        <!-- Doc 1 -->
+        <div class="doc-item">
+          <div class="doc-title">
+            <span>1. Formal Pre-Litigation Legal Demand Notice</span>
+            <span class="doc-badge badge-notice">Ready to Serve (Day 1)</span>
+          </div>
+          <div class="doc-desc">
+            Official 2-page court-admissible notice under Sec 106 & 108 of Transfer of Property Act 1882 read with Sec 73 Indian Contract Act 1872. Sets a mandatory 7-day peremptory refund deadline before court action.
+          </div>
+          <div>
+            <span class="doc-file">📎 Attached: ${noticeFilename}</span>
+            <a href="${downloadNoticeUrl}" class="btn-doc-download" target="_blank">📥 Web Download Link</a>
+          </div>
+        </div>
+
+        <!-- Doc 2 -->
+        <div class="doc-item">
+          <div class="doc-title">
+            <span>2. Form 1 Consumer Court Petition (e-Jagriti / DCDRC)</span>
+            <span class="doc-badge badge-court">Use on Day 8</span>
+          </div>
+          <div class="doc-desc">
+            Official 2-page Party-in-Person petition under Section 35 of Consumer Protection Act 2019 for the District Consumer Disputes Redressal Commission & e-Jagriti (edaakhil.nic.in). Claims principal deposit + 18% compound interest + ₹50,000 compensation.
+          </div>
+          <div>
+            <span class="doc-file">📎 Attached: ${courtPetitionFilename}</span>
+            <a href="${downloadPetitionUrl}" class="btn-doc-download" target="_blank">📥 Web Download Link</a>
+          </div>
+        </div>
+
+        <!-- Doc 3 -->
+        <div class="doc-item">
+          <div class="doc-title">
+            <span>3. Police Station Criminal Complaint (BNS 316 / IPC 405)</span>
+            <span class="doc-badge badge-police">Emergency Criminal Redress</span>
+          </div>
+          <div class="doc-desc">
+            Formal 1-page criminal complaint letter under Section 316 of Bharatiya Nyaya Sanhita, 2023 (formerly Section 405/406 IPC) for Criminal Breach of Trust. Ready to file with Station House Officer (SHO) or state police citizen portal.
+          </div>
+          <div>
+            <span class="doc-file">📎 Attached: ${policeComplaintFilename}</span>
+            <a href="${downloadPoliceUrl}" class="btn-doc-download" target="_blank">📥 Web Download Link</a>
+          </div>
+        </div>
+
+        <!-- Doc 4 -->
+        <div class="doc-item">
+          <div class="doc-title">
+            <span>4. Sworn Notary Verification Affidavit</span>
+            <span class="doc-badge badge-affidavit">Affidavit for Court</span>
+          </div>
+          <div class="doc-desc">
+            Official 1-page sworn verification affidavit under Order XIX CPC & Section 297 CrPC / BNSS to accompany your Consumer Court Petition. Ready to print on ₹20/50 stamp paper and notarize with any local Notary Public.
+          </div>
+          <div>
+            <span class="doc-file">📎 Attached: ${affidavitFilename}</span>
+            <a href="${downloadAffidavitUrl}" class="btn-doc-download" target="_blank">📥 Web Download Link</a>
+          </div>
+        </div>
+      </div>
+  ` : `
+      <!-- Single Attached Notice for ₹99 Plan -->
+      <div class="attachments-card">
+        <h3>📎 1 OFFICIAL LEGAL DOCUMENT ATTACHED TO THIS EMAIL</h3>
+        
+        <div class="doc-item">
+          <div class="doc-title">
+            <span>1. Formal Pre-Litigation Legal Demand Notice</span>
+            <span class="doc-badge badge-notice">Ready to Serve (Day 1)</span>
+          </div>
+          <div class="doc-desc">
+            Official 2-page court-admissible notice under Sec 106 & 108 of Transfer of Property Act 1882 read with Sec 73 Indian Contract Act 1872. Sets a mandatory 7-day peremptory refund deadline before court action.
+          </div>
+          <div>
+            <span class="doc-file">📎 Attached: ${noticeFilename}</span>
+            <a href="${downloadNoticeUrl}" class="btn-doc-download" target="_blank">📥 Web Download Link</a>
+          </div>
+        </div>
+
+        <!-- Upgrade Callout -->
+        <div style="background: rgba(2, 132, 199, 0.15); border: 1.5px dashed #0284c7; border-radius: 8px; padding: 14px; margin-top: 14px; font-size: 12.5px; color: #bae6fd; line-height: 1.5;">
+          <strong>🔒 Need the Consumer Court Petition & Police Complaint Kit?</strong><br>
+          If your landlord does not refund within the 7-day statutory deadline, you can unlock the full <strong>₹499 Tier 2 Escalation Suite</strong> anytime directly on your portal to get your e-Jagriti Court Petition, Notary Affidavit, and Police Criminal Complaint (Sec 316 BNS).
+        </div>
+      </div>
+  `;
+
+  const emailSubject = isTier2
+    ? `⚖️ [₹499 Full Escalation Kit] Official Legal Notice & 4 Court/Police Documents Attached - ${notice.tenantName} vs ${notice.landlordName} [Ref: ${notice.refNo}]`
+    : `⚖️ [Starter Plan] Official Legal Demand Notice Attached - ${notice.tenantName} vs ${notice.landlordName} [Ref: ${notice.refNo}]`;
 
   const html = `
 <!DOCTYPE html>
@@ -339,89 +462,25 @@ async function sendCustomerNoticeEmail({ notice, payment, pdfBuffer }) {
     <div class="header">
       <div class="logo-badge">⚖️</div>
       <h1>DepositShield India</h1>
-      <p>Official Recovery Dossier • Pre-Litigation Legal Notice & Escalation Kit</p>
+      <p>${headerSubtitle}</p>
     </div>
     <div class="body">
       <div class="confirm-pill">
-        ✓ PAYMENT CONFIRMED • 4 COURT & POLICE FORMS ATTACHED DIRECTLY TO THIS EMAIL
+        ${confirmPillText}
       </div>
 
       <div class="intro">
         Dear <strong>${notice.tenantName}</strong>,<br><br>
-        Your payment of <strong>₹${payment.amount}</strong> (Payment Ref: <code>${payment.paymentId}</code>) has been successfully verified.<br><br>
-        <strong>Your entire legal case toolkit is attached directly to this email as 4 PDF files.</strong> Even if you did not download them on our website, you have everything right here in your inbox to enforce your legal rights and recover your withheld caution deposit of <strong>₹${formatINR(notice.amountWithheld)}/-</strong>.
+        ${introText}
       </div>
 
       <!-- Safe Search Box -->
       <div class="search-tip-box">
         💡 <strong>SAVE OR STAR THIS EMAIL FOR FUTURE ACCESS:</strong><br>
-        If you ever need these documents or escalation steps in the future, simply open your email app and search for <strong>DepositShield</strong> or <strong>${notice.refNo}</strong>. All 4 official court/police PDF forms and your case timeline are permanently preserved right here.
+        If you ever need these documents or escalation steps in the future, simply open your email app and search for <strong>DepositShield</strong> or <strong>${notice.refNo}</strong>. All your statutory documents and recovery action plan are permanently preserved right here.
       </div>
 
-      <!-- 4 Attached Documents Section -->
-      <div class="attachments-card">
-        <h3>📎 4 OFFICIAL LEGAL DOCUMENTS ATTACHED TO THIS EMAIL</h3>
-        
-        <!-- Doc 1 -->
-        <div class="doc-item">
-          <div class="doc-title">
-            <span>1. Formal Pre-Litigation Legal Demand Notice</span>
-            <span class="doc-badge badge-notice">Ready to Serve (Day 1)</span>
-          </div>
-          <div class="doc-desc">
-            Official 2-page court-admissible notice under Sec 106 & 108 of Transfer of Property Act 1882 read with Sec 73 Indian Contract Act 1872. Sets a mandatory 7-day peremptory refund deadline before court action.
-          </div>
-          <div>
-            <span class="doc-file">📎 Attached: ${noticeFilename}</span>
-            <a href="${downloadNoticeUrl}" class="btn-doc-download" target="_blank">📥 Web Download Link</a>
-          </div>
-        </div>
-
-        <!-- Doc 2 -->
-        <div class="doc-item">
-          <div class="doc-title">
-            <span>2. Form 1 Consumer Court Petition (e-Jagriti / DCDRC)</span>
-            <span class="doc-badge badge-court">Use on Day 8</span>
-          </div>
-          <div class="doc-desc">
-            Official 2-page Party-in-Person petition under Section 35 of Consumer Protection Act 2019 for the District Consumer Disputes Redressal Commission & e-Jagriti (edaakhil.nic.in). Claims principal deposit + 18% compound interest + ₹50,000 compensation.
-          </div>
-          <div>
-            <span class="doc-file">📎 Attached: ${courtPetitionFilename}</span>
-            <a href="${downloadPetitionUrl}" class="btn-doc-download" target="_blank">📥 Web Download Link</a>
-          </div>
-        </div>
-
-        <!-- Doc 3 -->
-        <div class="doc-item">
-          <div class="doc-title">
-            <span>3. Police Station Criminal Complaint (BNS 316 / IPC 405)</span>
-            <span class="doc-badge badge-police">Emergency Criminal Redress</span>
-          </div>
-          <div class="doc-desc">
-            Formal 1-page criminal complaint letter under Section 316 of Bharatiya Nyaya Sanhita, 2023 (formerly Section 405/406 IPC) for Criminal Breach of Trust. Ready to file with Station House Officer (SHO) or state police cyber/citizen portal.
-          </div>
-          <div>
-            <span class="doc-file">📎 Attached: ${policeComplaintFilename}</span>
-            <a href="${downloadPoliceUrl}" class="btn-doc-download" target="_blank">📥 Web Download Link</a>
-          </div>
-        </div>
-
-        <!-- Doc 4 -->
-        <div class="doc-item">
-          <div class="doc-title">
-            <span>4. Sworn Notary Verification Affidavit</span>
-            <span class="doc-badge badge-affidavit">Affidavit for Court</span>
-          </div>
-          <div class="doc-desc">
-            Official 1-page sworn verification affidavit under Order XIX CPC / Sec 297 CrPC to accompany your Consumer Court Petition. Ready to print on ₹20/50 stamp paper and notarize with any local Notary Public.
-          </div>
-          <div>
-            <span class="doc-file">📎 Attached: ${affidavitFilename}</span>
-            <a href="${downloadAffidavitUrl}" class="btn-doc-download" target="_blank">📥 Web Download Link</a>
-          </div>
-        </div>
-      </div>
+      ${attachedDocsHtml}
 
       <!-- Case Reference Dossier -->
       <div class="dossier-card">
@@ -433,7 +492,11 @@ async function sendCustomerNoticeEmail({ notice, payment, pdfBuffer }) {
           </tr>
           <tr>
             <td class="lbl">Payment Reference ID:</td>
-            <td class="val"><code>${payment.paymentId}</code> (Razorpay Verified)</td>
+            <td class="val"><code>${payment.paymentId}</code> (${payment.gateway || 'RAZORPAY'} Verified)</td>
+          </tr>
+          <tr>
+            <td class="lbl">Purchased Plan:</td>
+            <td class="val"><strong>${isTier2 ? '₹499 Full Court & Police Escalation Suite' : '₹99 Starter Legal Demand Notice'}</strong></td>
           </tr>
           <tr>
             <td class="lbl">Date of Issuance:</td>
@@ -483,7 +546,7 @@ async function sendCustomerNoticeEmail({ notice, payment, pdfBuffer }) {
       <div class="step-box">
         <div class="step-title">📱 STEP 2: Instant Service via WhatsApp & Email (Day 1)</div>
         <p class="step-desc">
-          Send the attached <code>${noticeFilename}</code> directly to your landlord's WhatsApp and Email along with the following copy-paste formal message. Under Section 65B of the Indian Evidence Act and Supreme Court precedents (<em>C.C. Alavi Haji</em>), double/blue delivery ticks constitute valid primary proof of notice:
+          Send the attached <code>${noticeFilename}</code> directly to your landlord's WhatsApp and Email along with the following copy-paste formal message. Under Section 63 of Bharatiya Sakshya Adhiniyam, 2023 (formerly Section 65B Evidence Act) and Supreme Court precedent (<em>C.C. Alavi Haji</em>), double/blue delivery ticks constitute valid primary proof of notice:
         </p>
         <div class="copy-box">FORMAL LEGAL DEMAND NOTICE: Ref No. ${notice.refNo}
 To: Mr./Ms. ${notice.landlordName}
@@ -513,16 +576,16 @@ Please find attached formal Pre-Litigation Legal Demand Notice regarding the unl
       <div class="step-box court">
         <div class="step-title">🏛️ STEP 5: Consumer Court Escalation on e-Jagriti (Day 8 Onward)</div>
         <p class="step-desc">
-          If the 7-day window expires without full refund, you do NOT need to hire an expensive lawyer. You have the right to file as Party-in-Person under Section 35 of the Consumer Protection Act, 2019:
+          If the 7-day window expires without full refund, you do NOT need to hire an expensive lawyer. You have the statutory right to file as Party-in-Person under Section 35 of the Consumer Protection Act, 2019:
           <br><br>
-          <strong>A. National Consumer Helpline (Free & Immediate):</strong> Call toll-free <strong>1915</strong> or log onto <a href="https://consumerhelpline.gov.in" target="_blank" style="color: #0284c7; font-weight: 700;">consumerhelpline.gov.in</a>. An official government mediator contacts the landlord directly.
+          <strong>A. National Consumer Helpline (Free & Immediate):</strong> Call toll-free <strong>1915</strong> or log onto <a href="https://consumerhelpline.gov.in" target="_blank" style="color: #0284c7; font-weight: 700;">consumerhelpline.gov.in</a>. An official government officer contacts the landlord directly.
           <br><br>
-          <strong>B. File Attached Form 1 Petition on e-Jagriti:</strong> Go to <a href="https://e-jagriti.gov.in" target="_blank" style="color: #0284c7; font-weight: 700;">e-jagriti.gov.in</a> (or submit at your local District Consumer Commission). Upload:
-          <br>&bull; Attached Petition: <code>${courtPetitionFilename}</code>
-          <br>&bull; Attached Notarized Affidavit: <code>${affidavitFilename}</code> (notarized on ₹20/50 stamp paper)
+          <strong>B. File on Government e-Jagriti Portal:</strong> Go to <a href="https://e-jagriti.gov.in" target="_blank" style="color: #0284c7; font-weight: 700;">e-jagriti.gov.in</a> (or submit at your local District Commission). Upload:
+          <br>&bull; Form 1 Petition: <code>${courtPetitionFilename}</code>
+          <br>&bull; Notarized Affidavit: <code>${affidavitFilename}</code> (notarized on ₹20/50 stamp paper)
           <br>&bull; Exhibits: Tenancy Agreement copy, Bank statement showing deposit payment, WhatsApp chats & Speed Post delivery report.
           <br><br>
-          <strong>Your Formal Court Claims:</strong>
+          <strong>Your Statutory Court Claims:</strong>
           <br>&bull; Refund of principal withheld deposit: <strong>₹${formatINR(notice.amountWithheld)}/-</strong>
           <br>&bull; Statutory penal interest: <strong>18% per annum</strong> from vacating date
           <br>&bull; Mental harassment compensation: <strong>₹50,000/- to ₹1,00,000/-</strong>
@@ -538,7 +601,7 @@ Please find attached formal Pre-Litigation Legal Demand Notice regarding the unl
           <br><br>
           Print the attached <code>${policeComplaintFilename}</code>. Submit it to the Station House Officer (SHO) of the local police station jurisdiction where the rental property is situated, or file online via your State Police Citizen Portal under <strong>Section 316 of Bharatiya Nyaya Sanhita, 2023 (formerly IPC Section 405/406)</strong>.
           <br><br>
-          Under settled law, caution deposits are held strictly in trust and remain the tenant's property; converting or refusing to refund trust funds constitutes Criminal Breach of Trust. The police notice/summons to the landlord almost invariably compels immediate refund.
+          Under settled law, caution deposits are held strictly in fiduciary trust and remain the tenant's property; converting or refusing to refund trust funds constitutes Criminal Breach of Trust. The police notice/summons to the landlord almost invariably compels immediate refund.
         </p>
       </div>
 
@@ -565,11 +628,13 @@ Please find attached formal Pre-Litigation Legal Demand Notice regarding the unl
     console.log('[EMAIL SIMULATION - CUSTOMER DELIVERY]:', {
       to: customerEmail,
       cc: adminEmail,
-      subject: `⚖️ Official Legal Notice & 4 Court/Police Forms Attached - ${notice.tenantName} vs ${notice.landlordName} [Ref: ${notice.refNo}]`,
+      isTier2,
+      plan: isTier2 ? 'TIER_2 (₹499)' : 'TIER_1 (₹99)',
+      subject: emailSubject,
       attachmentsCount: attachments.length,
       attachmentFilenames: attachments.map(a => a.filename)
     });
-    return { success: true, simulated: true, attachmentsCount: attachments.length };
+    return { success: true, simulated: true, isTier2, attachmentsCount: attachments.length };
   }
 
   try {
@@ -578,20 +643,21 @@ Please find attached formal Pre-Litigation Legal Demand Notice regarding the unl
     const mailOptions = {
       from: `"${fromName}" <${fromEmail}>`,
       to: customerEmail,
-      cc: adminEmail, // User email AND admin email both receive the complete reference copy with all 4 PDFs!
-      subject: `⚖️ Official Legal Notice & 4 Court/Police Documents Attached - ${notice.tenantName} vs ${notice.landlordName} [Ref: ${notice.refNo}]`,
+      cc: adminEmail,
+      subject: emailSubject,
       html,
       attachments
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('[CUSTOMER EMAIL SENT WITH 4 PDF ATTACHMENTS]:', info.messageId, 'to', customerEmail, 'and CC to', adminEmail);
-    return { success: true, messageId: info.messageId, attachmentsCount: attachments.length };
+    console.log(`[CUSTOMER EMAIL SENT - ${isTier2 ? 'TIER 2 (4 ATTACHMENTS)' : 'TIER 1 (1 ATTACHMENT)'}]:`, info.messageId, 'to', customerEmail, 'and CC to', adminEmail);
+    return { success: true, messageId: info.messageId, isTier2, attachmentsCount: attachments.length };
   } catch (err) {
     console.error('[CUSTOMER EMAIL ERROR]:', err.message);
     return { success: false, error: err.message };
   }
 }
+
 
 
 module.exports = {

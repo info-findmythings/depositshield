@@ -284,12 +284,15 @@ app.post('/api/razorpay/verify', async (req, res) => {
 
     const cleanEmail = customerEmail && customerEmail.includes('@') ? customerEmail.trim() : '';
 
+    const numAmount = Number(amount) || 99;
+    const effectiveTier = (tier === 'TIER_2' || numAmount >= 400) ? 'TIER_2' : 'TIER_1';
+
     const paymentRecord = {
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id || '',
       noticeRefNo: noticeRefNo || 'UNKNOWN',
-      amount: Number(amount) || 99,
-      tier: tier || 'TIER_1',
+      amount: numAmount,
+      tier: effectiveTier,
       gateway: 'RAZORPAY',
       status: 'CONFIRMED',
       customerEmail: cleanEmail,
@@ -310,7 +313,7 @@ app.post('/api/razorpay/verify', async (req, res) => {
     let localNotice = memoryNotices.find(n => n.refNo === noticeRefNo);
     if (localNotice) {
       localNotice.isUnlocked = true;
-      localNotice.tierUnlocked = tier || 'TIER_1';
+      localNotice.tierUnlocked = effectiveTier;
       localNotice.unlockedAt = new Date();
       if (cleanEmail) localNotice.tenantEmail = cleanEmail;
     }
@@ -328,7 +331,7 @@ app.post('/api/razorpay/verify', async (req, res) => {
         if (noticeRefNo) {
           const updateFields = {
             isUnlocked: true,
-            tierUnlocked: tier || 'TIER_1',
+            tierUnlocked: effectiveTier,
             unlockedAt: new Date()
           };
           if (cleanEmail) updateFields.tenantEmail = cleanEmail;
@@ -339,6 +342,7 @@ app.post('/api/razorpay/verify', async (req, res) => {
             { new: true }
           );
         }
+
       } catch (err) {
         console.warn('Payment Atlas sync pending:', err.message);
       }
@@ -651,20 +655,25 @@ app.post('/api/verify-payment', async (req, res) => {
       );
     }
 
+    const numAmount = Number(amount) || 99;
+    const effectiveTier = (tier === 'TIER_2' || numAmount >= 400) ? 'TIER_2' : 'TIER_1';
+
     // CASE 2: Payment is PENDING - Create or update Payment record
     let paymentRecord = existing;
     if (!paymentRecord) {
       paymentRecord = await Payment.create({
         paymentId: cleanUtr,
         noticeRefNo: noticeId || 'UNKNOWN',
-        amount: Number(amount) || 99,
-        tier: tier || 'TIER_1',
+        amount: numAmount,
+        tier: effectiveTier,
         gateway: 'UPI_DIRECT',
         status: 'PENDING',
         customerPhone: customerPhone ? String(customerPhone).trim() : (noticeDoc?.tenantPhone || ''),
         customerEmail: customerEmail ? String(customerEmail).trim() : (noticeDoc?.tenantEmail || '')
       });
     } else {
+      paymentRecord.amount = numAmount;
+      paymentRecord.tier = effectiveTier;
       if (customerEmail && !paymentRecord.customerEmail) {
         paymentRecord.customerEmail = customerEmail.trim();
       }
@@ -745,9 +754,10 @@ app.get('/api/admin/quick-approve', async (req, res) => {
     let notice = null;
     const ref = payment.noticeRefNo;
     if (ref && ref !== 'UNKNOWN') {
+      const effectiveTier = (payment.tier === 'TIER_2' || Number(payment.amount) >= 400) ? 'TIER_2' : 'TIER_1';
       notice = await Notice.findOneAndUpdate(
         { refNo: ref },
-        { isUnlocked: true, tierUnlocked: payment.tier || 'TIER_1', unlockedAt: new Date() },
+        { isUnlocked: true, tierUnlocked: effectiveTier, unlockedAt: new Date() },
         { new: true }
       );
     }
@@ -1103,9 +1113,10 @@ app.post('/api/admin/manual-approve', authenticateAdmin, async (req, res) => {
     const ref = noticeRefNo || payment.noticeRefNo;
     let notice = null;
     if (ref && ref !== 'UNKNOWN') {
+      const effectiveTier = (payment.tier === 'TIER_2' || Number(payment.amount) >= 400) ? 'TIER_2' : 'TIER_1';
       notice = await Notice.findOneAndUpdate(
         { refNo: ref },
-        { isUnlocked: true, tierUnlocked: payment.tier || 'TIER_1', unlockedAt: new Date() },
+        { isUnlocked: true, tierUnlocked: effectiveTier, unlockedAt: new Date() },
         { new: true }
       );
     }
