@@ -1458,6 +1458,51 @@ ${d.tenantName}`;
     });
   });
 
+  // ==========================================================================
+  // Live Activity Social Proof Ticker
+  // ==========================================================================
+  function initLiveActivityTicker() {
+    const toast = document.getElementById('liveActivityToast');
+    const toastContent = document.getElementById('liveActivityToastContent');
+    if (!toast || !toastContent) return;
+
+    const activities = [
+      { location: 'HSR Layout, Bengaluru', amount: '₹62,000', action: 'recovered', time: 'Notice delivered • 4 mins ago' },
+      { location: 'Kharadi, Pune', amount: '₹48,000', action: 'served notice for', time: 'Legal draft generated • 11 mins ago' },
+      { location: 'Whitefield, Bengaluru', amount: '₹95,000', action: 'recovered', time: 'Deposit refunded via UPI • 18 mins ago' },
+      { location: 'Andheri West, Mumbai', amount: '₹85,000', action: 'served notice for', time: 'Pre-litigation draft sent • 24 mins ago' },
+      { location: 'Gachibowli, Hyderabad', amount: '₹40,000', action: 'disputed unlawful painting fee of', time: 'Full refund received • 32 mins ago' },
+      { location: 'DLF Phase 3, Gurugram', amount: '₹75,000', action: 'recovered', time: 'Landlord settled • 45 mins ago' }
+    ];
+
+    let currentIndex = 0;
+
+    function showNextActivity() {
+      const act = activities[currentIndex];
+      toastContent.innerHTML = `<strong>Tenant in ${act.location}</strong> ${act.action} <strong>${act.amount}</strong><span class="time">${act.time}</span>`;
+      toast.classList.add('visible');
+
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 5500);
+
+      currentIndex = (currentIndex + 1) % activities.length;
+    }
+
+    // Allow user to dismiss by tapping
+    toast.addEventListener('click', () => {
+      toast.classList.remove('visible');
+    });
+
+    // Initial appearance after 3.5s, then every 16s
+    setTimeout(() => {
+      showNextActivity();
+      setInterval(showNextActivity, 16000);
+    }, 3500);
+  }
+
+  initLiveActivityTicker();
+
   // Toast Helper
   function showToast(message, type = 'success') {
     const toast = document.getElementById('toastNotification');
