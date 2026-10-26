@@ -14,7 +14,12 @@ const Payment = require('./models/Payment');
 const Settings = require('./models/Settings');
 const Inquiry = require('./models/Inquiry');
 const { sendAdminPaymentNotification, sendCustomerNoticeEmail } = require('./services/emailService');
-const { generateNoticePdf } = require('./services/pdfService');
+const {
+  generateNoticePdf,
+  generateCourtPetitionPdf,
+  generatePoliceComplaintPdf,
+  generateAffidavitPdf
+} = require('./services/pdfService');
 
 // Set non-blocking buffer timeout for MongoDB Atlas
 mongoose.set('bufferTimeoutMS', 2500);
@@ -377,29 +382,94 @@ app.post('/api/razorpay/verify', async (req, res) => {
   }
 });
 
-// Download Court-Ready PDF directly by Notice Ref No
+// Helper: Find notice in MongoDB Atlas or in-memory fallback
+async function findNoticeRecord(refNo) {
+  let notice = null;
+  if (mongoose.connection.readyState === 1) {
+    try {
+      notice = await Notice.findOne({ refNo });
+    } catch (e) {
+      console.warn('Atlas notice lookup error:', e.message);
+    }
+  }
+  if (!notice) {
+    notice = memoryNotices.find(n => n.refNo === refNo);
+  }
+  return notice;
+}
+
+// 1. Download Formal Pre-Litigation Legal Demand Notice PDF
 app.get('/api/notice/:refNo/pdf', async (req, res) => {
   try {
     const { refNo } = req.params;
-    let notice = null;
-    if (mongoose.connection.readyState === 1) {
-      notice = await Notice.findOne({ refNo });
-    }
-    if (!notice) {
-      notice = memoryNotices.find(n => n.refNo === refNo);
-    }
+    const notice = await findNoticeRecord(refNo);
     if (!notice) {
       return res.status(404).send('<h3>Notice record not found.</h3>');
     }
 
     const pdfBuffer = await generateNoticePdf(notice);
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="Legal_Demand_Notice_${String(refNo).replace(/[^a-zA-Z0-9]/g, '_')}.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="1_Legal_Demand_Notice_${String(refNo).replace(/[^a-zA-Z0-9]/g, '_')}.pdf"`);
     return res.send(pdfBuffer);
   } catch (err) {
-    return res.status(500).send('<h3>Error generating PDF: ' + err.message + '</h3>');
+    return res.status(500).send('<h3>Error generating Notice PDF: ' + err.message + '</h3>');
   }
 });
+
+// 2. Download Form 1 Consumer Court Petition PDF (e-Jagriti / DCDRC)
+app.get('/api/notice/:refNo/court-petition.pdf', async (req, res) => {
+  try {
+    const { refNo } = req.params;
+    const notice = await findNoticeRecord(refNo);
+    if (!notice) {
+      return res.status(404).send('<h3>Notice record not found.</h3>');
+    }
+
+    const pdfBuffer = await generateCourtPetitionPdf(notice);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="2_Consumer_Court_Petition_Form1_${String(refNo).replace(/[^a-zA-Z0-9]/g, '_')}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).send('<h3>Error generating Court Petition PDF: ' + err.message + '</h3>');
+  }
+});
+
+// 3. Download Police Criminal Complaint PDF (Section 316 BNS / 405 IPC)
+app.get('/api/notice/:refNo/police-complaint.pdf', async (req, res) => {
+  try {
+    const { refNo } = req.params;
+    const notice = await findNoticeRecord(refNo);
+    if (!notice) {
+      return res.status(404).send('<h3>Notice record not found.</h3>');
+    }
+
+    const pdfBuffer = await generatePoliceComplaintPdf(notice);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="3_Police_Criminal_Complaint_Sec316BNS_${String(refNo).replace(/[^a-zA-Z0-9]/g, '_')}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).send('<h3>Error generating Police Complaint PDF: ' + err.message + '</h3>');
+  }
+});
+
+// 4. Download Sworn Notary Verification Affidavit PDF
+app.get('/api/notice/:refNo/affidavit.pdf', async (req, res) => {
+  try {
+    const { refNo } = req.params;
+    const notice = await findNoticeRecord(refNo);
+    if (!notice) {
+      return res.status(404).send('<h3>Notice record not found.</h3>');
+    }
+
+    const pdfBuffer = await generateAffidavitPdf(notice);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="4_Notary_Verification_Affidavit_${String(refNo).replace(/[^a-zA-Z0-9]/g, '_')}.pdf"`);
+    return res.send(pdfBuffer);
+  } catch (err) {
+    return res.status(500).send('<h3>Error generating Notary Affidavit PDF: ' + err.message + '</h3>');
+  }
+});
+
 
 // ==========================================================================
 // PUBLIC API: Webhook Receiver (MongoDB Atlas Persistent & Resilient)

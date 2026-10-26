@@ -257,6 +257,358 @@ function generateNoticePdf(notice) {
   });
 }
 
+/**
+ * Generate 2-Page Consumer Court Petition (Form 1 for e-Jagriti & District Forum)
+ */
+function generateCourtPetitionPdf(notice) {
+  return new Promise((resolve, reject) => {
+    try {
+      const doc = new PDFDocument({
+        size: 'A4',
+        margins: { top: 32, bottom: 28, left: 38, right: 38 },
+        bufferPages: true,
+        autoFirstPage: true
+      });
+
+      const buffers = [];
+      doc.on('data', buffers.push.bind(buffers));
+      doc.on('end', () => resolve(Buffer.concat(buffers)));
+
+      const formatINR = (amt) => Number(amt || 0).toLocaleString('en-IN');
+      const dateStr = notice.currentDate || new Date().toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+      const leftMargin = 38;
+      const contentWidth = 595.28 - (leftMargin * 2);
+
+      // ================================= PAGE 1 =================================
+      doc.rect(leftMargin, 32, contentWidth, 3).fill('#1e3a8a');
+      doc.font('Helvetica-Bold').fontSize(11).fillColor('#0f172a').text(
+        'BEFORE THE DISTRICT CONSUMER DISPUTES REDRESSAL COMMISSION',
+        leftMargin, 40, { width: contentWidth, align: 'center' }
+      );
+      doc.font('Helvetica').fontSize(8).fillColor('#475569').text(
+        `AT ${(notice.city || 'DISTRICT CONSUMER COMMISSION').toUpperCase()}`,
+        leftMargin, 53, { width: contentWidth, align: 'center' }
+      );
+      doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#0284c7').text(
+        `CONSUMER COMPLAINT NO: _________ OF 2026 (PARTY-IN-PERSON)`,
+        leftMargin, 63, { width: contentWidth, align: 'center' }
+      );
+
+      // Memo of Parties Box
+      const partyY = 76;
+      doc.roundedRect(leftMargin, partyY, contentWidth, 74, 3).fillAndStroke('#ffffff', '#cbd5e1');
+      doc.fillColor('#0f172a').fontSize(8);
+      doc.font('Helvetica-Bold').text('IN THE MATTER OF (COMPLAINANT / CONSUMER):', leftMargin + 8, partyY + 6);
+      doc.font('Helvetica-Bold').fontSize(8.5).text(notice.tenantName, leftMargin + 8, partyY + 16);
+      doc.font('Helvetica').fontSize(7.5).fillColor('#475569');
+      doc.text(`Rented Demised Premises: ${notice.propertyAddress}`, leftMargin + 8, partyY + 26);
+      doc.text(`Mobile: +91 ${notice.tenantPhone || 'N/A'} | Email: ${notice.tenantEmail || 'N/A'}`, leftMargin + 8, partyY + 36);
+      doc.font('Helvetica-Bold').fillColor('#059669').text('... COMPLAINANT IN PERSON', leftMargin + 370, partyY + 36);
+
+      doc.moveTo(leftMargin + 8, partyY + 47).lineTo(leftMargin + contentWidth - 8, partyY + 47).stroke('#e2e8f0');
+      doc.fillColor('#0f172a').font('Helvetica-Bold').fontSize(8).text('VERSUS (OPPOSITE PARTY / SERVICE PROVIDER):', leftMargin + 8, partyY + 50);
+      doc.font('Helvetica-Bold').fontSize(8.5).text(`${notice.landlordName} (Property Owner)`, leftMargin + 8, partyY + 60);
+      doc.font('Helvetica').fontSize(7.5).fillColor('#475569').text(`Mobile: ${notice.landlordPhone || 'Recorded on Tenancy Agreement'}`, leftMargin + 260, partyY + 60);
+      doc.font('Helvetica-Bold').fillColor('#b91c1c').text('... OPPOSITE PARTY', leftMargin + 410, partyY + 60);
+
+      // Subject Box
+      const subjY = 156;
+      doc.rect(leftMargin, subjY, contentWidth, 24).fill('#0f172a');
+      doc.fillColor('#f8fafc').font('Helvetica-Bold').fontSize(7.5).text(
+        `COMPLAINT UNDER SECTION 35 OF THE CONSUMER PROTECTION ACT, 2019 FOR UNFAIR TRADE PRACTICE, GROSS DEFICIENCY IN SERVICE & WRONGFUL RETENTION OF SECURITY DEPOSIT OF RS. ${formatINR(notice.amountWithheld)}/-`,
+        leftMargin + 8, subjY + 5, { width: contentWidth - 16, align: 'left' }
+      );
+
+      // Body Paragraphs
+      let pY = 186;
+      doc.fillColor('#1e293b').font('Helvetica').fontSize(7.8).lineGap(2);
+      doc.font('Helvetica-Bold').text('MOST RESPECTFULLY SHOWETH:', leftMargin, pY);
+      pY += 12;
+
+      doc.font('Helvetica-Bold').text('1. STATUS AS PROTECTED CONSUMER: ', leftMargin, pY, { continued: true });
+      doc.font('Helvetica').text(`The Complainant is a 'Consumer' within Section 2(7) of the Consumer Protection Act, 2019, having hired residential tenancy accommodation for valuable monthly rental consideration of Rs. ${formatINR(notice.monthlyRent)}/- from the Opposite Party.`);
+      pY += 24;
+
+      doc.font('Helvetica-Bold').text('2. FIDUCIARY CAUTION DEPOSIT ENTRUSTMENT: ', leftMargin, pY, { continued: true });
+      doc.font('Helvetica').text(`At the commencement of tenancy, the Complainant entrusted an advance interest-free security caution deposit of Rs. ${formatINR(notice.depositPaid)}/- via verified banking channels, with the express covenant that the entire sum would be refunded in full upon delivery of vacant possession.`);
+      pY += 32;
+
+      doc.font('Helvetica-Bold').text('3. PEACEFUL VACATION & UNLAWFUL FORFEITURE: ', leftMargin, pY, { continued: true });
+      doc.font('Helvetica').text(`On ${notice.vacateDate}, the Complainant peacefully vacated the premises and handed over vacant physical possession and keys. Despite prompt handover, the Opposite Party unlawfully withheld Rs. ${formatINR(notice.amountWithheld)}/- under the unlawful pretext of routine repainting and deep cleaning without providing registered third-party GST vendor invoices.`);
+      pY += 34;
+
+      doc.font('Helvetica-Bold').text('4. STATUTORY VIOLATION OF SECTION 108(m) TPA 1882: ', leftMargin, pY, { continued: true });
+      doc.font('Helvetica').text(`Ordinary weathering, minor wall scuffs, and natural wear & tear are the statutory maintenance liability of the lessor under Section 108(m) of the Transfer of Property Act, 1882. The Opposite Party's unilateral deduction constitutes unfair trade practice and unjust enrichment under Section 2(47) of the Consumer Protection Act, 2019.`);
+      pY += 34;
+
+      doc.font('Helvetica-Bold').text('5. JURISDICTION & LIMITATION: ', leftMargin, pY, { continued: true });
+      doc.font('Helvetica').text(`The cause of action arose within the territorial jurisdiction of this Hon'ble Commission where the rented premises are situated. This complaint is filed well within the 2-year limitation period prescribed under Section 69 of the Consumer Protection Act, 2019.`);
+
+      doc.font('Helvetica').fontSize(7).fillColor('#64748b').text(
+        `Consumer Complaint under CPA 2019 • Notice Ref: ${notice.refNo} • Page 1 of 2 [Prayer Overleaf]`,
+        leftMargin, 792, { width: contentWidth, align: 'center', lineBreak: false }
+      );
+
+      // ================================= PAGE 2 =================================
+      doc.addPage();
+      doc.rect(leftMargin, 32, contentWidth, 3).fill('#1e3a8a');
+      doc.font('Helvetica-Bold').fontSize(11).fillColor('#0f172a').text(
+        'PRAYER CLAUSE & STATUTORY VERIFICATION',
+        leftMargin, 40, { width: contentWidth, align: 'center' }
+      );
+      doc.font('Helvetica').fontSize(7.5).fillColor('#475569').text(
+        `Before the District Consumer Commission | In re: ${notice.tenantName} vs ${notice.landlordName}`,
+        leftMargin, 53, { width: contentWidth, align: 'center' }
+      );
+
+      // Prayer Box
+      const prayerY = 68;
+      doc.roundedRect(leftMargin, prayerY, contentWidth, 140, 3).fillAndStroke('#f8fafc', '#cbd5e1');
+      doc.fillColor('#0f172a').font('Helvetica-Bold').fontSize(8.5).text('PRAYER:', leftMargin + 10, prayerY + 8);
+      doc.font('Helvetica').fontSize(7.8).lineGap(2.5).text(
+        `It is, therefore, most respectfully prayed that this Hon'ble District Consumer Commission may graciously be pleased to:\n\n` +
+        `a) Direct the Opposite Party to immediately refund the unlawfully withheld caution deposit sum of Rs. ${formatINR(notice.amountWithheld)}/- in full to the Complainant;\n\n` +
+        `b) Direct the Opposite Party to pay commercial interest at 18% per annum on the withheld deposit from ${notice.vacateDate} until the date of actual realization;\n\n` +
+        `c) Award punitive compensation of Rs. 50,000/- in favour of the Complainant for severe mental agony, financial distress, and gross deficiency in service;\n\n` +
+        `d) Award litigation costs of Rs. 10,000/- in favour of the Complainant towards drafting and filing expenses; and pass such further order(s) as this Hon'ble Commission deems fit in the interest of justice.`,
+        leftMargin + 10, prayerY + 22, { width: contentWidth - 20 }
+      );
+
+      // Signature Block
+      let p2Y = prayerY + 154;
+      doc.font('Helvetica').fontSize(8).fillColor('#0f172a');
+      doc.text(`Place: ${notice.city || 'India'}`, leftMargin, p2Y);
+      doc.text(`Date: ${dateStr}`, leftMargin, p2Y + 12);
+      
+      const sigLineY = p2Y + 24;
+      doc.moveTo(leftMargin + contentWidth - 180, sigLineY).lineTo(leftMargin + contentWidth, sigLineY).stroke('#0f172a');
+      doc.font('Helvetica-Bold').fontSize(8).text('COMPLAINANT IN PERSON', leftMargin + contentWidth - 180, sigLineY + 4);
+      doc.font('Helvetica').fontSize(7.5).text(notice.tenantName, leftMargin + contentWidth - 180, sigLineY + 14);
+
+      // Statutory Verification Box (Order VI Rule 15 CPC)
+      p2Y += 50;
+      doc.roundedRect(leftMargin, p2Y, contentWidth, 90, 3).fillAndStroke('#eff6ff', '#bfdbfe');
+      doc.fillColor('#1e40af').font('Helvetica-Bold').fontSize(8).text(
+        'STATUTORY VERIFICATION CLAUSE [ORDER VI RULE 15 CPC & SEC 35 CPA 2019]', leftMargin + 10, p2Y + 8
+      );
+      doc.fillColor('#1e293b').font('Helvetica').fontSize(7.5).lineGap(2).text(
+        `I, ${notice.tenantName}, the Complainant named above, do hereby solemnly verify and affirm that the contents of paragraphs 1 to 5 and Prayers (a) to (d) of the accompanying complaint are true and correct to the best of my personal knowledge derived from tenancy lease records, banking receipts, and official correspondence, that no part thereof is false, and that no material facts have been concealed therefrom.\n\n` +
+        `Verified at ${notice.city || 'India'} on this ${dateStr}.`,
+        leftMargin + 10, p2Y + 22, { width: contentWidth - 20 }
+      );
+
+      const vSigY = p2Y + 74;
+      doc.moveTo(leftMargin + contentWidth - 180, vSigY).lineTo(leftMargin + contentWidth, vSigY).stroke('#1e40af');
+      doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#1e40af').text('DEPONENT / COMPLAINANT IN PERSON', leftMargin + contentWidth - 180, vSigY + 4);
+
+      // Page 2 Footer
+      doc.font('Helvetica').fontSize(7).fillColor('#64748b').text(
+        `Official Form 1 Consumer Petition • e-Jagriti Portal (e-jagriti.gov.in) • Page 2 of 2`,
+        leftMargin, 792, { width: contentWidth, align: 'center', lineBreak: false }
+      );
+
+      doc.end();
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+/**
+ * Generate 1-Page Police Station Criminal Complaint under Section 316 BNS (IPC 405/406)
+ */
+function generatePoliceComplaintPdf(notice) {
+  return new Promise((resolve, reject) => {
+    try {
+      const doc = new PDFDocument({
+        size: 'A4',
+        margins: { top: 32, bottom: 28, left: 38, right: 38 },
+        bufferPages: true,
+        autoFirstPage: true
+      });
+
+      const buffers = [];
+      doc.on('data', buffers.push.bind(buffers));
+      doc.on('end', () => resolve(Buffer.concat(buffers)));
+
+      const formatINR = (amt) => Number(amt || 0).toLocaleString('en-IN');
+      const dateStr = notice.currentDate || new Date().toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+      const leftMargin = 38;
+      const contentWidth = 595.28 - (leftMargin * 2);
+
+      // Top Legal Bar
+      doc.rect(leftMargin, 32, contentWidth, 3).fill('#dc2626');
+
+      // To Police Station Header
+      let curY = 42;
+      doc.font('Helvetica-Bold').fontSize(8.5).fillColor('#0f172a').text('TO,', leftMargin, curY);
+      curY += 12;
+      doc.text('THE STATION HOUSE OFFICER (SHO),', leftMargin, curY);
+      curY += 11;
+      doc.font('Helvetica').fontSize(8).fillColor('#334155').text(`POLICE STATION JURISDICTION: LOCAL AREA POLICE STATION`, leftMargin, curY);
+      curY += 10;
+      doc.text(`DISTRICT / COMMISSIONERATE: ${(notice.city || 'LOCAL JURISDICTION').toUpperCase()}`, leftMargin, curY);
+
+      // Subject Box (Red Alert)
+      curY += 16;
+      doc.roundedRect(leftMargin, curY, contentWidth, 34, 3).fillAndStroke('#fef2f2', '#f87171');
+      doc.fillColor('#991b1b').font('Helvetica-Bold').fontSize(7.5).text(
+        `SUBJECT: FORMAL CRIMINAL COMPLAINT UNDER SECTION 316 OF BHARATIYA NYAYA SANHITA, 2023 (FORMERLY SECTION 405/406 IPC) FOR CRIMINAL BREACH OF TRUST AND DISHONEST MISAPPROPRIATION OF CAUTION DEPOSIT OF RS. ${formatINR(notice.amountWithheld)}/-.`,
+        leftMargin + 8, curY + 6, { width: contentWidth - 16 }
+      );
+
+      // Body Paragraphs
+      curY += 42;
+      doc.fillColor('#0f172a').font('Helvetica-Bold').fontSize(8).text('RESPECTED SIR / MADAM,', leftMargin, curY);
+      curY += 12;
+      doc.font('Helvetica').fontSize(7.8).lineGap(2).fillColor('#1e293b');
+      doc.text(
+        `I, the undersigned Complainant, ${notice.tenantName}, residing at ${notice.city || 'India'} (Mobile: +91 ${notice.tenantPhone || 'N/A'}), state as follows:\n\n` +
+        `1. ENTRUSTMENT OF MOVABLE PROPERTY (AMANAT): That I was an authorized tenant in the residential property owned by the accused person, namely ${notice.landlordName} (Mobile: ${notice.landlordPhone || 'Recorded on Tenancy Agreement'}), situated at "${notice.propertyAddress}". At the start of the tenancy, I entrusted the accused with an advance caution security deposit of Rs. ${formatINR(notice.depositPaid)}/- purely in fiduciary capacity for safe custody.\n\n` +
+        `2. DISHONEST CONVERSION & MISAPPROPRIATION: That on ${notice.vacateDate}, I peacefully delivered vacant physical possession and keys of the premises to the accused in habitable, undamaged condition. However, following key handover, the accused dishonestly converted and refused to refund the sum of Rs. ${formatINR(notice.amountWithheld)}/-, with fraudulent intention to cause wrongful loss to me and wrongful personal gain to himself.\n\n` +
+        `3. STATUTORY INGREDIENTS UNDER SECTION 316 BNS / 405 IPC: That despite service of a formal 7-Day Pre-Litigation Legal Demand Notice (Ref: ${notice.refNo}), the accused has retained the entrusted funds without legal authority. This act satisfies all ingredients of Criminal Breach of Trust under Section 316 of Bharatiya Nyaya Sanhita, 2023 (IPC Section 405/406).\n\n` +
+        `PRAYER: It is humbly requested that an official General Diary (GD) entry be registered, an inquiry be instituted, and the accused be summoned to the Police Station to return the lawful caution deposit forthwith.`,
+        leftMargin, curY, { width: contentWidth }
+      );
+
+      // Date & Sign
+      curY += 210;
+      doc.font('Helvetica').fontSize(8).fillColor('#0f172a');
+      doc.text(`Date: ${dateStr}`, leftMargin, curY);
+      doc.text(`Place: ${notice.city || 'India'}`, leftMargin, curY + 11);
+
+      const sigLineY = curY + 20;
+      doc.moveTo(leftMargin + contentWidth - 180, sigLineY).lineTo(leftMargin + contentWidth, sigLineY).stroke('#0f172a');
+      doc.font('Helvetica-Bold').fontSize(8).text('COMPLAINANT SIGNATURE', leftMargin + contentWidth - 180, sigLineY + 4);
+      doc.font('Helvetica').fontSize(7.5).text(notice.tenantName, leftMargin + contentWidth - 180, sigLineY + 14);
+
+      // Police Station Acknowledgment Stamp Box
+      curY += 46;
+      doc.roundedRect(leftMargin, curY, contentWidth, 54, 3).fillAndStroke('#f8fafc', '#cbd5e1');
+      doc.fillColor('#0f172a').font('Helvetica-Bold').fontSize(7.5).text(
+        'FOR POLICE STATION USE ONLY (DUTY OFFICER ACKNOWLEDGMENT):', leftMargin + 8, curY + 6
+      );
+      doc.font('Helvetica').fontSize(7.2).fillColor('#475569');
+      doc.text('GD Entry No: _________________________', leftMargin + 8, curY + 18);
+      doc.text('Receiving Officer Name: _________________', leftMargin + 8, curY + 30);
+      doc.text('Date & Time: _________________________', leftMargin + 270, curY + 18);
+      doc.text('Rank / Batch No: ______________________', leftMargin + 270, curY + 30);
+      doc.text('Station Seal & Duty Officer Signature: ________________________________________________', leftMargin + 8, curY + 42);
+
+      // Footer
+      doc.font('Helvetica').fontSize(7).fillColor('#64748b').text(
+        `Police Complaint for Criminal Breach of Trust • Section 316 BNS / 405 IPC • Page 1 of 1`,
+        leftMargin, 792, { width: contentWidth, align: 'center', lineBreak: false }
+      );
+
+      doc.end();
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+/**
+ * Generate 1-Page Notary Verification Affidavit for Consumer Court
+ */
+function generateAffidavitPdf(notice) {
+  return new Promise((resolve, reject) => {
+    try {
+      const doc = new PDFDocument({
+        size: 'A4',
+        margins: { top: 32, bottom: 28, left: 38, right: 38 },
+        bufferPages: true,
+        autoFirstPage: true
+      });
+
+      const buffers = [];
+      doc.on('data', buffers.push.bind(buffers));
+      doc.on('end', () => resolve(Buffer.concat(buffers)));
+
+      const formatINR = (amt) => Number(amt || 0).toLocaleString('en-IN');
+      const dateStr = notice.currentDate || new Date().toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+      const leftMargin = 38;
+      const contentWidth = 595.28 - (leftMargin * 2);
+
+      // Top Legal Bar
+      doc.rect(leftMargin, 32, contentWidth, 3).fill('#7c3aed');
+
+      // Title
+      doc.font('Helvetica-Bold').fontSize(11).fillColor('#0f172a').text(
+        'VERIFICATION AFFIDAVIT FOR DISTRICT CONSUMER COMMISSION',
+        leftMargin, 42, { width: contentWidth, align: 'center' }
+      );
+      doc.font('Helvetica').fontSize(8).fillColor('#475569').text(
+        '(To be printed on Non-Judicial Stamp Paper of Rs. 20/50 and Notarized)',
+        leftMargin, 55, { width: contentWidth, align: 'center' }
+      );
+
+      // Body
+      let curY = 78;
+      doc.fillColor('#0f172a').font('Helvetica').fontSize(8.5).lineGap(3);
+      doc.text(
+        `I, ${notice.tenantName}, residing at "${notice.propertyAddress}", do hereby solemnly affirm and declare on oath as under:\n\n` +
+        `1. That I am the Complainant in the accompanying Consumer Complaint filed against ${notice.landlordName} (Property Owner) and am fully conversant with the true facts of the dispute.\n\n` +
+        `2. That the contents of paragraphs 1 to 5 and the Prayer Clause of the accompanying complaint are true and correct to my personal knowledge, derived from lease documents, banking transaction records, and formal correspondence.\n\n` +
+        `3. That the Opposite Party (${notice.landlordName}) has unlawfully and arbitrarily withheld my refundable caution security deposit of Rs. ${formatINR(notice.amountWithheld)}/- without legal authority.\n\n` +
+        `4. That no other complaint, suit, or legal proceeding regarding the subject matter of this dispute has been instituted by me in any other court of law or judicial tribunal.`,
+        leftMargin, curY, { width: contentWidth }
+      );
+
+      // Deponent Signature
+      curY += 180;
+      const depY = curY;
+      doc.moveTo(leftMargin + contentWidth - 180, depY).lineTo(leftMargin + contentWidth, depY).stroke('#0f172a');
+      doc.font('Helvetica-Bold').fontSize(8.5).text('DEPONENT', leftMargin + contentWidth - 180, depY + 5);
+      doc.font('Helvetica').fontSize(8).text(`(${notice.tenantName})`, leftMargin + contentWidth - 180, depY + 16);
+
+      // Verification
+      curY = depY + 44;
+      doc.roundedRect(leftMargin, curY, contentWidth, 80, 3).fillAndStroke('#faf5ff', '#d8b4fe');
+      doc.fillColor('#6b21a8').font('Helvetica-Bold').fontSize(8.5).text('VERIFICATION CLAUSE:', leftMargin + 10, curY + 8);
+      doc.fillColor('#1e293b').font('Helvetica').fontSize(8).lineGap(2).text(
+        `Verified at ${notice.city || 'India'} on this day ${dateStr} that the contents of paragraphs 1 to 4 of this affidavit are true and correct to my personal knowledge, no part of it is false, and nothing material has been concealed therefrom.`,
+        leftMargin + 10, curY + 22, { width: contentWidth - 20 }
+      );
+
+      const verY = curY + 60;
+      doc.moveTo(leftMargin + contentWidth - 180, verY).lineTo(leftMargin + contentWidth, verY).stroke('#6b21a8');
+      doc.font('Helvetica-Bold').fontSize(8).fillColor('#6b21a8').text('DEPONENT SIGNATURE', leftMargin + contentWidth - 180, verY + 4);
+
+      // Notary Acknowledgment Box
+      curY += 92;
+      doc.roundedRect(leftMargin, curY, contentWidth, 60, 3).fillAndStroke('#f8fafc', '#cbd5e1');
+      doc.fillColor('#0f172a').font('Helvetica-Bold').fontSize(7.5).text(
+        'BEFORE ME (NOTARY PUBLIC / OATH COMMISSIONER USE ONLY):', leftMargin + 8, curY + 6
+      );
+      doc.font('Helvetica').fontSize(7.2).fillColor('#475569');
+      doc.text('Sworn and signed before me by the Deponent who is personally known to me / identified by document.', leftMargin + 8, curY + 18);
+      doc.text('Notary Seal & Registration No: ________________________', leftMargin + 8, curY + 34);
+      doc.text('Signature of Notary Public: ___________________________', leftMargin + 270, curY + 34);
+      doc.text('Date & Place: _______________________________________', leftMargin + 8, curY + 46);
+
+      // Footer
+      doc.font('Helvetica').fontSize(7).fillColor('#64748b').text(
+        `Notary Verification Affidavit • Consumer Protection Act, 2019 • Page 1 of 1`,
+        leftMargin, 792, { width: contentWidth, align: 'center', lineBreak: false }
+      );
+
+      doc.end();
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
 module.exports = {
-  generateNoticePdf
+  generateNoticePdf,
+  generateCourtPetitionPdf,
+  generatePoliceComplaintPdf,
+  generateAffidavitPdf
 };
