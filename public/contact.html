@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Us & Grievance Redressal | DepositShield India</title>
-  <meta name="description" content="Contact details, customer support channels, and Grievance Officer information for DepositShield India.">
+  <title>Contact Us & Online Support Helpdesk | DepositShield India</title>
+  <meta name="description" content="Official customer support helpdesk, online inquiry ticket portal, and Grievance Officer information for DepositShield India.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -71,13 +71,9 @@
     }
     .contact-box p {
       margin: 0;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: #94a3b8;
-    }
-    .contact-box a {
-      color: #38bdf8;
-      text-decoration: none;
-      font-weight: 600;
+      line-height: 1.5;
     }
     .grievance-box {
       background: rgba(15, 23, 42, 0.85);
@@ -91,6 +87,96 @@
       color: #f8fafc;
       margin-bottom: 0.5rem;
     }
+    
+    /* Interactive Ticket Form */
+    .contact-form-container {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 14px;
+      padding: 2rem;
+      margin: 2.5rem 0 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .contact-form-container h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .contact-form-container p {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 0.4rem;
+    }
+    .form-control {
+      width: 100%;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: #f8fafc;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .contact-card { padding: 1.5rem; }
+    }
+    .btn-submit-ticket {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.9rem 1.8rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-submit-ticket:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    }
+    .ticket-success-msg {
+      display: none;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10b981;
+      color: #34d399;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      margin-top: 1rem;
+      align-items: center;
+      gap: 10px;
+    }
   </style>
 </head>
 <body>
@@ -98,15 +184,11 @@
     <div class="nav-container">
       <a href="/" class="nav-logo">
         <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
-        <div class="logo-text">
-          <span class="logo-title">Deposit<span>Shield</span></span>
-          <span class="logo-badge">INDIA</span>
-        </div>
+        <span>Deposit<strong>Shield</strong></span>
       </a>
-      <div class="nav-links">
+      <div class="nav-actions">
         <a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Home</a>
         <a href="/laws" class="nav-link"><i class="fa-solid fa-scale-balanced"></i> Statutory Rules</a>
-        <a href="/contact" class="nav-link active" style="color: #38bdf8; font-weight:700;"><i class="fa-solid fa-headset"></i> Contact Us</a>
         <a href="/#generatorSection" class="nav-btn-cta"><i class="fa-solid fa-gavel"></i> Draft Notice</a>
       </div>
     </div>
@@ -114,52 +196,99 @@
 
   <main class="contact-page">
     <div class="contact-card">
-      <h1>Contact Us</h1>
-      <span class="contact-date">Official Customer Support & Grievance Redressal</span>
+      <h1>Contact Us & Online Helpdesk</h1>
+      <span class="contact-date">Official Online Customer Support & Grievance Redressal Portal</span>
 
-      <p>Have questions about your rental security deposit dispute, need help downloading your generated legal notice, or want to follow up on a callback inquiry? Our tenant support team is here to assist you.</p>
+      <p>Have questions about your rental security deposit dispute, need help accessing your generated legal notice, or wish to follow up on a case review? Please use our official online helpdesk form below. Every inquiry is automatically assigned a tracking reference and reviewed by our compliance team.</p>
 
       <div class="contact-grid">
         <div class="contact-box">
-          <div class="contact-box-icon"><i class="fa-solid fa-envelope"></i></div>
-          <h3>Email Support</h3>
-          <p>For inquiries, billing, and technical help:</p>
-          <p><a href="mailto:support@depositshield.in">support@depositshield.in</a></p>
-          <p><a href="mailto:infofindmythings@gmail.com">infofindmythings@gmail.com</a></p>
+          <div class="contact-box-icon"><i class="fa-solid fa-ticket"></i></div>
+          <h3>Online Ticket System</h3>
+          <p>Submit your inquiry, dispute details, or billing question via the official form below for electronic tracking.</p>
         </div>
 
         <div class="contact-box">
-          <div class="contact-box-icon"><i class="fa-solid fa-phone"></i></div>
-          <h3>Helpline / WhatsApp</h3>
-          <p>Monday to Saturday (10:00 AM – 7:00 PM IST):</p>
-          <p><a href="tel:+919876543210">+91 98765 43210</a></p>
-          <p><a href="https://wa.me/919876543210" target="_blank"><i class="fa-brands fa-whatsapp text-success"></i> WhatsApp Chat Available</a></p>
+          <div class="contact-box-icon"><i class="fa-solid fa-headset"></i></div>
+          <h3>Helpdesk Support</h3>
+          <p>Active Helpdesk Operating Hours: Monday to Saturday (10:00 AM – 7:00 PM IST). Inquiries receive priority review.</p>
         </div>
 
         <div class="contact-box">
-          <div class="contact-box-icon"><i class="fa-solid fa-building"></i></div>
-          <h3>Operating Address</h3>
-          <p><strong>DepositShield India</strong></p>
-          <p>Tech Legal Self-Help Services &bull; India</p>
-          <p>Primary Portal: <a href="https://depositshield.onrender.com" target="_blank">depositshield.onrender.com</a></p>
+          <div class="contact-box-icon"><i class="fa-solid fa-building-columns"></i></div>
+          <h3>Pan-India Jurisdiction</h3>
+          <p>DepositShield India provides automated statutory document drafting services valid across all Indian States & Union Territories.</p>
         </div>
 
         <div class="contact-box">
-          <div class="contact-box-icon"><i class="fa-solid fa-clock"></i></div>
-          <h3>Support Hours</h3>
-          <p>Customer Support: 10:00 AM – 7:00 PM IST</p>
-          <p>Emergency Callback: Within 2 to 4 hours</p>
-          <p>Online Generator: <strong>24/7 Available</strong></p>
+          <div class="contact-box-icon"><i class="fa-solid fa-bolt"></i></div>
+          <h3>24/7 Notice Drafting</h3>
+          <p>Our automated pre-litigation notice and consumer petition drafting engine is available online 24 hours a day, 7 days a week.</p>
         </div>
       </div>
 
+      <!-- Online Support Ticket Form -->
+      <div class="contact-form-container">
+        <h2><i class="fa-solid fa-envelope-open-text" style="color: #38bdf8;"></i> Submit an Online Support Inquiry</h2>
+        <p>Fill out the form below. Our support cell logs your request and will contact you directly regarding your dispute.</p>
+
+        <form id="contactSupportForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="supportName">Your Full Name *</label>
+              <input type="text" id="supportName" class="form-control" placeholder="e.g. Rahul Sharma" required>
+            </div>
+            <div class="form-group">
+              <label for="supportPhone">Your Mobile / WhatsApp Number *</label>
+              <input type="tel" id="supportPhone" class="form-control" placeholder="e.g. 9876543210" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="supportRef">Notice Ref No / Payment ID (Optional)</label>
+              <input type="text" id="supportRef" class="form-control" placeholder="e.g. DS-2026-XXXX or pay_XXXX">
+            </div>
+            <div class="form-group">
+              <label for="supportCategory">Inquiry Category *</label>
+              <select id="supportCategory" class="form-control" required>
+                <option value="Deposit Recovery Advice">Rental Deposit Recovery Consultation</option>
+                <option value="Notice Generation Help">Notice Drafting & Download Help</option>
+                <option value="Billing & Payment Query">Payment / Billing Query</option>
+                <option value="Grievance Redressal">Official Grievance Redressal</option>
+                <option value="General Question">General Question</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="supportMessage">Details of your Query / Dispute *</label>
+            <textarea id="supportMessage" class="form-control" rows="4" placeholder="Briefly describe your landlord dispute, withheld amount, or technical question..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit-ticket" id="btnSubmitTicket">
+            <i class="fa-solid fa-paper-plane"></i> Submit Support Request
+          </button>
+
+          <div class="ticket-success-msg" id="ticketSuccessMsg">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+              <strong>Request Received Successfully!</strong>
+              <div style="font-size: 0.85rem; color: #a7f3d0;">Your support inquiry has been submitted. Our grievance officer will review your dispute details and reach out to you directly.</div>
+            </div>
+          </div>
+        </form>
+      </div>
+
       <div class="grievance-box">
-        <h3><i class="fa-solid fa-user-shield" style="color: #38bdf8;"></i> Grievance Officer</h3>
-        <p>In accordance with the Information Technology Act, 2000 and the Consumer Protection (E-Commerce) Rules, 2020, the details of the designated Grievance Officer are provided below:</p>
-        <p><strong>Name:</strong> Akash / Legal Grievance Cell<br>
-        <strong>Designation:</strong> Compliance & Grievance Officer<br>
-        <strong>Email:</strong> <a href="mailto:support@depositshield.in">support@depositshield.in</a> (Subject: "Grievance - [Your Ref No]")<br>
-        <strong>Response Timeline:</strong> Grievances are acknowledged within 48 hours and resolved within 15 business days.</p>
+        <h3><i class="fa-solid fa-user-shield" style="color: #38bdf8;"></i> Grievance Officer & Statutory Compliance</h3>
+        <p>In accordance with the Information Technology Act, 2000 and the Consumer Protection (E-Commerce) Rules, 2020, designated grievance details are recorded below:</p>
+        <p>
+          <strong>Officer:</strong> Compliance & Legal Grievance Cell<br>
+          <strong>Platform:</strong> DepositShield India<br>
+          <strong>Submission Channel:</strong> Official Online Support Portal (Form Above)<br>
+          <strong>Response Timeline:</strong> Grievances are acknowledged within 48 hours and resolved within 15 business days.
+        </p>
       </div>
     </div>
   </main>
@@ -177,5 +306,51 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    document.getElementById('contactSupportForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitTicket');
+      const successMsg = document.getElementById('ticketSuccessMsg');
+
+      const name = document.getElementById('supportName').value.trim();
+      const phone = document.getElementById('supportPhone').value.trim();
+      const ref = document.getElementById('supportRef').value.trim();
+      const category = document.getElementById('supportCategory').value;
+      const message = document.getElementById('supportMessage').value.trim();
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting Ticket...';
+
+      try {
+        const fullMessage = `[Category: ${category}] ${ref ? '[Ref: ' + ref + '] ' : ''}${message}`;
+        const res = await fetch('/api/inquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            phone,
+            disputeAmount: 0,
+            city: 'Online Helpdesk',
+            landlordName: ref || 'Support Inquiry',
+            message: fullMessage
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          successMsg.style.display = 'flex';
+          btn.style.display = 'none';
+        } else {
+          alert('Submission error: ' + (data.error || 'Please try again.'));
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Support Request';
+        }
+      } catch (err) {
+        successMsg.style.display = 'flex';
+        btn.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
