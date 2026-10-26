@@ -760,14 +760,14 @@
         <button class="btn-control" id="btnAudioToggle"><i class="fa-solid fa-volume-high"></i> Audio</button>
       </div>
 
-      <div class="audio-indicator">
+      <div class="audio-indicator" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); padding: 8px 12px; border-radius: 10px;">
         <div class="sound-bars" id="soundBars">
           <div class="sound-bar"></div>
           <div class="sound-bar"></div>
           <div class="sound-bar"></div>
           <div class="sound-bar"></div>
         </div>
-        <span id="audioStatusText">Synthesized Sound Effects & Riser Beats Active</span>
+        <span id="audioStatusText" style="color: #6ee7b7; font-weight: 700;">🗣️ Natural Hindi Voiceover: ACTIVE</span>
       </div>
 
       <!-- Scene Jump Selector -->
@@ -784,25 +784,25 @@
 
       <!-- Hindi Voiceover Reference -->
       <div>
-        <label style="font-size: 0.8rem; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 6px;">HINDI NARRATION SCRIPT</label>
+        <label style="font-size: 0.8rem; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 6px;">HINDI VOICE NARRATION SCRIPT (AUDIO PLAYING)</label>
         <div class="script-box" id="scriptBox">
-          <p><strong>0:00 - 0:07:</strong> "क्या आपका Landlord भी flat खाली करते वक्त ₹30,000–₹40,000 painting और cleaning के नाम पे काट रहा है?"</p>
-          <p><strong>0:07 - 0:15:</strong> "रुकिए! एक रुपया भी मत छोड़ना! Indian Law के तहत बिना original GST contractor bill के Landlord ₹1 भी नहीं काट सकता!"</p>
-          <p><strong>0:15 - 0:26:</strong> "Section 108 TPA कहता है normal wear-and-tear owner की ज़िम्मेदारी है, और deposit रोकना Sec 316 BNS में Criminal Breach of Trust है!"</p>
-          <p><strong>0:26 - 0:34:</strong> "वकील पे ₹15,000 waste मत करो! DepositShield.in पर 3 मिनट में Court-admissible Legal Notice generate करो!"</p>
-          <p><strong>0:34 - 0:42:</strong> "Comment करो 'DEPOSIT' और मैं direct link DM कर दूंगा! अपने flatmates के साथ अभी share करो!"</p>
+          <p id="scriptP0"><strong>Scene 1:</strong> "क्या आपका मकान मालिक भी फ्लैट खाली करते वक्त पैंतीस हज़ार रुपये पेंटिंग के नाम पर काट रहा है?"</p>
+          <p id="scriptP1"><strong>Scene 2:</strong> "रुकिए! यह पूरी तरह गैरकानूनी है। बिना ओरिजिनल जीएसटी बिल और इंस्पेक्शन रिपोर्ट के मकान मालिक एक रुपया भी नहीं काट सकता!"</p>
+          <p id="scriptP2"><strong>Scene 3:</strong> "ट्रांसफर ऑफ प्रॉपर्टी एक्ट की धारा 108 के तहत नॉर्मल टूट-फूट मालिक की ज़िम्मेदारी है, और डिपॉजिट रोकना बीएनएस धारा 316 में अपराध है!"</p>
+          <p id="scriptP3"><strong>Scene 4:</strong> "वकील को पंद्रह हज़ार रुपये देने की कोई ज़रूरत नहीं। सीधा डिपॉज़िट शील्ड डॉट इन पर जाइए और तीन मिनट में लीगल नोटिस तैयार कीजिए!"</p>
+          <p id="scriptP4"><strong>Scene 5:</strong> "अपना मेहनत का पैसा मत छोड़िए! अभी डिपॉज़िट शील्ड पर जाइए या कमेंट में लिखिए डिपॉज़िट, हम डायरेक्ट लिंक भेज देंगे!"</p>
         </div>
       </div>
 
       <div class="recording-status" id="recordingStatus">
         <i class="fa-solid fa-circle-dot" style="animation: pulseLive 1s infinite;"></i>
-        <span>Recording Full HD 9:16 Video... Please wait (~35s)</span>
+        <span>Recording Full HD 9:16 Video with Hindi Voiceover... Please wait (~45s)</span>
       </div>
 
       <!-- Export Button -->
       <button class="btn-download-video" id="btnDownloadVideo">
         <i class="fa-solid fa-cloud-arrow-down"></i>
-        <span>Download Video File (.webm / .mp4)</span>
+        <span>Download Video with Hindi Audio (.webm / .mp4)</span>
       </button>
 
       <a href="/" style="color: #38bdf8; text-decoration: none; font-size: 0.85rem; text-align: center; font-weight: 600;">
@@ -811,13 +811,37 @@
     </div>
   </div>
 
+  <!-- Hidden Audio Elements for 5 Hindi Voiceover Tracks -->
+  <audio id="voice0" src="/assets/hindi_voice_0.mp3" preload="auto"></audio>
+  <audio id="voice1" src="/assets/hindi_voice_1.mp3" preload="auto"></audio>
+  <audio id="voice2" src="/assets/hindi_voice_2.mp3" preload="auto"></audio>
+  <audio id="voice3" src="/assets/hindi_voice_3.mp3" preload="auto"></audio>
+  <audio id="voice4" src="/assets/hindi_voice_4.mp3" preload="auto"></audio>
+
   <!-- Internal Hidden Canvas for 1080x1920 MP4 Video Rendering -->
   <canvas id="renderCanvas" width="1080" height="1920"></canvas>
 
   <script>
-    // Audio Synthesizer using Web Audio API (Bass drop, alert horn, victory chime)
+    // Audio Synthesizer & Natural Hindi Voiceover Array
     let audioCtx = null;
     let audioEnabled = true;
+
+    const voiceAudios = [
+      document.getElementById('voice0'),
+      document.getElementById('voice1'),
+      document.getElementById('voice2'),
+      document.getElementById('voice3'),
+      document.getElementById('voice4')
+    ];
+
+    function stopAllVoiceAudios() {
+      voiceAudios.forEach(aud => {
+        if (aud) {
+          aud.pause();
+          aud.currentTime = 0;
+        }
+      });
+    }
 
     function initAudio() {
       if (!audioCtx) {
@@ -876,8 +900,9 @@
       } catch (e) {}
     }
 
-    // Timeline Configuration (5 Scenes)
-    const sceneDurations = [7000, 8000, 11000, 8000, 8000]; // in ms
+    // Timeline Configuration (5 Scenes synced with Hindi Speech)
+    const fallbackDurations = [8000, 11500, 12500, 11000, 10000]; // in ms
+    const sceneDurations = fallbackDurations;
     let currentScene = 0;
     let isPlaying = false;
     let timerId = null;
@@ -906,15 +931,15 @@
     const btnRestart = document.getElementById('btnRestart');
     const btnAudioToggle = document.getElementById('btnAudioToggle');
     const soundBars = document.getElementById('soundBars');
+    const audioStatusText = document.getElementById('audioStatusText');
 
     function setScene(index) {
+      stopAllVoiceAudios();
       currentScene = index;
+
       layers.forEach((layer, i) => {
-        if (i === index) {
-          layer.classList.add('active');
-        } else {
-          layer.classList.remove('active');
-        }
+        if (i === index) layer.classList.add('active');
+        else layer.classList.remove('active');
       });
 
       sceneTabs.forEach((tab, i) => {
@@ -929,12 +954,44 @@
         else fill.style.width = '0%';
       });
 
+      // Highlight active script paragraph in studio
+      for (let i = 0; i < 5; i++) {
+        const p = document.getElementById('scriptP' + i);
+        if (p) {
+          if (i === index) {
+            p.style.color = '#38bdf8';
+            p.style.fontWeight = '700';
+            p.style.background = 'rgba(56, 189, 248, 0.12)';
+            p.style.padding = '4px 6px';
+            p.style.borderRadius = '6px';
+            p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } else {
+            p.style.color = '#cbd5e1';
+            p.style.fontWeight = '400';
+            p.style.background = 'transparent';
+            p.style.padding = '0';
+          }
+        }
+      }
+
       // Trigger scene sound effect
       if (index === 0) playBassWhoosh();
       if (index === 1) playAlertHorn();
       if (index === 2) playBassWhoosh();
       if (index === 3) playTone(587, 'sine', 0.25, 0.2);
       if (index === 4) playSuccessChime();
+
+      // Play real Hindi Voiceover
+      if (isPlaying && audioEnabled) {
+        const curAud = voiceAudios[index];
+        if (curAud) {
+          curAud.currentTime = 0;
+          const p = curAud.play();
+          if (p !== undefined) {
+            p.catch(e => console.log('Autoplay restriction:', e));
+          }
+        }
+      }
 
       sceneStartTime = Date.now();
     }
@@ -954,19 +1011,39 @@
       clearTimeout(timerId);
       clearInterval(progressInterval);
 
-      const duration = sceneDurations[currentScene];
+      const curAud = voiceAudios[currentScene];
+      let duration = fallbackDurations[currentScene];
+
+      if (curAud && curAud.duration && !isNaN(curAud.duration)) {
+        duration = Math.max(duration, (curAud.duration + 0.4) * 1000);
+      }
+
       sceneStartTime = Date.now();
 
       progressInterval = setInterval(() => {
         if (!isPlaying) return;
-        const elapsed = Date.now() - sceneStartTime;
-        const pct = Math.min(100, (elapsed / duration) * 100);
-        fills[currentScene].style.width = pct + '%';
+        if (curAud && curAud.duration && !isNaN(curAud.duration) && curAud.currentTime > 0) {
+          const pct = Math.min(100, (curAud.currentTime / curAud.duration) * 100);
+          fills[currentScene].style.width = pct + '%';
+        } else {
+          const elapsed = Date.now() - sceneStartTime;
+          const pct = Math.min(100, (elapsed / duration) * 100);
+          fills[currentScene].style.width = pct + '%';
+        }
       }, 50);
+
+      // When speech finishes, smoothly transition
+      if (curAud) {
+        curAud.onended = () => {
+          if (isPlaying) {
+            setTimeout(nextScene, 500);
+          }
+        };
+      }
 
       timerId = setTimeout(() => {
         if (isPlaying) nextScene();
-      }, duration);
+      }, duration + 800);
     }
 
     function playReel() {
@@ -975,11 +1052,13 @@
       playText.textContent = 'Pause';
       btnPlayPause.querySelector('i').className = 'fa-solid fa-pause';
       soundBars.classList.add('playing');
+      setScene(currentScene);
       runCurrentSceneTimer();
     }
 
     function pauseReel() {
       isPlaying = false;
+      stopAllVoiceAudios();
       clearTimeout(timerId);
       clearInterval(progressInterval);
       playText.textContent = 'Play Reel';
@@ -1000,9 +1079,19 @@
 
     btnAudioToggle.addEventListener('click', () => {
       audioEnabled = !audioEnabled;
-      btnAudioToggle.innerHTML = audioEnabled 
-        ? '<i class="fa-solid fa-volume-high"></i> Audio' 
-        : '<i class="fa-solid fa-volume-xmark"></i> Muted';
+      if (!audioEnabled) {
+        stopAllVoiceAudios();
+        btnAudioToggle.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Muted';
+        audioStatusText.textContent = 'Voiceover Muted';
+        audioStatusText.style.color = '#94a3b8';
+      } else {
+        btnAudioToggle.innerHTML = '<i class="fa-solid fa-volume-high"></i> Audio';
+        audioStatusText.textContent = '🗣️ Natural Hindi Voiceover: ACTIVE';
+        audioStatusText.style.color = '#6ee7b7';
+        if (isPlaying) {
+          voiceAudios[currentScene].play().catch(() => {});
+        }
+      }
     });
 
     sceneTabs.forEach(tab => {
