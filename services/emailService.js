@@ -647,10 +647,92 @@ Please find attached formal Pre-Litigation Legal Demand Notice regarding the unl
   }
 }
 
+/**
+ * Send Instant Notification to Admin when a new customer inquiry/ticket is submitted
+ */
+async function sendAdminInquiryNotification(inquiry) {
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.EMAIL_USER || 'akashrupareliya321@gmail.com';
+  const transporter = getTransporter();
+  if (!transporter) return { success: true, simulated: true };
 
+  const appUrl = process.env.APP_URL || 'https://depositshield.onrender.com';
+  const portalUrl = `${appUrl}/portal-aks008`;
+  const cleanPhone = String(inquiry.phone || '').replace(/[^0-9]/g, '');
+  const waUrl = cleanPhone.length >= 10 ? `https://wa.me/91${cleanPhone.slice(-10)}` : '#';
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f1f5f9; margin: 0; padding: 24px; color: #1e293b; }
+    .card { max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+    .header { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); padding: 20px 24px; color: #ffffff; text-align: center; }
+    .header h2 { margin: 0; font-size: 19px; font-weight: 700; }
+    .body { padding: 24px 28px; }
+    .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .info-table td { padding: 8px 6px; font-size: 13.5px; border-bottom: 1px solid #f1f5f9; }
+    .info-table td.label { font-weight: 600; color: #64748b; width: 35%; }
+    .info-table td.val { font-weight: 700; color: #0f172a; word-break: break-all; }
+    .msg-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font-size: 13px; color: #334155; line-height: 1.5; margin-bottom: 20px; }
+    .btn-wrap { text-align: center; margin: 20px 0 10px; }
+    .btn-wa { display: inline-block; background: #22c55e; color: #ffffff !important; text-decoration: none; font-size: 13.5px; font-weight: 700; padding: 10px 18px; border-radius: 8px; margin-right: 8px; }
+    .btn-portal { display: inline-block; background: #0284c7; color: #ffffff !important; text-decoration: none; font-size: 13.5px; font-weight: 700; padding: 10px 18px; border-radius: 8px; }
+    .footer { text-align: center; font-size: 11.5px; color: #94a3b8; padding: 14px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h2>📬 New Lead / Inquiry Received</h2>
+      <div style="font-size: 12px; opacity: 0.9; margin-top: 4px;">DepositShield India Automated Lead Engine</div>
+    </div>
+    <div class="body">
+      <table class="info-table">
+        <tr><td class="label">Ticket ID:</td><td class="val">${inquiry.inquiryId || 'N/A'}</td></tr>
+        <tr><td class="label">Customer Name:</td><td class="val">${inquiry.name || 'Anonymous'}</td></tr>
+        <tr><td class="label">Contact Number:</td><td class="val"><strong>+91 ${cleanPhone}</strong></td></tr>
+        <tr><td class="label">City / Location:</td><td class="val">${inquiry.city || 'India'}</td></tr>
+        <tr><td class="label">Amount Withheld:</td><td class="val" style="color:#dc2626;">₹${Number(inquiry.amountWithheld || 0).toLocaleString('en-IN')}</td></tr>
+      </table>
+
+      <div style="font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px;">CUSTOMER MESSAGE / DISPUTE DETAILS:</div>
+      <div class="msg-box">${inquiry.message || 'No additional message provided.'}</div>
+
+      <div class="btn-wrap">
+        <a href="${waUrl}" class="btn-wa" target="_blank">💬 Open WhatsApp Chat</a>
+        <a href="${portalUrl}" class="btn-portal" target="_blank">🛡️ Open Admin Portal</a>
+      </div>
+    </div>
+    <div class="footer">
+      DepositShield India Real-Time Notification &bull; Delivered to ${adminEmail}
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  try {
+    const fromName = process.env.FROM_NAME || 'DepositShield Alerts';
+    const fromEmail = process.env.FROM_EMAIL || process.env.EMAIL_USER;
+    const info = await transporter.sendMail({
+      from: `"${fromName}" <${fromEmail}>`,
+      to: adminEmail,
+      subject: `📬 [New Inquiry] ${inquiry.name || 'Customer'} (+91 ${cleanPhone}) - Deposit Dispute`,
+      html
+    });
+    console.log('[ADMIN INQUIRY NOTIFICATION SENT]:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (err) {
+    console.error('[ADMIN INQUIRY NOTIFICATION ERROR]:', err.message);
+    return { success: false, error: err.message };
+  }
+}
 
 module.exports = {
   getTransporter,
   sendAdminPaymentNotification,
-  sendCustomerNoticeEmail
+  sendCustomerNoticeEmail,
+  sendAdminInquiryNotification
 };

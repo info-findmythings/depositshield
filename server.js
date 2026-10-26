@@ -13,7 +13,7 @@ const Notice = require('./models/Notice');
 const Payment = require('./models/Payment');
 const Settings = require('./models/Settings');
 const Inquiry = require('./models/Inquiry');
-const { sendAdminPaymentNotification, sendCustomerNoticeEmail } = require('./services/emailService');
+const { sendAdminPaymentNotification, sendCustomerNoticeEmail, sendAdminInquiryNotification } = require('./services/emailService');
 const {
   generateNoticePdf,
   generateCourtPetitionPdf,
@@ -193,6 +193,11 @@ app.post('/api/inquiry', async (req, res) => {
         console.warn('[INQUIRY ATLAS SYNC WARNING]:', dbErr.message);
       }
     }
+
+    // 3. Send instant lead notification to Admin email
+    sendAdminInquiryNotification(record).catch(err => {
+      console.warn('[INQUIRY NOTIFICATION DISPATCH NOTICE]:', err.message);
+    });
 
     return res.json({
       success: true,
