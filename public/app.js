@@ -1501,7 +1501,91 @@ ${d.tenantName}`;
     }, 3500);
   }
 
-  initLiveActivityTicker();
+  // ==========================================================================
+  // Exit-Intent & Free Legal Consultation Lead Capture
+  // ==========================================================================
+  const exitModal = document.getElementById('exitIntentModalBackdrop');
+  const btnExitClose = document.getElementById('btnExitModalClose');
+  const btnFloatingHelp = document.getElementById('btnFloatingHelp');
+  const exitForm = document.getElementById('exitLeadForm');
+  const exitSuccessMsg = document.getElementById('exitLeadSuccessMsg');
+
+  function openExitModal() {
+    if (exitModal) exitModal.classList.remove('hidden');
+  }
+
+  function closeExitModal() {
+    if (exitModal) exitModal.classList.add('hidden');
+  }
+
+  if (btnExitClose) btnExitClose.addEventListener('click', closeExitModal);
+  if (exitModal) {
+    exitModal.addEventListener('click', (e) => {
+      if (e.target === exitModal) closeExitModal();
+    });
+  }
+
+  if (btnFloatingHelp) {
+    btnFloatingHelp.addEventListener('click', openExitModal);
+  }
+
+  // Trigger on mouseleave (desktop exit intent)
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientY <= 15 && !sessionStorage.getItem('ds_exit_shown')) {
+      sessionStorage.setItem('ds_exit_shown', '1');
+      openExitModal();
+    }
+  });
+
+  // Fallback trigger after 40s of user engagement
+  setTimeout(() => {
+    if (!sessionStorage.getItem('ds_exit_shown')) {
+      sessionStorage.setItem('ds_exit_shown', '1');
+      openExitModal();
+    }
+  }, 40000);
+
+  // Handle Form Submission
+  if (exitForm) {
+    exitForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitExitLead');
+      const name = document.getElementById('exitLeadName').value.trim();
+      const phone = document.getElementById('exitLeadPhone').value.trim();
+      const amount = document.getElementById('exitLeadAmount').value;
+      const city = document.getElementById('exitLeadCity').value.trim();
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+      try {
+        await fetch('/api/inquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            phone,
+            amountWithheld: amount,
+            city,
+            landlordName: 'Free Legal Check Request',
+            message: `Free 60-Second Legal Evaluation requested for ₹${amount} withheld in ${city}.`
+          })
+        });
+
+        if (exitSuccessMsg) exitSuccessMsg.style.display = 'block';
+        btn.style.display = 'none';
+
+        setTimeout(() => {
+          closeExitModal();
+          const gen = document.getElementById('generatorSection');
+          if (gen) gen.scrollIntoView({ behavior: 'smooth' });
+        }, 2200);
+      } catch (err) {
+        if (exitSuccessMsg) exitSuccessMsg.style.display = 'block';
+        btn.style.display = 'none';
+      }
+    });
+  }
 
   // Toast Helper
   function showToast(message, type = 'success') {
