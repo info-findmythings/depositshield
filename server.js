@@ -91,6 +91,22 @@ async function getSettings() {
 }
 
 // ==========================================================================
+// HEALTH & KEEP-ALIVE ENDPOINTS (Render 24/7 Anti-Sleep)
+// ==========================================================================
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    service: 'DepositShield India',
+    uptimeSeconds: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/api/ping', (req, res) => {
+  res.status(200).send('pong');
+});
+
+// ==========================================================================
 // PUBLIC API: Configuration
 // ==========================================================================
 app.get('/api/config', async (req, res) => {
@@ -1282,4 +1298,29 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`DepositShield running at http://localhost:${PORT}`);
   console.log(`[INFO] Secret Admin Portal: http://localhost:${PORT}${ADMIN_SECRET_PATH}`);
+
+  // ========================================================================
+  // RENDER AUTO-SHUTDOWN PREVENTER (Keep-Alive Self-Pinger)
+  // Sends an HTTP ping to the live URL every 10 minutes to reset
+  // Render's 15-minute inactivity timer and prevent idle spin-down.
+  // ========================================================================
+  const appPublicUrl = process.env.APP_URL || 'https://depositshield.onrender.com';
+  if (appPublicUrl && !appPublicUrl.includes('localhost')) {
+    const pingTarget = `${appPublicUrl.replace(/\/$/, '')}/health`;
+    const httpModule = pingTarget.startsWith('https') ? require('https') : require('http');
+
+    const sendKeepAlivePing = () => {
+      httpModule.get(pingTarget, (res) => {
+        console.log(`[RENDER KEEP-ALIVE] Pinged ${pingTarget} - Status: ${res.statusCode} (${new Date().toLocaleTimeString()})`);
+      }).on('error', (err) => {
+        console.warn(`[RENDER KEEP-ALIVE] Notice: ${err.message}`);
+      });
+    };
+
+    // First ping after 30 seconds, then recurring every 10 minutes
+    setTimeout(sendKeepAlivePing, 30 * 1000);
+    setInterval(sendKeepAlivePing, 10 * 60 * 1000);
+    console.log(`[RENDER KEEP-ALIVE] Active: Pinging ${pingTarget} every 10 mins to maintain 24/7 uptime.`);
+  }
 });
+

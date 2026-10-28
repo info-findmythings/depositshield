@@ -34,20 +34,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Fetch server config
-  fetch('/api/config')
-    .then(res => res.json())
-    .then(data => {
-      state.config = { ...state.config, ...data };
-      const t1El = document.getElementById('planTier1PriceVal');
-      const t2El = document.getElementById('planTier2PriceVal');
-      if (t1El) t1El.textContent = `₹${state.config.priceInr || 99}`;
-      if (t2El) t2El.textContent = `₹${state.config.tier2PriceInr || 499}`;
-      if (typeof setPaymentTier === 'function') setPaymentTier('TIER_2');
-    })
-    .catch(() => {
-      if (typeof setPaymentTier === 'function') setPaymentTier('TIER_2');
-    });
+  // Fetch server config with smart Render cold-start detection & retry
+  let isColdStart = false;
+  const coldStartTimer = setTimeout(() => {
+    isColdStart = true;
+    showToast('⚡ Connecting to cloud server (takes ~15s to start if idle)...', 'info');
+  }, 2500);
+
+  function loadConfig(retriesLeft = 4) {
+    fetch('/api/config')
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        clearTimeout(coldStartTimer);
+        if (isColdStart) {
+          showToast('✓ Cloud server connected & ready!', 'success');
+        }
+        state.config = { ...state.config, ...data };
+        const t1El = document.getElementById('planTier1PriceVal');
+        const t2El = document.getElementById('planTier2PriceVal');
+        if (t1El) t1El.textContent = `₹${state.config.priceInr || 99}`;
+        if (t2El) t2El.textContent = `₹${state.config.tier2PriceInr || 499}`;
+        if (typeof setPaymentTier === 'function') setPaymentTier('TIER_2');
+      })
+      .catch(() => {
+        if (retriesLeft > 0) {
+          setTimeout(() => loadConfig(retriesLeft - 1), 3000);
+        } else {
+          clearTimeout(coldStartTimer);
+          if (typeof setPaymentTier === 'function') setPaymentTier('TIER_2');
+        }
+      });
+  }
+  loadConfig();
 
   // ==========================================================================
   // Quick Legality Checker Widget
@@ -1595,8 +1616,16 @@ ${d.tenantName}`;
     
     if (type === 'error') {
       toast.style.background = '#ef4444';
+      toast.style.color = '#ffffff';
+      toast.style.border = '1px solid #f87171';
+    } else if (type === 'info') {
+      toast.style.background = '#0f172a';
+      toast.style.color = '#38bdf8';
+      toast.style.border = '1px solid #0284c7';
     } else {
       toast.style.background = '#10b981';
+      toast.style.color = '#ffffff';
+      toast.style.border = '1px solid #34d399';
     }
 
     toast.classList.remove('hidden');
