@@ -519,21 +519,15 @@
               <input type="text" id="customFieldName" class="form-input" placeholder="e.g. Automobile Two-Wheeler Dealership, Solar Franchise, Healthcare Agency, Logistics, etc.">
             </div>
 
-            <div class="form-group full-width" style="margin-bottom: 0.75rem;">
-              <label for="wizardCountrySelect"><i class="fa-solid fa-earth-americas"></i> Select Your Country / Legal
-                Jurisdiction *</label>
-              <select id="wizardCountrySelect" class="form-input"
-                style="font-weight: 700; background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.4); color: #f8fafc; font-size: 0.95rem;">
-                <option value="IN" selected>🇮🇳 India (Transfer of Property Act, Contract Act & Commercial Courts • INR ₹)
-                </option>
-                <option value="US">🇺🇸 United States (UCC Commercial Codes, State Civil Codes & Small Claims • USD $)
-                </option>
-                <option value="GB">🇬🇧 United Kingdom (Sale of Goods Act, Housing Act & Pre-Action Protocol • GBP £)</option>
-                <option value="CA">🇨🇦 Canada (Commercial & Residential Tenancies Act, Tribunals • CAD $)</option>
-                <option value="AU">🇦🇺 Australia (Competition & Consumer Act, Franchising Code & Tribunals • AUD $)</option>
-                <option value="GLOBAL">🌍 Worldwide / Other (International Commercial & Common Law Rules • USD $)</option>
-              </select>
-            </div>
+            <!-- Automatically uses country chosen in first popup or navbar (kept hidden for JS sync) -->
+            <select id="wizardCountrySelect" style="display: none;" aria-hidden="true">
+              <option value="IN" selected>India</option>
+              <option value="US">United States</option>
+              <option value="GB">United Kingdom</option>
+              <option value="CA">Canada</option>
+              <option value="AU">Australia</option>
+              <option value="GLOBAL">Worldwide</option>
+            </select>
 
             <div class="form-group custom-dropdown-group" id="cityGroupContainer">
               <label for="tenantCity" id="labelTenantCity">Rental City / District *</label>
