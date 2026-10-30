@@ -5629,3 +5629,54 @@ a {
   gap: 0.4rem;
 }
 
+/* Interactive Sub-Section Chips in Quick Checker */
+.checker-subsection-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+.checker-sub-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.9rem;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  color: #cbd5e1;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.checker-sub-chip:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.checker-sub-chip.active {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(56, 189, 248, 0.15));
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+  font-weight: 600;
+}
+
+.checker-sub-chip i {
+  font-size: 0.75rem;
+  opacity: 0.5;
+}
+
+.checker-sub-chip.active i {
+  opacity: 1;
+  color: #38bdf8;
+}
+

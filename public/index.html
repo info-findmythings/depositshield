@@ -328,56 +328,6 @@
     </div>
   </div>
 
-  <!-- Interactive Deduction Legality Checker Widget -->
-  <section class="quick-check-section" id="quickCheck">
-    <div class="section-container">
-      <div class="section-header">
-        <span class="section-tag"><i class="fa-solid fa-scale-balanced"></i> Instant Legal Assessment • All Dispute Fields & Dealerships</span>
-        <h2>Is Your Opponent's Action Illegal? Check Your Case</h2>
-        <p>Select your dispute category below to view the exact statutory violation, High Court ruling, and legal recovery remedy.</p>
-      </div>
-
-      <div class="checker-card" id="checkerCard">
-        <!-- Category Filter Tabs (Dealerships, Tenancy, Invoices, Consumer, Employment, Cheque, Custom) -->
-        <div class="checker-category-tabs" id="checkerCategoryTabs">
-          <button type="button" class="check-tab-btn active" data-category="dealership"><i class="fa-solid fa-car-side"></i> Dealership & Franchise</button>
-          <button type="button" class="check-tab-btn" data-category="tenancy"><i class="fa-solid fa-house-chimney-user"></i> Tenancy & Rent Deposit</button>
-          <button type="button" class="check-tab-btn" data-category="commercial"><i class="fa-solid fa-file-invoice-dollar"></i> B2B Invoices & MSME</button>
-          <button type="button" class="check-tab-btn" data-category="consumer"><i class="fa-solid fa-cart-shopping"></i> Consumer & Defective Goods</button>
-          <button type="button" class="check-tab-btn" data-category="employment"><i class="fa-solid fa-user-tie"></i> Employment & Salary</button>
-          <button type="button" class="check-tab-btn" data-category="cheque"><i class="fa-solid fa-money-check-dollar"></i> Cheque Bounce (Sec 138)</button>
-          <button type="button" class="check-tab-btn" data-category="custom"><i class="fa-solid fa-pen-ruler"></i> Any Other Field</button>
-        </div>
-
-        <div class="checker-input-group">
-          <label for="deductionTypeSelect" id="checkerSelectLabel">
-            <i class="fa-solid fa-triangle-exclamation text-primary"></i> Select Specific Dealership / Legal Breach to Evaluate:
-          </label>
-          <select id="deductionTypeSelect" class="form-select">
-            <!-- Dynamically populated by JS based on selected category -->
-          </select>
-        </div>
-
-        <div class="verdict-box" id="verdictBox">
-          <div class="verdict-status illegal" id="verdictStatus">
-            <i class="fa-solid fa-triangle-exclamation"></i> <strong>VERDICT: 100% UNLAWFUL BREACH OF DEALERSHIP AGREEMENT</strong>
-          </div>
-          <div class="verdict-details" id="verdictDetails">
-            <p id="verdictExplanation"></p>
-            <div class="verdict-statute" id="verdictStatute">
-              <span><i class="fa-solid fa-book-bookmark"></i> Legal Grounds:</span> <span id="verdictStatuteText">Sec 73 Indian Contract Act, Sale of Goods Act 1930, Commercial Courts Act 2015.</span>
-            </div>
-          </div>
-          <div class="verdict-action-bar" style="margin-top: 1.25rem; display: flex; justify-content: flex-end;">
-            <button type="button" class="btn-primary-hero btn-draft-from-verdict" id="btnDraftFromVerdict" style="padding: 0.75rem 1.4rem; font-size: 0.9rem;">
-              <i class="fa-solid fa-bolt"></i> Draft Legal Notice for this Dispute <i class="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Notice Generator Interactive Wizard -->
   <section class="generator-section" id="generatorSection">
     <div class="section-container">
@@ -1661,6 +1611,61 @@
     </div>
   </section>
 
+  <!-- Interactive Deduction Legality Checker Widget (Shows after generator wizard) -->
+  <section class="quick-check-section" id="quickCheck">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fa-solid fa-scale-balanced"></i> Instant Legal Assessment • All Dispute Fields & Dealerships</span>
+        <h2>Is Your Opponent's Action Illegal? Check Your Case</h2>
+        <p>Select your dispute category below to view the exact statutory violation, High Court ruling, and legal recovery remedy.</p>
+      </div>
+
+      <div class="checker-card" id="checkerCard">
+        <!-- Category Filter Tabs: All 10 Domains Supported -->
+        <div class="checker-category-tabs" id="checkerCategoryTabs">
+          <button type="button" class="check-tab-btn active" data-category="dealership"><i class="fa-solid fa-car-side"></i> Dealership & Franchise</button>
+          <button type="button" class="check-tab-btn" data-category="tenancy"><i class="fa-solid fa-house-chimney-user"></i> Tenancy & Rent</button>
+          <button type="button" class="check-tab-btn" data-category="commercial"><i class="fa-solid fa-file-invoice-dollar"></i> Invoices & MSME</button>
+          <button type="button" class="check-tab-btn" data-category="consumer"><i class="fa-solid fa-cart-shopping"></i> Consumer & Goods</button>
+          <button type="button" class="check-tab-btn" data-category="employment"><i class="fa-solid fa-user-tie"></i> Employment & Salary</button>
+          <button type="button" class="check-tab-btn" data-category="cheque"><i class="fa-solid fa-money-check-dollar"></i> Cheque Bounce (138)</button>
+          <button type="button" class="check-tab-btn" data-category="loan"><i class="fa-solid fa-hand-holding-dollar"></i> Loan & Debt</button>
+          <button type="button" class="check-tab-btn" data-category="builder"><i class="fa-solid fa-city"></i> Builder & RERA</button>
+          <button type="button" class="check-tab-btn" data-category="freelance"><i class="fa-solid fa-laptop-code"></i> Freelance & Agency</button>
+          <button type="button" class="check-tab-btn" data-category="custom"><i class="fa-solid fa-pen-ruler"></i> Any Other Field</button>
+        </div>
+
+        <div class="checker-input-group">
+          <label for="deductionTypeSelect" id="checkerSelectLabel">
+            <i class="fa-solid fa-triangle-exclamation text-primary"></i> Choose Specific Violation / Sub-Section to Evaluate:
+          </label>
+          <div class="checker-subsection-chips" id="checkerSubSectionChips">
+            <!-- Dynamically populated with active category sub-sections -->
+          </div>
+          <select id="deductionTypeSelect" class="form-select">
+            <!-- Dynamically populated by JS based on selected category -->
+          </select>
+        </div>
+
+        <div class="verdict-box" id="verdictBox">
+          <div class="verdict-status illegal" id="verdictStatus">
+            <i class="fa-solid fa-triangle-exclamation"></i> <strong>VERDICT: 100% UNLAWFUL BREACH OF DEALERSHIP AGREEMENT</strong>
+          </div>
+          <div class="verdict-details" id="verdictDetails">
+            <p id="verdictExplanation"></p>
+            <div class="verdict-statute" id="verdictStatute">
+              <span><i class="fa-solid fa-book-bookmark"></i> Legal Grounds:</span> <span id="verdictStatuteText">Sec 73 Indian Contract Act, Sale of Goods Act 1930, Commercial Courts Act 2015.</span>
+            </div>
+          </div>
+          <div class="verdict-action-bar" style="margin-top: 1.25rem; display: flex; justify-content: flex-end;">
+            <button type="button" class="btn-primary-hero btn-draft-from-verdict" id="btnDraftFromVerdict" style="padding: 0.75rem 1.4rem; font-size: 0.9rem;">
+              <i class="fa-solid fa-bolt"></i> Draft Legal Notice for this Dispute <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   <!-- First-Visit Country Selector & Cookie Permission Modal -->
   <div class="modal-backdrop hidden" id="countryCookieModalBackdrop">
     <div class="modal-card country-select-modal" id="countrySelectModalCard">

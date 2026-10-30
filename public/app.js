@@ -258,6 +258,78 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     },
+    loan: {
+      title: 'Loan & Debt Recovery (Promissory Note)',
+      selectLabel: 'Select Specific Loan Default / Debt Violation to Evaluate:',
+      items: {
+        loan_due_date_default: {
+          label: 'Default on Repayment Due Date Despite Written Promissory Note',
+          status: 'VERDICT: ACTIONABLE LIQUIDATED DEBT UNDER ORDER XXXVII CPC',
+          explanation: 'Defaulting on a written promissory note, loan agreement, or debt covenant entitles the lender to initiate Summary Suit proceedings under Order XXXVII of the CPC for immediate decree and attachment of debtor assets.',
+          statutes: 'Negotiable Instruments Act 1881, Order XXXVII CPC, Sec 73 Indian Contract Act.'
+        },
+        interest_refusal: {
+          label: 'Refusal to Pay Agreed Monthly Interest as per Loan Instrument',
+          status: 'VERDICT: MATERIAL BREACH OF LOAN TERMS',
+          explanation: 'Withholding contractually agreed interest constitutes breach of contract. Courts routinely award pre-suit interest up to 18% per annum along with principal recovery.',
+          statutes: 'Sec 34 CPC (Award of Commercial Interest), Sec 73 Contract Act.'
+        },
+        evading_repayment: {
+          label: 'Deliberate Evasion, Absconding or Dishonest Inducement to Borrow',
+          status: 'VERDICT: CRIMINAL BREACH OF TRUST & FRAUD (SEC 420 IPC / 318 BNS)',
+          explanation: 'Borrowing funds under false assurances without intention to repay amounts to cheating and criminal misappropriation of funds.',
+          statutes: 'Sec 406/420 IPC, Sec 316/318 Bharatiya Nyaya Sanhita, Summary Suit CPC.'
+        }
+      }
+    },
+    builder: {
+      title: 'Builder & Real Estate Dispute (RERA)',
+      selectLabel: 'Select Specific Builder / Real Estate Violation to Evaluate:',
+      items: {
+        possession_delay: {
+          label: 'Delay in Handing Over Possession Beyond Agreement Date (RERA Sec 18)',
+          status: 'VERDICT: STATUTORY VIOLATION OF SECTION 18 REAL ESTATE ACT',
+          explanation: 'Under Section 18 of RERA 2016, if a builder fails to complete or give possession of an apartment/plot by the agreed date, the buyer has the absolute right to claim 100% refund with interest (MCLR + 2%) or delay compensation.',
+          statutes: 'Section 18 & 19 Real Estate (Regulation and Development) Act 2016 (RERA).'
+        },
+        advance_refund: {
+          label: 'Refusal to Refund Booking Advance on Project Cancellation',
+          status: 'VERDICT: UNLAWFUL FORFEITURE OF HOMEBUYER ADVANCE',
+          explanation: 'Forfeiting more than token administrative fee or refusing refund when builder changes terms is an unfair trade practice under RERA and Consumer Protection Act.',
+          statutes: 'Sec 13 RERA 2016, Sec 2(47) Consumer Protection Act 2019.'
+        },
+        unauthorized_alteration: {
+          label: 'Unauthorized Change in Flat Layout, Amenities, or Super Built-up Area',
+          status: 'VERDICT: MATERIAL BREACH OF APPROVED SANCTION PLANS (SEC 14 RERA)',
+          explanation: 'Builders cannot alter sanctioned architectural drawings, layout, common amenities or reduce carpet area without 2/3rd allottees written consent under Section 14 of RERA.',
+          statutes: 'Section 14 RERA 2016, High Court and Supreme Court RERA Precedents.'
+        }
+      }
+    },
+    freelance: {
+      title: 'Freelancer & Agency Fee Recovery',
+      selectLabel: 'Select Specific Client Non-Payment Violation to Evaluate:',
+      items: {
+        unpaid_milestone: {
+          label: 'Client Withholding Final Payment After Approving Deliverables',
+          status: 'VERDICT: 100% UNLAWFUL BREACH OF FREELANCE CONTRACT',
+          explanation: 'Under Section 70 of the Indian Contract Act, once a client has received, approved, or put into commercial use digital assets or code, they are legally obligated to pay agreed remuneration.',
+          statutes: 'Sec 70 & 73 Indian Contract Act 1872, MSME Development Act 2006.'
+        },
+        project_abandonment: {
+          label: 'Client Ghosting / Abrupt Project Cancellation Without Pro-Rata Payment',
+          status: 'VERDICT: ILLEGAL REPUDIATION OF CONTRACT (QUANTUM MERUIT)',
+          explanation: 'Under the legal doctrine of Quantum Meruit, a service provider is entitled to full compensation for work performed up to the date of cancellation plus compensation for reserved schedule.',
+          statutes: 'Doctrine of Quantum Meruit (Sec 65/70 Contract Act), Commercial Courts Act.'
+        },
+        scope_creep: {
+          label: 'Demanding Endless Revisions Outside Scope While Withholding Dues',
+          status: 'VERDICT: UNREASONABLE COERCION & BREACH OF STATEMENT OF WORK',
+          explanation: 'Withholding payment for completed agreed milestones to force free additional work violates the Statement of Work (SOW) and constitutes actionable commercial coercion.',
+          statutes: 'Sec 73 Contract Act, Indian Copyright Act (Retention of Intellectual Property until Paid).'
+        }
+      }
+    },
     custom: {
       title: 'Any Field / Dealership / Custom Legal Notice',
       selectLabel: 'Select Specific Legal Breach for Your Field / Industry:',
@@ -2582,6 +2654,27 @@ ${d.tenantName} (${d.tenantPhone})`;
       deductionSelect.appendChild(opt);
     });
 
+    // Populate interactive sub-section chips
+    const subChipsContainer = document.getElementById('checkerSubSectionChips');
+    if (subChipsContainer) {
+      subChipsContainer.innerHTML = '';
+      keys.forEach((key, idx) => {
+        const item = cat.items[key];
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = `checker-sub-chip ${idx === 0 ? 'active' : ''}`;
+        chip.setAttribute('data-key', key);
+        chip.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${item.label || key}</span>`;
+        chip.addEventListener('click', () => {
+          subChipsContainer.querySelectorAll('.checker-sub-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          deductionSelect.value = key;
+          renderCheckerVerdict(key, catKey);
+        });
+        subChipsContainer.appendChild(chip);
+      });
+    }
+
     if (keys.length > 0) {
       renderCheckerVerdict(keys[0], catKey);
     }
@@ -2604,6 +2697,14 @@ ${d.tenantName} (${d.tenantPhone})`;
       verdictStatuteText.textContent = selected.statutes;
     } else if (verdictStatute) {
       verdictStatute.innerHTML = `<span><i class="fa-solid fa-book-bookmark"></i> Legal Grounds:</span> ${selected.statutes}`;
+    }
+
+    // Sync active sub-chip if changed via dropdown
+    const subChipsContainer = document.getElementById('checkerSubSectionChips');
+    if (subChipsContainer) {
+      subChipsContainer.querySelectorAll('.checker-sub-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-key') === itemKey);
+      });
     }
   }
 
@@ -2629,16 +2730,11 @@ ${d.tenantName} (${d.tenantPhone})`;
   // Wire up CTA Draft Legal Notice for this Dispute button
   if (btnDraftFromVerdict) {
     btnDraftFromVerdict.addEventListener('click', () => {
-      const targetNoticeType = currentCheckerCat === 'dealership' ? 'dealership' :
-                               currentCheckerCat === 'tenancy' ? 'tenancy' :
-                               currentCheckerCat === 'commercial' ? 'commercial' :
-                               currentCheckerCat === 'consumer' ? 'consumer' :
-                               currentCheckerCat === 'employment' ? 'employment' :
-                               currentCheckerCat === 'cheque' ? 'cheque' : 'custom';
+      const targetNoticeType = NOTICE_TYPES_DB[currentCheckerCat] ? currentCheckerCat : 'custom';
       applyNoticeType(targetNoticeType, false);
       const genSec = document.getElementById('generatorSection');
       if (genSec) genSec.scrollIntoView({ behavior: 'smooth' });
-      showToast(`Selected "${NOTICE_TYPES_DB[targetNoticeType].label}" Template. Proceed to Step 1!`, 'info');
+      showToast(`Selected "${NOTICE_TYPES_DB[targetNoticeType] ? NOTICE_TYPES_DB[targetNoticeType].label : 'Custom'}" Template. Proceed to Step 1!`, 'info');
     });
   }
 
