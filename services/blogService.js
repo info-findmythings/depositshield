@@ -25,7 +25,7 @@ function renderBlogIndexHtml(articles, stats) {
       <div class="blog-card-meta">
         <span class="blog-category-badge">${escapeHtml(art.category)}</span>
         <span class="blog-read-time"><i class="fa-regular fa-clock"></i> ${escapeHtml(art.readTime)}</span>
-        <span class="blog-day-tag">Day ${art.dayNumber}</span>
+        <span class="blog-day-tag"><i class="fa-solid fa-certificate"></i> Verified Guide</span>
       </div>
       <h2 class="blog-card-title">
         <a href="/blog/${escapeHtml(art.slug)}">${escapeHtml(art.title)}</a>
@@ -54,8 +54,8 @@ function renderBlogIndexHtml(articles, stats) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Legal Rights & Demand Notice Library | DepositShield Team (100-Day Series)</title>
-  <meta name="description" content="Explore DepositShield's comprehensive 100-Day Legal Rights series covering Dealership Caution Deposits, Rental Tenancy Laws, Unpaid Salary Recovery, Cheque Bounce (Sec 138), MSME Invoices & RERA Builder Delays. Authored by DepositShield Team.">
+  <title>Legal Rights & Demand Notice Library | DepositShield Team</title>
+  <meta name="description" content="Explore DepositShield's comprehensive statutory Legal Rights library covering Dealership Caution Deposits, Rental Tenancy Laws, Unpaid Salary Recovery, Cheque Bounce (Sec 138), MSME Invoices & RERA Builder Delays. Authored by DepositShield Team.">
   <meta name="keywords" content="deposit refund legal rights, dealership dispute recovery, landlord painting deduction illegal, unpaid salary notice format, section 138 cheque bounce notice, msme 45 day rule, rera refund builder delay">
   <meta name="author" content="DepositShield Team">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -110,8 +110,8 @@ function renderBlogIndexHtml(articles, stats) {
   <div class="announcement-bar">
     <div class="announcement-content">
       <span class="live-dot"></span>
-      <span class="badge-urgent">100-DAY LEGAL SERIES</span>
-      <span>New Advocate Guide Released Every Morning at <strong>07:00 AM IST</strong> • Authored by <strong>DepositShield Team</strong></span>
+      <span class="badge-urgent"><i class="fa-solid fa-scale-balanced"></i> LEGAL ADVISORY</span>
+      <span>Statutory Pre-Litigation Notice Guides & Case Law • Authored by <strong>DepositShield Team</strong></span>
     </div>
   </div>
 
@@ -142,39 +142,12 @@ function renderBlogIndexHtml(articles, stats) {
   <header class="blog-hero-section">
     <div class="section-container">
       <div class="blog-hero-badge">
-        <i class="fa-solid fa-graduation-cap"></i> 100-DAY PRE-LITIGATION LEGAL LIBRARY
+        <i class="fa-solid fa-graduation-cap"></i> PRE-LITIGATION LEGAL LIBRARY
       </div>
       <h1 class="blog-main-title">Statutory Legal Rights, Precedents & Recovery Playbooks</h1>
       <p class="blog-main-desc">
         Comprehensive, lawyer-grade breakdowns covering Dealership Caution Deposits, Rental Deductions, Unpaid Salary, Cheque Bounces, B2B Invoices, and Builder Delays. Authored by the <strong>DepositShield Team</strong>.
       </p>
-
-      <!-- Live Release Tracker Status Box -->
-      <div class="blog-schedule-tracker">
-        <div class="tracker-item">
-          <i class="fa-solid fa-circle-check text-success"></i>
-          <div>
-            <strong>${stats.publishedCount} Guides Live</strong>
-            <span>Active & Searchable</span>
-          </div>
-        </div>
-        <div class="tracker-divider"></div>
-        <div class="tracker-item">
-          <i class="fa-solid fa-calendar-day text-primary"></i>
-          <div>
-            <strong>Automated 07:00 AM IST</strong>
-            <span>Daily Morning Release</span>
-          </div>
-        </div>
-        <div class="tracker-divider"></div>
-        <div class="tracker-item">
-          <i class="fa-solid fa-clock-rotate-left" style="color: #f59e0b;"></i>
-          <div>
-            <strong>Next Release:</strong>
-            <span>${escapeHtml(stats.nextReleaseFormatted)}</span>
-          </div>
-        </div>
-      </div>
 
       <!-- Search & Category Filters -->
       <div class="blog-filter-bar">
@@ -183,7 +156,7 @@ function renderBlogIndexHtml(articles, stats) {
           <input type="text" id="blogSearchInput" placeholder="Search by dispute, law (e.g. Sec 108 TPA, Dealership, Salary, Cheque)...">
         </div>
         <div class="blog-category-filter-chips" id="blogCategoryChips">
-          <button type="button" class="blog-cat-btn active" data-cat="all">All Topics (${stats.publishedCount})</button>
+          <button type="button" class="blog-cat-btn active" data-cat="all">All Topics</button>
           <button type="button" class="blog-cat-btn" data-cat="Dealership & Franchise">Dealerships</button>
           <button type="button" class="blog-cat-btn" data-cat="Tenancy & Rent Deposits">Tenancy Deposits</button>
           <button type="button" class="blog-cat-btn" data-cat="Salary & Employment Dues">Salary & Employment</button>
@@ -234,7 +207,7 @@ function renderBlogIndexHtml(articles, stats) {
         <div class="footer-col">
           <h4>Legal Library</h4>
           <ul>
-            <li><a href="/blog">All 100-Day Legal Guides</a></li>
+            <li><a href="/blog">All Legal Guides & Precedents</a></li>
             <li><a href="/laws">Statutory Laws Compendium</a></li>
             <li><a href="/#quickCheck">Dispute Assessment Widget</a></li>
             <li><a href="/#generatorSection">Notice Drafting Wizard</a></li>
@@ -415,8 +388,8 @@ function renderArticleHtml(article) {
   <div class="announcement-bar">
     <div class="announcement-content">
       <span class="live-dot"></span>
-      <span class="badge-urgent">100-DAY SERIES • DAY ${article.dayNumber}</span>
-      <span>Daily 07:00 AM IST Legal Release • Authored by <strong>DepositShield Team</strong></span>
+      <span class="badge-urgent"><i class="fa-solid fa-shield-halved"></i> STATUTORY GUIDE</span>
+      <span>Advocate-Reviewed Demand Notice Format & Case Precedents • Authored by <strong>DepositShield Team</strong></span>
     </div>
   </div>
 
@@ -456,7 +429,7 @@ function renderArticleHtml(article) {
     <header class="article-header">
       <div class="article-meta-top">
         <span class="blog-category-badge">${escapeHtml(article.category)}</span>
-        <span class="badge-day">Day ${article.dayNumber} of 100</span>
+        <span class="badge-day"><i class="fa-solid fa-scale-balanced"></i> Statutory Guide</span>
         <span class="blog-read-time"><i class="fa-regular fa-clock"></i> ${escapeHtml(article.readTime)}</span>
       </div>
       <h1 class="article-title">${escapeHtml(article.title)}</h1>
@@ -572,8 +545,8 @@ function renderArticleHtml(article) {
         </div>
 
         <div class="sidebar-card">
-          <h4><i class="fa-solid fa-calendar-days text-primary"></i> 100-Day Series Schedule</h4>
-          <p>A new statutory legal guide is published <strong>every morning at 07:00 AM IST</strong> by the DepositShield Team.</p>
+          <h4><i class="fa-solid fa-scale-balanced text-primary"></i> Statutory Legal Advisory</h4>
+          <p>Comprehensive, advocate-reviewed dispute recovery procedures authored and maintained by the <strong>DepositShield Team</strong>.</p>
           <a href="/blog" class="sidebar-link"><i class="fa-solid fa-arrow-left"></i> Browse All Guides</a>
         </div>
       </aside>
@@ -595,7 +568,7 @@ function renderArticleHtml(article) {
         <div class="footer-col">
           <h4>Legal Library</h4>
           <ul>
-            <li><a href="/blog">All 100-Day Legal Guides</a></li>
+            <li><a href="/blog">All Legal Guides & Precedents</a></li>
             <li><a href="/laws">Statutory Laws Compendium</a></li>
             <li><a href="/#quickCheck">Dispute Assessment Widget</a></li>
             <li><a href="/#generatorSection">Notice Drafting Wizard</a></li>

@@ -4587,26 +4587,11 @@ a {
   }
 }
 
-/* Floating "Free Deposit Help" Trigger Button */
+/* Floating "Free Deposit Help" Trigger Button (Deprecated - Handled by AI Advocate) */
 .floating-help-btn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-  color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  padding: 12px 20px;
-  border-radius: 9999px;
-  font-size: 0.92rem;
-  font-weight: 800;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4), 0 0 15px rgba(16, 185, 129, 0.2);
-  z-index: 998;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
-  font-family: 'Outfit', sans-serif;
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 .floating-help-btn:hover {
