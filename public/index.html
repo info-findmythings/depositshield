@@ -239,7 +239,9 @@
           Callback</a>
         <a href="#faqSection" class="nav-link" id="navLinkFaq">FAQ</a>
         <a href="#generatorSection" class="nav-btn-cta" id="navCtaBtn">
-          <i class="fa-solid fa-gavel"></i> Draft Legal Notice
+          <i class="fa-solid fa-gavel"></i>
+          <span class="nav-cta-text-full">Draft Legal Notice</span>
+          <span class="nav-cta-text-mobile">Draft</span>
         </a>
       </div>
     </div>
@@ -1664,6 +1666,126 @@
       </div>
     </div>
   </section>
+
+  <!-- First-Visit Country Selector & Cookie Permission Modal -->
+  <div class="modal-backdrop hidden" id="countryCookieModalBackdrop">
+    <div class="modal-card country-select-modal" id="countrySelectModalCard">
+      <button type="button" class="modal-close" id="btnCountryModalClose" aria-label="Close">&times;</button>
+      <div class="country-modal-header">
+        <div class="country-modal-badge">
+          <i class="fa-solid fa-earth-americas"></i> LEGAL JURISDICTION & PRIVACY
+        </div>
+        <h2 class="country-modal-title">Select Your Country / Region</h2>
+        <p class="country-modal-subtitle">
+          DepositShield automatically tailors statutory legal citations, court petition formats, dispute checker grounds, and currency for your legal system.
+        </p>
+      </div>
+
+      <!-- Country Cards Grid -->
+      <div class="country-modal-grid" id="countryModalGrid">
+        <div class="country-modal-card active" data-country="IN">
+          <div class="country-card-flag">🇮🇳</div>
+          <div class="country-card-details">
+            <div class="country-card-name-row">
+              <span class="country-card-name">India</span>
+              <span class="country-card-currency">₹ INR</span>
+            </div>
+            <div class="country-card-laws">Sec 108 TPA, Contract Act & e-Jagriti Consumer Court</div>
+          </div>
+          <div class="country-card-radio"><i class="fa-solid fa-circle-check"></i></div>
+        </div>
+
+        <div class="country-modal-card" data-country="US">
+          <div class="country-card-flag">🇺🇸</div>
+          <div class="country-card-details">
+            <div class="country-card-name-row">
+              <span class="country-card-name">United States</span>
+              <span class="country-card-currency">$ USD</span>
+            </div>
+            <div class="country-card-laws">State Civil Codes, Treble Damages & Small Claims</div>
+          </div>
+          <div class="country-card-radio"><i class="fa-solid fa-circle-check"></i></div>
+        </div>
+
+        <div class="country-modal-card" data-country="GB">
+          <div class="country-card-flag">🇬🇧</div>
+          <div class="country-card-details">
+            <div class="country-card-name-row">
+              <span class="country-card-name">United Kingdom</span>
+              <span class="country-card-currency">£ GBP</span>
+            </div>
+            <div class="country-card-laws">Housing Act 2004, TDS / DPS & CPR Pre-Action Protocol</div>
+          </div>
+          <div class="country-card-radio"><i class="fa-solid fa-circle-check"></i></div>
+        </div>
+
+        <div class="country-modal-card" data-country="CA">
+          <div class="country-card-flag">🇨🇦</div>
+          <div class="country-card-details">
+            <div class="country-card-name-row">
+              <span class="country-card-name">Canada</span>
+              <span class="country-card-currency">$ CAD</span>
+            </div>
+            <div class="country-card-laws">Provincial RTA (Ontario LTB / BC RTB) & 2x Penalty</div>
+          </div>
+          <div class="country-card-radio"><i class="fa-solid fa-circle-check"></i></div>
+        </div>
+
+        <div class="country-modal-card" data-country="AU">
+          <div class="country-card-flag">🇦🇺</div>
+          <div class="country-card-details">
+            <div class="country-card-name-row">
+              <span class="country-card-name">Australia</span>
+              <span class="country-card-currency">$ AUD</span>
+            </div>
+            <div class="country-card-laws">Residential Tenancies Act, NCAT/VCAT & Rental Bonds</div>
+          </div>
+          <div class="country-card-radio"><i class="fa-solid fa-circle-check"></i></div>
+        </div>
+
+        <div class="country-modal-card" data-country="GLOBAL">
+          <div class="country-card-flag">🌍</div>
+          <div class="country-card-details">
+            <div class="country-card-name-row">
+              <span class="country-card-name">Worldwide / Other</span>
+              <span class="country-card-currency">$ USD</span>
+            </div>
+            <div class="country-card-laws">International Commercial Law & Universal Demand Notice</div>
+          </div>
+          <div class="country-card-radio"><i class="fa-solid fa-circle-check"></i></div>
+        </div>
+      </div>
+
+      <!-- Cookie Consent & Storage Permission Box -->
+      <div class="cookie-permission-card">
+        <div class="cookie-permission-header">
+          <div class="cookie-icon-box"><i class="fa-solid fa-cookie-bite"></i></div>
+          <div class="cookie-text-box">
+            <h4>Cookie & Jurisdiction Storage Permission</h4>
+            <p>
+              We use secure essential cookies and local storage to save your country preference, currency, and legal notice progress so you don't lose your data.
+            </p>
+          </div>
+        </div>
+        <label class="cookie-checkbox-wrap" for="chkCookiePermission">
+          <input type="checkbox" id="chkCookiePermission" checked>
+          <span class="cookie-check-custom"></span>
+          <span class="cookie-check-label">Remember my country & legal preference using essential cookies</span>
+        </label>
+      </div>
+
+      <!-- Modal Action Buttons -->
+      <div class="country-modal-actions">
+        <button type="button" class="btn-confirm-country" id="btnConfirmCountryModal">
+          <i class="fa-solid fa-circle-check"></i> Save Preference & Continue <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <div class="country-modal-footer-note">
+        <i class="fa-solid fa-shield-halved text-success"></i> 100% Private • No Account or Signup Required • Change Anytime in Navbar
+      </div>
+    </div>
+  </div>
 
   <!-- Razorpay Official Checkout Modal -->
   <div class="modal-backdrop hidden" id="upiModalBackdrop">

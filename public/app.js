@@ -2669,12 +2669,42 @@ ${d.tenantName} (${d.tenantPhone})`;
   }
 
   // ==========================================================================
-  // Global setCountry Handler
+  // Global setCountry Handler & Cookie Helpers
   // ==========================================================================
+  function setCookie(name, value, days = 365) {
+    try {
+      let expires = "";
+      if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = `${name}=${encodeURIComponent(value || "")}${expires}; path=/; SameSite=Lax`;
+    } catch (e) { }
+  }
+
+  function getCookie(name) {
+    try {
+      const nameEQ = name + "=";
+      const ca = document.cookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) {
+          return decodeURIComponent(c.substring(nameEQ.length, c.length));
+        }
+      }
+    } catch (e) { }
+    return null;
+  }
+
   function setCountry(countryCode, silent = false) {
     const validCode = COUNTRIES_DB[countryCode] ? countryCode : 'IN';
     state.country = validCode;
-    try { localStorage.setItem('ds_country', validCode); } catch (e) { }
+    try {
+      localStorage.setItem('ds_country', validCode);
+      setCookie('ds_country', validCode, 365);
+    } catch (e) { }
 
     const c = COUNTRIES_DB[validCode];
 
@@ -4519,11 +4549,112 @@ ${d.tenantName}`;
   }
 
   // ==========================================================================
+  // First-Visit Country Selector & Cookie Permission Modal
+  // ==========================================================================
+  function initCountryCookieModal(detectedCountry) {
+    const modalBackdrop = document.getElementById('countryCookieModalBackdrop');
+    if (!modalBackdrop) return;
+
+    const cards = modalBackdrop.querySelectorAll('.country-modal-card');
+    const btnConfirm = document.getElementById('btnConfirmCountryModal');
+    const btnClose = document.getElementById('btnCountryModalClose');
+    const chkCookie = document.getElementById('chkCookiePermission');
+
+    let currentSelected = detectedCountry || state.country || 'IN';
+
+    function highlightCard(code) {
+      cards.forEach(card => {
+        const match = card.dataset.country === code;
+        card.classList.toggle('active', match);
+      });
+      currentSelected = code;
+    }
+
+    highlightCard(currentSelected);
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        const code = card.dataset.country;
+        if (code) {
+          highlightCard(code);
+        }
+      });
+      card.addEventListener('dblclick', () => {
+        const code = card.dataset.country;
+        if (code) {
+          highlightCard(code);
+          if (btnConfirm) btnConfirm.click();
+        }
+      });
+    });
+
+    function closeModal() {
+      modalBackdrop.classList.add('hidden');
+    }
+
+    function openModal() {
+      highlightCard(state.country || detectedCountry || 'IN');
+      modalBackdrop.classList.remove('hidden');
+    }
+
+    if (btnConfirm) {
+      btnConfirm.addEventListener('click', () => {
+        const allowCookie = chkCookie ? chkCookie.checked : true;
+        try {
+          localStorage.setItem('ds_cookie_consent', allowCookie ? 'accepted' : 'declined');
+          if (allowCookie) {
+            setCookie('ds_cookie_consent', 'accepted', 365);
+          }
+        } catch (e) { }
+
+        setCountry(currentSelected);
+        closeModal();
+
+        const c = COUNTRIES_DB[currentSelected];
+        if (c) {
+          showToast(`Legal jurisdiction set to ${c.name} (${c.flag} ${c.currencySymbol})`, 'success');
+        }
+      });
+    }
+
+    if (btnClose) {
+      btnClose.addEventListener('click', () => {
+        try {
+          localStorage.setItem('ds_cookie_consent', 'dismissed');
+        } catch (e) { }
+        closeModal();
+      });
+    }
+
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) {
+        try {
+          localStorage.setItem('ds_cookie_consent', 'dismissed');
+        } catch (e) { }
+        closeModal();
+      }
+    });
+
+    // Check if user has already visited and configured or dismissed
+    let hasConsent = null;
+    try {
+      hasConsent = localStorage.getItem('ds_cookie_consent') || getCookie('ds_cookie_consent');
+    } catch (e) { }
+
+    // If first visit, show the modal after 450ms
+    if (!hasConsent) {
+      setTimeout(() => {
+        openModal();
+      }, 450);
+    }
+  }
+
+  // ==========================================================================
   // Initialize Country & City Data on Page Load
   // ==========================================================================
   let initialCountry = 'IN';
   try {
-    const saved = localStorage.getItem('ds_country');
+    const saved = localStorage.getItem('ds_country') || getCookie('ds_country');
     if (saved && COUNTRIES_DB[saved]) {
       initialCountry = saved;
     } else {
@@ -4545,4 +4676,5 @@ ${d.tenantName}`;
   setCountry(initialCountry, true);
   updateCheckerDropdown('dealership');
   applyNoticeType('dealership', true);
+  initCountryCookieModal(initialCountry);
 });
