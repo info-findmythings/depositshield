@@ -329,61 +329,8 @@
     </div>
   </div>
 
-  <!-- Interactive Dispute Legality Checker Widget (Evaluates case before notice drafting) -->
-  <section class="quick-check-section" id="quickCheck">
-    <div class="section-container">
-      <div class="section-header">
-        <span class="section-tag"><i class="fa-solid fa-scale-balanced"></i> Instant Legal Assessment • All Dispute Fields & Dealerships</span>
-        <h2>Is Your Opponent's Action Illegal? Check Your Case</h2>
-        <p>Select your dispute category below to view the exact statutory violation, High Court ruling, and legal recovery remedy.</p>
-      </div>
-
-      <div class="checker-card" id="checkerCard">
-        <!-- Category Filter Tabs: All 10 Domains Supported -->
-        <div class="checker-category-tabs" id="checkerCategoryTabs">
-          <button type="button" class="check-tab-btn active" data-category="dealership"><i class="fa-solid fa-car-side"></i> Dealership & Franchise</button>
-          <button type="button" class="check-tab-btn" data-category="tenancy"><i class="fa-solid fa-house-chimney-user"></i> Tenancy & Rent</button>
-          <button type="button" class="check-tab-btn" data-category="commercial"><i class="fa-solid fa-file-invoice-dollar"></i> Invoices & MSME</button>
-          <button type="button" class="check-tab-btn" data-category="consumer"><i class="fa-solid fa-cart-shopping"></i> Consumer & Goods</button>
-          <button type="button" class="check-tab-btn" data-category="employment"><i class="fa-solid fa-user-tie"></i> Employment & Salary</button>
-          <button type="button" class="check-tab-btn" data-category="cheque"><i class="fa-solid fa-money-check-dollar"></i> Cheque Bounce (138)</button>
-          <button type="button" class="check-tab-btn" data-category="loan"><i class="fa-solid fa-hand-holding-dollar"></i> Loan & Debt</button>
-          <button type="button" class="check-tab-btn" data-category="builder"><i class="fa-solid fa-city"></i> Builder & RERA</button>
-          <button type="button" class="check-tab-btn" data-category="freelance"><i class="fa-solid fa-laptop-code"></i> Freelance & Agency</button>
-          <button type="button" class="check-tab-btn" data-category="custom"><i class="fa-solid fa-pen-ruler"></i> Any Other Field</button>
-        </div>
-
-        <div class="checker-input-group">
-          <label for="deductionTypeSelect" id="checkerSelectLabel">
-            <i class="fa-solid fa-triangle-exclamation text-primary"></i> Choose Specific Violation / Sub-Section to Evaluate:
-          </label>
-          <div class="checker-subsection-chips" id="checkerSubSectionChips">
-            <!-- Dynamically populated with active category sub-sections -->
-          </div>
-          <select id="deductionTypeSelect" class="form-select">
-            <!-- Dynamically populated by JS based on selected category -->
-          </select>
-        </div>
-
-        <div class="verdict-box" id="verdictBox">
-          <div class="verdict-status illegal" id="verdictStatus">
-            <i class="fa-solid fa-triangle-exclamation"></i> <strong>VERDICT: 100% UNLAWFUL BREACH OF DEALERSHIP AGREEMENT</strong>
-          </div>
-          <div class="verdict-details" id="verdictDetails">
-            <p id="verdictExplanation"></p>
-            <div class="verdict-statute" id="verdictStatute">
-              <span><i class="fa-solid fa-book-bookmark"></i> Legal Grounds:</span> <span id="verdictStatuteText">Sec 73 Indian Contract Act, Sale of Goods Act 1930, Commercial Courts Act 2015.</span>
-            </div>
-          </div>
-          <div class="verdict-action-bar" style="margin-top: 1.25rem; display: flex; justify-content: flex-end;">
-            <button type="button" class="btn-primary-hero btn-draft-from-verdict" id="btnDraftFromVerdict" style="padding: 0.75rem 1.4rem; font-size: 0.9rem;">
-              <i class="fa-solid fa-bolt"></i> Draft Legal Notice for this Dispute <i class="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Anchor for Quick Check Links -->
+  <div id="quickCheck"></div>
 
   <!-- Notice Generator Interactive Wizard -->
   <section class="generator-section" id="generatorSection">
@@ -397,7 +344,7 @@
 
       <!-- Generator Stepper Card -->
       <div class="wizard-container" id="wizardContainer">
-        <!-- Step Indicators -->
+        <!-- Step Indicators: 4 Dedicated Steps -->
         <div class="wizard-steps" id="wizardSteps">
           <div class="step-item active" id="stepIndicator1">
             <div class="step-num">1</div>
@@ -406,17 +353,17 @@
           <div class="step-line"></div>
           <div class="step-item" id="stepIndicator2">
             <div class="step-num">2</div>
-            <div class="step-title">Disputed Claims</div>
+            <div class="step-title">Dispute Reason</div>
           </div>
           <div class="step-line"></div>
           <div class="step-item" id="stepIndicator3">
             <div class="step-num">3</div>
-            <div class="step-title">Legal Strength</div>
+            <div class="step-title">Financial Details</div>
           </div>
           <div class="step-line"></div>
           <div class="step-item" id="stepIndicator4">
             <div class="step-num">4</div>
-            <div class="step-title">Official Notice</div>
+            <div class="step-title">Court-Ready Notice</div>
           </div>
         </div>
 
@@ -654,27 +601,86 @@
           <div class="wizard-buttons">
             <div></div>
             <button type="button" class="btn-next" id="btnStep1Next">
+              Next: Select Dispute Reason <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Dispute Reason & Specific Breach -->
+        <div class="wizard-step-content" id="wizardStep2">
+          <div class="step-heading">
+            <h3><i class="fa-solid fa-triangle-exclamation text-primary"></i> <span id="step2HeadingText">Step 2: Dispute Reason & Statutory Breach</span></h3>
+            <p id="step2Subtitle">Select the exact statutory violation or breach reason that applies to your case to apply legal grounds.</p>
+          </div>
+
+          <div class="wizard-reason-card" style="background: rgba(15, 23, 42, 0.7); border: 1.5px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;">
+            <!-- Category Indicator Badge -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+              <span class="badge-all-allowed" id="wizardReasonCategoryBadge">
+                <i class="fa-solid fa-car-side"></i> Dealership & Franchise Dispute
+              </span>
+              <span style="font-size: 0.8rem; color: #94a3b8;"><i class="fa-solid fa-circle-info"></i> Click any specific breach chip to auto-calculate statutory grounds</span>
+            </div>
+
+            <div class="checker-input-group" style="margin-bottom: 1rem;">
+              <label for="wizardReasonSelect" id="wizardReasonSelectLabel" style="font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <i class="fa-solid fa-triangle-exclamation text-primary"></i> Choose Specific Violation / Sub-Section:
+              </label>
+              <div class="checker-subsection-chips" id="wizardReasonChips">
+                <!-- Dynamically populated with active category sub-sections -->
+              </div>
+              <select id="wizardReasonSelect" class="form-select" style="margin-top: 0.85rem;">
+                <!-- Dynamically populated with options -->
+              </select>
+            </div>
+
+            <!-- Dynamic Statutory Verdict Box -->
+            <div class="verdict-box" id="wizardVerdictBox" style="margin-top: 1rem;">
+              <div class="verdict-status illegal" id="wizardVerdictStatus">
+                <i class="fa-solid fa-triangle-exclamation"></i> <strong>VERDICT: 100% UNLAWFUL BREACH</strong>
+              </div>
+              <div class="verdict-details" id="wizardVerdictDetails">
+                <p id="wizardVerdictExplanation"></p>
+                <div class="verdict-statute" id="wizardVerdictStatute">
+                  <span><i class="fa-solid fa-book-bookmark"></i> Legal Grounds:</span> <span id="wizardVerdictStatuteText"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Custom Reason Textbox -->
+            <div class="form-group full-width" style="margin-top: 1.25rem;">
+              <label for="wizardCustomReasonText" style="font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <i class="fa-solid fa-pen-to-square text-primary"></i> Additional Breach Specifics / Facts (Optional)
+              </label>
+              <textarea id="wizardCustomReasonText" class="form-input" rows="2" placeholder="e.g. Agreement expired on 30th Sep; refund withheld despite clean audit and formal no dues certificate..."></textarea>
+            </div>
+          </div>
+
+          <div class="wizard-buttons">
+            <button type="button" class="btn-prev" id="btnStep2Prev">
+              <i class="fa-solid fa-arrow-left"></i> Previous
+            </button>
+            <button type="button" class="btn-next" id="btnStep2Next">
               Next: Financials & Disputes <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>
 
-        <!-- STEP 2: Disputed Money & Reasons -->
-        <div class="wizard-step-content" id="wizardStep2">
+        <!-- STEP 3: Financial Details & Amounts Claimed -->
+        <div class="wizard-step-content" id="wizardStep3">
           <div class="step-heading">
-            <h3><i class="fa-solid fa-coins" id="step2CurrencyIcon"></i> <span id="step2HeadingText">Step 2: Financial
-                Details & Illegal Deductions</span></h3>
-            <p id="step2Subtitle">Tell us how much money was paid and what is being withheld.</p>
+            <h3><i class="fa-solid fa-coins text-primary" id="step3CurrencyIcon"></i> <span id="step3HeadingText">Step 3: Financial Details & Amounts Claimed</span></h3>
+            <p id="step3Subtitle">Tell us how much money was paid and the exact amount unlawfully withheld.</p>
           </div>
 
           <div class="form-grid">
             <div class="form-group">
-              <label for="depositPaid" id="labelDepositPaid">Total Security Deposit Paid (₹) *</label>
+              <label for="depositPaid" id="labelDepositPaid">Total Security Deposit / Principal Paid (₹) *</label>
               <input type="number" id="depositPaid" class="form-input" placeholder="e.g. 100000" min="1" required>
             </div>
 
             <div class="form-group">
-              <label for="monthlyRent" id="labelMonthlyRent">Monthly Rent Amount (₹) *</label>
+              <label for="monthlyRent" id="labelMonthlyRent">Monthly Rent / Periodic Contract Amount (₹) *</label>
               <input type="number" id="monthlyRent" class="form-input" placeholder="e.g. 25000" min="1" required>
             </div>
 
@@ -684,136 +690,61 @@
             </div>
 
             <div class="form-group">
-              <label for="amountWithheld" id="labelAmountWithheld">Amount Unlawfully Withheld / Demanded Back (₹)
-                *</label>
+              <label for="amountWithheld" id="labelAmountWithheld">Amount Unlawfully Withheld / Demanded Back (₹) *</label>
               <input type="number" id="amountWithheld" class="form-input" placeholder="e.g. 45000" required>
             </div>
 
             <div class="form-group full-width">
-              <label id="labelLandlordExcuses">Select All Excuses / Reasons Landlord is Using:</label>
+              <label id="labelLandlordExcuses">Select Opponent Excuses / Deductions to Rebut:</label>
               <div class="checkbox-grid" id="excusesCheckboxGrid">
                 <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Painting Charges" checked>
+                  <input type="checkbox" name="landlordExcuse" value="Arbitrary Forfeiture Without Audit" checked>
                   <span class="checkmark"></span>
-                  Forced Painting Charges without proof of willful damage
+                  Arbitrary forfeiture without audited proof of actual loss
                 </label>
                 <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Deep Cleaning Charges" checked>
+                  <input type="checkbox" name="landlordExcuse" value="Delaying / Refusing Phone Calls" checked>
                   <span class="checkmark"></span>
-                  Unreasonable Deep Cleaning deductions
+                  Delaying / Ghosting / Refusing to answer calls & formal emails
                 </label>
                 <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Normal Wear and Tear">
+                  <input type="checkbox" name="landlordExcuse" value="Failed to Provide Itemized Invoices">
                   <span class="checkmark"></span>
-                  Billing for normal wear and tear / minor aging
+                  Failed to provide valid itemized bills/invoices for claimed deductions
                 </label>
                 <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Ghosting / Ignoring Calls">
+                  <input type="checkbox" name="landlordExcuse" value="Normal Wear and Tear / Commercial Custom">
                   <span class="checkmark"></span>
-                  Delaying / Ghosting / Refusing to answer calls
+                  Unjustified deductions for normal aging / commercial custom
                 </label>
                 <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="No Breakdown or Bills">
+                  <input type="checkbox" name="landlordExcuse" value="Unilateral Contract Breach">
                   <span class="checkmark"></span>
-                  Failed to provide valid itemized bills/invoices for deductions
+                  Unilateral termination without mandatory contractual cure notice
                 </label>
                 <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Arbitrary Lock-in Forfeiture">
+                  <input type="checkbox" name="landlordExcuse" value="Withholding Earned Margins / Commission">
                   <span class="checkmark"></span>
-                  Arbitrary lock-in period deposit forfeiture
-                </label>
-                <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Corporate Relocation Deduction">
-                  <span class="checkmark"></span>
-                  Job Transfer / Employee relocation deduction
-                </label>
-                <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Unverified Repairs without Invoices">
-                  <span class="checkmark"></span>
-                  Unverified repairs without genuine third-party invoices
+                  Withholding earned commercial margins, commission or incentives
                 </label>
               </div>
             </div>
 
             <div class="form-group">
-              <label for="noticeServed">Did you serve proper vacating notice as per agreement?</label>
+              <label for="noticeServed">Did you serve proper vacating / termination notice as per agreement?</label>
               <select id="noticeServed" class="form-input">
                 <option value="Yes">Yes, served proper written notice</option>
-                <option value="Mutual">Vacated with mutual verbal/written consent</option>
+                <option value="Mutual">Vacated / Terminated with mutual verbal/written consent</option>
                 <option value="No">No prior notice served</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="flatCondition">Was property handed over peacefully with all keys returned?</label>
+              <label for="flatCondition">Were premises/keys/goods handed over peacefully?</label>
               <select id="flatCondition" class="form-input">
-                <option value="Yes">Yes, keys handed over and walkthrough completed</option>
-                <option value="KeysLeft">Keys returned as mutually agreed</option>
+                <option value="Yes">Yes, formal handover and walkthrough completed</option>
+                <option value="KeysLeft">Handover completed as mutually agreed</option>
               </select>
-            </div>
-          </div>
-
-          <div class="wizard-buttons">
-            <button type="button" class="btn-prev" id="btnStep2Prev">
-              <i class="fa-solid fa-arrow-left"></i> Previous
-            </button>
-            <button type="button" class="btn-next" id="btnStep2Next">
-              Calculate Legal Grounds <i class="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- STEP 3: Legal Strength & Dispute Analysis -->
-        <div class="wizard-step-content" id="wizardStep3">
-          <div class="step-heading">
-            <h3><i class="fa-solid fa-chart-pie"></i> Step 3: Legal Strength Assessment & Statutes</h3>
-            <p id="step3JurisdictionSub">Based on statutory tenancy jurisprudence and consumer protection acts.</p>
-          </div>
-
-          <div class="analysis-box">
-            <div class="score-container">
-              <div class="score-circle">
-                <svg viewBox="0 0 36 36" class="circular-chart">
-                  <path class="circle-bg"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                  <path class="circle" stroke-dasharray="96, 100"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                  <text x="18" y="20.35" class="percentage" id="scorePercentageVal">96%</text>
-                </svg>
-              </div>
-              <div class="score-text">
-                <span class="score-badge" id="scoreBadgeText">EXCELLENT LEGAL STANDING</span>
-                <h4 id="step3ScoreHeadline">High Probability of Full Settlement Without Litigation</h4>
-                <p id="step3ScoreDesc">The landlord's deductions directly violate established statutory protections
-                  under Section 73 of the Indian Contract Act and Section 108 of the Transfer of Property Act.</p>
-              </div>
-            </div>
-
-            <div class="legal-clauses-preview">
-              <h4 id="clausesHeading"><i class="fa-solid fa-file-contract"></i> Statutory Grounds Identified in Your
-                Case:</h4>
-              <ul class="clauses-list" id="step3ClausesList">
-                <li>
-                  <i class="fa-solid fa-circle-check text-success"></i>
-                  <strong>Illegal Painting / Wear & Tear Forfeiture:</strong> Landlord is legally prohibited from
-                  charging painting costs for ordinary weathering or tenancy tenure over 11 months.
-                </li>
-                <li>
-                  <i class="fa-solid fa-circle-check text-success"></i>
-                  <strong>Mandatory Handover Limit Exceeded:</strong> Withholding deposit beyond statutory limits incurs
-                  penal interest liability.
-                </li>
-                <li>
-                  <i class="fa-solid fa-circle-check text-success"></i>
-                  <strong>Unjustified Enrichment Doctrine:</strong> Retaining tenant funds without verifiable itemized
-                  tax invoices constitutes unlawful withholding.
-                </li>
-                <li>
-                  <i class="fa-solid fa-circle-check text-success"></i>
-                  <strong>Statutory Damages & Penal Interest:</strong> Landlord is made liable for penal interest and
-                  damages from the date of handover until full realization.
-                </li>
-              </ul>
             </div>
           </div>
 
@@ -832,6 +763,48 @@
           <div class="step-heading">
             <h3><i class="fa-solid fa-stamp"></i> Step 4: Your Official Legal Demand Notice</h3>
             <p>Review your custom drafted Pre-Litigation Legal Demand Notice below and choose your recovery package.</p>
+          </div>
+
+          <!-- Legal Standing Score & Assessment -->
+          <div class="analysis-box" style="margin-bottom: 2rem;">
+            <div class="score-container">
+              <div class="score-circle">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path class="circle" stroke-dasharray="96, 100"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <text x="18" y="20.35" class="percentage" id="scorePercentageVal">96%</text>
+                </svg>
+              </div>
+              <div class="score-text">
+                <span class="score-badge" id="scoreBadgeText">EXCELLENT LEGAL STANDING</span>
+                <h4 id="step3ScoreHeadline">High Probability of Full Settlement Without Litigation</h4>
+                <p id="step3ScoreDesc">The opponent's actions directly violate established statutory protections under Section 73 of the Indian Contract Act and commercial statutory precedents.</p>
+              </div>
+            </div>
+
+            <div class="legal-clauses-preview">
+              <h4 id="clausesHeading"><i class="fa-solid fa-file-contract"></i> Statutory Grounds Identified in Your Case:</h4>
+              <ul class="clauses-list" id="step3ClausesList">
+                <li>
+                  <i class="fa-solid fa-circle-check text-success"></i>
+                  <strong>Unlawful Forfeiture Without Audit:</strong> Opponent is legally barred from withholding security deposits without verifiable audited proof of actual loss.
+                </li>
+                <li>
+                  <i class="fa-solid fa-circle-check text-success"></i>
+                  <strong>Mandatory Statutory Timeline Exceeded:</strong> Withholding dues beyond agreement limits incurs penal commercial interest liability.
+                </li>
+                <li>
+                  <i class="fa-solid fa-circle-check text-success"></i>
+                  <strong>Unjustified Enrichment Doctrine:</strong> Retaining claimant funds without verified itemized tax invoices constitutes unlawful enrichment.
+                </li>
+                <li>
+                  <i class="fa-solid fa-circle-check text-success"></i>
+                  <strong>Statutory Damages & Penal Interest:</strong> Opponent is made liable for penal interest and damages from date of default until full realization.
+                </li>
+              </ul>
+            </div>
           </div>
 
           <!-- UNMISSABLE PLAN SELECTOR: ₹99 vs ₹499 -->

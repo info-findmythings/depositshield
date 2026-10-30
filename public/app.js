@@ -1104,7 +1104,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 7. If switching notice type interactively, update sample values
+    // 7. Sync Step 2 Reason Breach Chips & Verdict with selected notice type
+    try {
+      if (typeof updateCheckerDropdown === 'function') {
+        updateCheckerDropdown(n.id);
+      }
+    } catch (e) {
+      console.warn('Reason step sync notice:', e.message);
+    }
+
+    // 8. If switching notice type interactively, update sample values
     if (!silent) {
       if (inputClaimant) inputClaimant.value = n.sampleClaimant;
       if (inputOpponent) inputOpponent.value = n.sampleOpponent;
@@ -2626,12 +2635,12 @@ ${d.tenantName} (${d.tenantPhone})`;
   let currentCheckerCat = 'dealership';
 
   function updateCheckerDropdown(categoryOrData) {
-    if (!deductionSelect) return;
-    
     // Determine category key
     let catKey = 'dealership';
     if (typeof categoryOrData === 'string' && CHECKER_DISPUTES_DB[categoryOrData]) {
       catKey = categoryOrData;
+    } else if (state.noticeType && CHECKER_DISPUTES_DB[state.noticeType]) {
+      catKey = state.noticeType;
     } else if (currentCheckerCat && CHECKER_DISPUTES_DB[currentCheckerCat]) {
       catKey = currentCheckerCat;
     }
@@ -2639,25 +2648,46 @@ ${d.tenantName} (${d.tenantPhone})`;
 
     const cat = CHECKER_DISPUTES_DB[catKey] || CHECKER_DISPUTES_DB.dealership;
 
-    // Update label
-    if (checkerSelectLabel) {
-      checkerSelectLabel.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-primary"></i> ${cat.selectLabel}`;
+    // Update Step 2 Category Badge
+    const reasonCategoryBadge = document.getElementById('wizardReasonCategoryBadge');
+    if (reasonCategoryBadge) {
+      const noticeConf = NOTICE_TYPES_DB[catKey] || { label: cat.title, icon: 'fa-scale-balanced' };
+      reasonCategoryBadge.innerHTML = `<i class="fa-solid ${noticeConf.icon || 'fa-scale-balanced'}"></i> ${cat.title}`;
     }
 
-    deductionSelect.innerHTML = '';
+    // Update label
+    const reasonSelectLabel = document.getElementById('wizardReasonSelectLabel');
+    if (reasonSelectLabel) {
+      reasonSelectLabel.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-primary"></i> ${cat.selectLabel || 'Choose Specific Violation / Sub-Section:'}`;
+    }
+    if (checkerSelectLabel) {
+      checkerSelectLabel.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-primary"></i> ${cat.selectLabel || 'Choose Specific Violation / Sub-Section:'}`;
+    }
+
+    // Populate dropdowns (both wizardReasonSelect and deductionTypeSelect)
+    const reasonSelect = document.getElementById('wizardReasonSelect');
+    const selects = [deductionSelect, reasonSelect].filter(Boolean);
     const keys = Object.keys(cat.items);
-    keys.forEach((key, idx) => {
-      const opt = document.createElement('option');
-      opt.value = key;
-      opt.textContent = cat.items[key].label || key;
-      if (idx === 0) opt.selected = true;
-      deductionSelect.appendChild(opt);
+
+    selects.forEach(sel => {
+      sel.innerHTML = '';
+      keys.forEach((key, idx) => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = cat.items[key].label || key;
+        if (idx === 0) opt.selected = true;
+        sel.appendChild(opt);
+      });
     });
 
-    // Populate interactive sub-section chips
-    const subChipsContainer = document.getElementById('checkerSubSectionChips');
-    if (subChipsContainer) {
-      subChipsContainer.innerHTML = '';
+    // Populate interactive sub-section chips for Step 2 (and any legacy containers)
+    const chipContainers = [
+      document.getElementById('wizardReasonChips'),
+      document.getElementById('checkerSubSectionChips')
+    ].filter(Boolean);
+
+    chipContainers.forEach(container => {
+      container.innerHTML = '';
       keys.forEach((key, idx) => {
         const item = cat.items[key];
         const chip = document.createElement('button');
@@ -2666,14 +2696,17 @@ ${d.tenantName} (${d.tenantPhone})`;
         chip.setAttribute('data-key', key);
         chip.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${item.label || key}</span>`;
         chip.addEventListener('click', () => {
-          subChipsContainer.querySelectorAll('.checker-sub-chip').forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-          deductionSelect.value = key;
+          chipContainers.forEach(c => {
+            c.querySelectorAll('.checker-sub-chip').forEach(sc => sc.classList.remove('active'));
+            const matched = c.querySelector(`[data-key="${key}"]`);
+            if (matched) matched.classList.add('active');
+          });
+          selects.forEach(s => s.value = key);
           renderCheckerVerdict(key, catKey);
         });
-        subChipsContainer.appendChild(chip);
+        container.appendChild(chip);
       });
-    }
+    });
 
     if (keys.length > 0) {
       renderCheckerVerdict(keys[0], catKey);
@@ -2681,11 +2714,30 @@ ${d.tenantName} (${d.tenantPhone})`;
   }
 
   function renderCheckerVerdict(itemKey, categoryKey) {
-    const catKey = categoryKey || currentCheckerCat || 'dealership';
+    const catKey = categoryKey || state.noticeType || currentCheckerCat || 'dealership';
     const cat = CHECKER_DISPUTES_DB[catKey] || CHECKER_DISPUTES_DB.dealership;
     const selected = cat.items[itemKey] || Object.values(cat.items)[0];
     if (!selected) return;
 
+    state.formData.selectedBreach = selected;
+    state.formData.selectedBreachKey = itemKey;
+
+    // Update Step 2 Verdict box elements
+    const wizardVerdictStatus = document.getElementById('wizardVerdictStatus');
+    const wizardVerdictExplanation = document.getElementById('wizardVerdictExplanation');
+    const wizardVerdictStatuteText = document.getElementById('wizardVerdictStatuteText');
+
+    if (wizardVerdictStatus) {
+      wizardVerdictStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <strong>${selected.status}</strong>`;
+    }
+    if (wizardVerdictExplanation) {
+      wizardVerdictExplanation.innerHTML = selected.explanation;
+    }
+    if (wizardVerdictStatuteText) {
+      wizardVerdictStatuteText.textContent = selected.statutes;
+    }
+
+    // Update legacy verdict box if present
     if (verdictStatus) {
       verdictStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <strong>${selected.status}</strong>`;
     }
@@ -2699,13 +2751,24 @@ ${d.tenantName} (${d.tenantPhone})`;
       verdictStatute.innerHTML = `<span><i class="fa-solid fa-book-bookmark"></i> Legal Grounds:</span> ${selected.statutes}`;
     }
 
-    // Sync active sub-chip if changed via dropdown
-    const subChipsContainer = document.getElementById('checkerSubSectionChips');
-    if (subChipsContainer) {
-      subChipsContainer.querySelectorAll('.checker-sub-chip').forEach(c => {
+    // Sync active chips across containers
+    const chipContainers = [
+      document.getElementById('wizardReasonChips'),
+      document.getElementById('checkerSubSectionChips')
+    ].filter(Boolean);
+
+    chipContainers.forEach(container => {
+      container.querySelectorAll('.checker-sub-chip').forEach(c => {
         c.classList.toggle('active', c.getAttribute('data-key') === itemKey);
       });
-    }
+    });
+  }
+
+  const wizardReasonSelectEl = document.getElementById('wizardReasonSelect');
+  if (wizardReasonSelectEl) {
+    wizardReasonSelectEl.addEventListener('change', (e) => {
+      renderCheckerVerdict(e.target.value, state.noticeType || currentCheckerCat);
+    });
   }
 
   if (deductionSelect) {
@@ -3401,81 +3464,121 @@ ${d.tenantName} (${d.tenantPhone})`;
 
   // Step 1 Next
   const btnStep1Next = document.getElementById('btnStep1Next');
-  btnStep1Next.addEventListener('click', () => {
-    const tenantName = document.getElementById('tenantName').value.trim();
-    const tenantPhone = document.getElementById('tenantPhone').value.trim();
-    const tenantEmail = document.getElementById('tenantEmail').value.trim();
-    const landlordName = document.getElementById('landlordName').value.trim();
-    const landlordPhone = document.getElementById('landlordPhone').value.trim();
-    const propertyAddress = document.getElementById('propertyAddress').value.trim();
-    const vacateDate = document.getElementById('vacateDate').value;
-    const customFieldName = document.getElementById('customFieldName') ? document.getElementById('customFieldName').value.trim() : '';
+  if (btnStep1Next) {
+    btnStep1Next.addEventListener('click', () => {
+      const tenantName = document.getElementById('tenantName').value.trim();
+      const tenantPhone = document.getElementById('tenantPhone').value.trim();
+      const tenantEmail = document.getElementById('tenantEmail').value.trim();
+      const landlordName = document.getElementById('landlordName').value.trim();
+      const landlordPhone = document.getElementById('landlordPhone').value.trim();
+      const propertyAddress = document.getElementById('propertyAddress').value.trim();
+      const vacateDate = document.getElementById('vacateDate').value;
+      const customFieldName = document.getElementById('customFieldName') ? document.getElementById('customFieldName').value.trim() : '';
 
-    if (!tenantName || !tenantPhone || !landlordName || !propertyAddress || !vacateDate) {
-      showToast('Please fill in all mandatory fields (*)', 'error');
-      return;
-    }
+      if (!tenantName || !tenantPhone || !landlordName || !propertyAddress || !vacateDate) {
+        showToast('Please fill in all mandatory fields (*)', 'error');
+        return;
+      }
 
-    const cityInput = document.getElementById('tenantCity').value.trim() || 'India';
-    state.formData.city = cityInput;
-    state.formData.noticeType = state.noticeType || 'dealership';
-    state.formData.customFieldName = customFieldName;
-    const typePrefix = (state.noticeType || 'dlr').substring(0, 3).toUpperCase();
-    state.formData.refNo = 'DS/' + new Date().getFullYear() + '/' + typePrefix + '-' + Math.floor(1000 + Math.random() * 9000);
-    state.formData.tenantName = tenantName;
-    state.formData.tenantPhone = tenantPhone;
-    state.formData.tenantEmail = tenantEmail || 'N/A';
-    state.formData.landlordName = landlordName;
-    state.formData.landlordPhone = landlordPhone;
-    state.formData.propertyAddress = propertyAddress;
-    const accommodationTypeEl = document.getElementById('accommodationType');
-    state.formData.accommodationType = accommodationTypeEl ? accommodationTypeEl.value : 'Commercial Entity / Dealership';
-    state.formData.tenancyStartDate = document.getElementById('tenancyStartDate').value;
-    state.formData.vacateDate = vacateDate;
+      const cityInput = document.getElementById('tenantCity').value.trim() || 'India';
+      state.formData.city = cityInput;
+      state.formData.noticeType = state.noticeType || 'dealership';
+      state.formData.customFieldName = customFieldName;
+      const typePrefix = (state.noticeType || 'dlr').substring(0, 3).toUpperCase();
+      state.formData.refNo = 'DS/' + new Date().getFullYear() + '/' + typePrefix + '-' + Math.floor(1000 + Math.random() * 9000);
+      state.formData.tenantName = tenantName;
+      state.formData.tenantPhone = tenantPhone;
+      state.formData.tenantEmail = tenantEmail || 'N/A';
+      state.formData.landlordName = landlordName;
+      state.formData.landlordPhone = landlordPhone;
+      state.formData.propertyAddress = propertyAddress;
+      const accommodationTypeEl = document.getElementById('accommodationType');
+      state.formData.accommodationType = accommodationTypeEl ? accommodationTypeEl.value : 'Commercial Entity / Dealership';
+      state.formData.tenancyStartDate = document.getElementById('tenancyStartDate').value;
+      state.formData.vacateDate = vacateDate;
 
-    goToStep(2);
-  });
+      // Ensure Step 2 has the latest breach chips and verdict ready
+      if (typeof updateCheckerDropdown === 'function') {
+        updateCheckerDropdown(state.noticeType || 'dealership');
+      }
+
+      goToStep(2);
+    });
+  }
 
   // Step 2 Next & Prev
   const btnStep2Prev = document.getElementById('btnStep2Prev');
   const btnStep2Next = document.getElementById('btnStep2Next');
 
-  btnStep2Prev.addEventListener('click', () => goToStep(1));
-  btnStep2Next.addEventListener('click', () => {
-    const depositPaid = parseFloat(document.getElementById('depositPaid').value);
-    const monthlyRent = parseFloat(document.getElementById('monthlyRent').value) || 0;
-    const amountRefunded = parseFloat(document.getElementById('amountRefunded').value) || 0;
-    const amountWithheld = parseFloat(document.getElementById('amountWithheld').value);
+  if (btnStep2Prev) {
+    btnStep2Prev.addEventListener('click', () => goToStep(1));
+  }
 
-    if (isNaN(depositPaid) || isNaN(amountWithheld) || amountWithheld <= 0) {
-      showToast('Please enter valid security/claim and withheld amounts', 'error');
-      return;
-    }
+  if (btnStep2Next) {
+    btnStep2Next.addEventListener('click', () => {
+      // Capture optional custom reason notes
+      const customReasonInput = document.getElementById('wizardCustomReasonText');
+      if (customReasonInput && customReasonInput.value.trim()) {
+        state.formData.customReasonDetails = customReasonInput.value.trim();
+      }
 
-    const excuseBoxes = document.querySelectorAll('input[name="landlordExcuse"]:checked');
-    const selectedExcuses = Array.from(excuseBoxes).map(cb => cb.value);
+      if (state.formData.selectedBreach && state.formData.selectedBreach.label) {
+        if (!state.formData.excuses) state.formData.excuses = [];
+        if (!state.formData.excuses.includes(state.formData.selectedBreach.label)) {
+          state.formData.excuses.unshift(state.formData.selectedBreach.label);
+        }
+      }
 
-    state.formData.depositPaid = depositPaid;
-    state.formData.monthlyRent = monthlyRent;
-    state.formData.amountRefunded = amountRefunded;
-    state.formData.amountWithheld = amountWithheld;
-    state.formData.excuses = selectedExcuses.length > 0 ? selectedExcuses : ['Unjustified arbitrary withholding / breach'];
-    state.formData.noticeServed = document.getElementById('noticeServed').value;
-    state.formData.flatCondition = document.getElementById('flatCondition').value;
-
-    goToStep(3);
-  });
+      goToStep(3);
+    });
+  }
 
   // Step 3 Next & Prev
   const btnStep3Prev = document.getElementById('btnStep3Prev');
   const btnStep3Next = document.getElementById('btnStep3Next');
 
-  btnStep3Prev.addEventListener('click', () => goToStep(2));
-  btnStep3Next.addEventListener('click', () => goToStep(4));
+  if (btnStep3Prev) {
+    btnStep3Prev.addEventListener('click', () => goToStep(2));
+  }
+
+  if (btnStep3Next) {
+    btnStep3Next.addEventListener('click', () => {
+      const depositPaid = parseFloat(document.getElementById('depositPaid').value);
+      const monthlyRent = parseFloat(document.getElementById('monthlyRent').value) || 0;
+      const amountRefunded = parseFloat(document.getElementById('amountRefunded').value) || 0;
+      const amountWithheld = parseFloat(document.getElementById('amountWithheld').value);
+
+      if (isNaN(depositPaid) || isNaN(amountWithheld) || amountWithheld <= 0) {
+        showToast('Please enter valid security/claim and withheld amounts', 'error');
+        return;
+      }
+
+      const excuseBoxes = document.querySelectorAll('input[name="landlordExcuse"]:checked');
+      const selectedExcuses = Array.from(excuseBoxes).map(cb => cb.value);
+
+      if (state.formData.selectedBreach && state.formData.selectedBreach.label) {
+        if (!selectedExcuses.includes(state.formData.selectedBreach.label)) {
+          selectedExcuses.unshift(state.formData.selectedBreach.label);
+        }
+      }
+
+      state.formData.depositPaid = depositPaid;
+      state.formData.monthlyRent = monthlyRent;
+      state.formData.amountRefunded = amountRefunded;
+      state.formData.amountWithheld = amountWithheld;
+      state.formData.excuses = selectedExcuses.length > 0 ? selectedExcuses : ['Unjustified arbitrary withholding / breach'];
+      state.formData.noticeServed = document.getElementById('noticeServed') ? document.getElementById('noticeServed').value : 'Yes';
+      state.formData.flatCondition = document.getElementById('flatCondition') ? document.getElementById('flatCondition').value : 'Yes';
+
+      goToStep(4);
+    });
+  }
 
   // Step 4 Prev
   const btnStep4Prev = document.getElementById('btnStep4Prev');
-  btnStep4Prev.addEventListener('click', () => goToStep(1));
+  if (btnStep4Prev) {
+    btnStep4Prev.addEventListener('click', () => goToStep(3));
+  }
 
   // Allow clicking indicators directly
   stepIndicators.forEach((ind, idx) => {
