@@ -4746,6 +4746,272 @@ ${d.tenantName}`;
   }
 
   // ==========================================================================
+  // AI Legal Counsel Chatbot Widget (Ask Questions, Auto-Draft & Pay)
+  // ==========================================================================
+  function initAiLegalBot() {
+    const launcher = document.getElementById('aiBotLauncher');
+    const windowEl = document.getElementById('aiBotWindow');
+    const btnClose = document.getElementById('aiBtnMinimize');
+    const btnClear = document.getElementById('aiBtnClear');
+    const msgContainer = document.getElementById('aiMessagesContainer');
+    const form = document.getElementById('aiChatForm');
+    const input = document.getElementById('aiChatInput');
+    const quickChips = document.querySelectorAll('.ai-action-chip');
+
+    if (!launcher || !windowEl || !msgContainer) return;
+
+    function scrollBottom() {
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+
+    function addMessage(sender, textHtml, actions = []) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = sender === 'user' ? 'ai-msg-user' : 'ai-msg-bot';
+
+      if (sender === 'user') {
+        msgDiv.textContent = textHtml;
+      } else {
+        const avatar = document.createElement('div');
+        avatar.className = 'ai-msg-avatar';
+        avatar.innerHTML = '<i class="fa-solid fa-scale-balanced"></i>';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'ai-msg-bubble';
+        bubble.innerHTML = textHtml;
+
+        if (actions && actions.length > 0) {
+          const actBar = document.createElement('div');
+          actBar.className = 'ai-msg-actions';
+          actions.forEach(act => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `btn-ai-action ${act.cls || 'btn-ai-draft'}`;
+            btn.innerHTML = act.html;
+            btn.addEventListener('click', () => {
+              handleBotAction(act);
+            });
+            actBar.appendChild(btn);
+          });
+          bubble.appendChild(actBar);
+        }
+
+        msgDiv.appendChild(avatar);
+        msgDiv.appendChild(bubble);
+      }
+
+      msgContainer.appendChild(msgDiv);
+      scrollBottom();
+    }
+
+    function showTypingIndicator() {
+      const typeDiv = document.createElement('div');
+      typeDiv.className = 'ai-msg-bot ai-typing-row';
+      typeDiv.id = 'aiTypingIndicator';
+      typeDiv.innerHTML = `
+        <div class="ai-msg-avatar"><i class="fa-solid fa-scale-balanced"></i></div>
+        <div class="ai-msg-bubble">
+          <div class="ai-typing">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      `;
+      msgContainer.appendChild(typeDiv);
+      scrollBottom();
+    }
+
+    function removeTypingIndicator() {
+      const el = document.getElementById('aiTypingIndicator');
+      if (el) el.remove();
+    }
+
+    function handleBotAction(act) {
+      if (act.type === 'draft') {
+        const type = act.notice || state.noticeType || 'dealership';
+        applyNoticeType(type, false);
+        const genSec = document.getElementById('generatorSection');
+        if (genSec) genSec.scrollIntoView({ behavior: 'smooth' });
+        const nameField = document.getElementById('tenantName');
+        if (nameField) nameField.focus();
+        showToast(`Template set to "${NOTICE_TYPES_DB[type] ? NOTICE_TYPES_DB[type].label : type}". Complete details in Step 1!`, 'success');
+        if (window.innerWidth <= 600) {
+          windowEl.classList.add('hidden');
+        }
+      } else if (act.type === 'pay') {
+        const tier = act.tier || 'TIER_1';
+        setPaymentTier(tier);
+        openRazorpayModal();
+        showToast(`Payment checkout opened for ${tier === 'TIER_2' ? 'Full Court Kit (₹499)' : 'Starter Notice (₹99)'}.`, 'info');
+      } else if (act.type === 'check') {
+        const quickCheck = document.getElementById('quickCheck');
+        if (quickCheck) quickCheck.scrollIntoView({ behavior: 'smooth' });
+        if (act.category && typeof updateCheckerDropdown === 'function') {
+          updateCheckerDropdown(act.category);
+        }
+        if (window.innerWidth <= 600) {
+          windowEl.classList.add('hidden');
+        }
+      }
+    }
+
+    function initWelcome() {
+      msgContainer.innerHTML = '';
+      const c = COUNTRIES_DB[state.country] || COUNTRIES_DB.IN;
+      const welcomeText = `Hello! I am your <strong>DepositShield AI Legal Advocate</strong> for ${c.name} ${c.flag}.<br><br>
+      I can help evaluate if your dispute is illegal, explain statutory rights under ${state.country === 'IN' ? 'Section 73 Contract Act, Sec 108 TPA, and Consumer Courts' : 'statutory commercial codes'}, <strong>draft your official Legal Demand Notice</strong>, or <strong>help you complete payment</strong> to instantly unlock your court-ready kits.<br><br>
+      How can I assist you right now?`;
+
+      const initialActions = [
+        { type: 'draft', notice: 'dealership', cls: 'btn-ai-draft', html: '<i class="fa-solid fa-file-pen"></i> Draft My Legal Notice' },
+        { type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay ₹99 & Unlock Notice' },
+        { type: 'check', category: 'dealership', cls: 'btn-ai-check', html: '<i class="fa-solid fa-scale-balanced"></i> Check Case Legality' }
+      ];
+
+      addMessage('bot', welcomeText, initialActions);
+    }
+
+    async function processUserQuery(text) {
+      addMessage('user', text);
+      showTypingIndicator();
+
+      try {
+        const response = await fetch('/api/ai-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            country: state.country || 'IN',
+            noticeType: state.noticeType || 'dealership'
+          })
+        });
+
+        const data = await response.json();
+        removeTypingIndicator();
+
+        if (data && data.success && data.reply) {
+          const actions = [];
+          if (data.action === 'pay') {
+            actions.push({ type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay ₹99 (Starter Notice)' });
+            actions.push({ type: 'pay', tier: 'TIER_2', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-star"></i> Pay ₹499 (Full Court Kit)' });
+          } else if (data.action === 'draft') {
+            const nType = data.targetNotice || state.noticeType || 'dealership';
+            actions.push({ type: 'draft', notice: nType, cls: 'btn-ai-draft', html: `<i class="fa-solid fa-file-pen"></i> Draft ${NOTICE_TYPES_DB[nType] ? NOTICE_TYPES_DB[nType].label : 'Legal'} Notice Now` });
+            actions.push({ type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay & Unlock' });
+          }
+          addMessage('bot', data.reply, actions);
+          return;
+        }
+      } catch (err) {
+        // Fallback to local legal intelligence engine
+      }
+
+      removeTypingIndicator();
+      fallbackLocalAi(text);
+    }
+
+    function fallbackLocalAi(text) {
+      const q = text.toLowerCase();
+      let reply = '';
+      const actions = [];
+
+      if (q.includes('pay') || q.includes('cost') || q.includes('price') || q.includes('fee') || q.includes('upi') || q.includes('razorpay') || q.includes('unlock') || q.includes('charge') || q.includes('buy')) {
+        reply = `You can complete payment right here to download your official documents immediately:<br><br>
+        • <strong>Starter Legal Demand Notice (₹99 / $9.99)</strong>: Complete 2-Page Advocate Notice + WhatsApp & Speed-Post Ready text.<br>
+        • <strong>Full Legal & Court Kit (₹499 / $24.99)</strong>: Legal Notice + e-Daakhil / Consumer Court Petition (Form 1) + Police Criminal Complaint + Notarized Affidavit.<br><br>
+        Click either option below to pay securely via Google Pay, PhonePe, Paytm, Any UPI QR, or Credit/Debit Cards:`;
+        actions.push({ type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay ₹99 (Starter Notice)' });
+        actions.push({ type: 'pay', tier: 'TIER_2', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-star"></i> Pay ₹499 (Full Court Kit)' });
+      } else if (q.includes('dealer') || q.includes('franchise') || q.includes('margin') || q.includes('stock')) {
+        reply = `<strong>Dealership Caution Deposit & Margin Dues:</strong><br>
+        Under Section 73 of the Indian Contract Act and the Commercial Courts Act 2015, manufacturers cannot arbitrarily freeze dealer caution deposits or withhold earned sales margins upon dealership exit. You are legally entitled to 100% refund with 18% commercial interest.<br><br>
+        Click below to draft your formal Dealership Demand Notice:`;
+        actions.push({ type: 'draft', notice: 'dealership', cls: 'btn-ai-draft', html: '<i class="fa-solid fa-file-pen"></i> Draft Dealership Notice' });
+        actions.push({ type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay & Unlock' });
+      } else if (q.includes('rent') || q.includes('landlord') || q.includes('flat') || q.includes('painting') || q.includes('cleaning') || q.includes('deposit')) {
+        reply = `<strong>Tenancy Caution Deposit Rights:</strong><br>
+        Under Section 108(m) of the Transfer of Property Act, 1882, normal wear, tear, and natural weathering cannot be deducted from your deposit. Deductions without third-party GST bills are illegal and actionable before the Consumer Commission (e-Daakhil) with ₹0 court fee.<br><br>
+        Shall I prepare your 7-Day Legal Notice?`;
+        actions.push({ type: 'draft', notice: 'tenancy', cls: 'btn-ai-draft', html: '<i class="fa-solid fa-file-pen"></i> Draft Tenancy Notice' });
+        actions.push({ type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay & Unlock' });
+      } else if (q.includes('salary') || q.includes('employer') || q.includes('relieving') || q.includes('f&f') || q.includes('wage')) {
+        reply = `<strong>Unpaid Salary & Relieving Letter Dues:</strong><br>
+        Under the Payment of Wages Act, full and final (F&F) settlement must be paid within 2 working days. Refusing a Relieving Letter is an illegal restraint under Article 19/21. Employers withholding earned pay also face prosecution under Section 405 IPC for Criminal Breach of Trust.<br><br>
+        Click below to generate your Employment Demand Notice:`;
+        actions.push({ type: 'draft', notice: 'employment', cls: 'btn-ai-draft', html: '<i class="fa-solid fa-file-pen"></i> Draft Salary Notice' });
+        actions.push({ type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay & Unlock' });
+      } else if (q.includes('cheque') || q.includes('bounce') || q.includes('138')) {
+        reply = `<strong>Cheque Bounce Criminal Demand (Sec 138 NI Act):</strong><br>
+        A bounced cheque is a cognizable criminal offence punishable with up to 2 years imprisonment. Serving a 15-day statutory legal notice within 30 days of the bank memo is mandatory before filing in criminal court.<br><br>
+        Click below to prepare your official Section 138 notice:`;
+        actions.push({ type: 'draft', notice: 'cheque', cls: 'btn-ai-draft', html: '<i class="fa-solid fa-file-pen"></i> Draft Sec 138 Notice' });
+      } else {
+        reply = `I can help you draft a court-admissible legal demand notice for ANY industry or dispute domain right now! Serving a formal pre-litigation notice creates conclusive statutory proof and resolves 85% of claims within 7 days.<br><br>
+        How would you like to proceed?`;
+        actions.push({ type: 'draft', notice: state.noticeType || 'dealership', cls: 'btn-ai-draft', html: '<i class="fa-solid fa-file-pen"></i> Auto-Draft My Notice' });
+        actions.push({ type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay & Unlock Notice' });
+      }
+
+      addMessage('bot', reply, actions);
+    }
+
+    // Toggle window
+    launcher.addEventListener('click', () => {
+      const isHidden = windowEl.classList.contains('hidden');
+      if (isHidden) {
+        windowEl.classList.remove('hidden');
+        if (msgContainer.children.length === 0) {
+          initWelcome();
+        }
+        input.focus();
+      } else {
+        windowEl.classList.add('hidden');
+      }
+    });
+
+    if (btnClose) {
+      btnClose.addEventListener('click', () => {
+        windowEl.classList.add('hidden');
+      });
+    }
+
+    if (btnClear) {
+      btnClear.addEventListener('click', () => {
+        initWelcome();
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+        processUserQuery(text);
+      });
+    }
+
+    // Quick action chips bar
+    quickChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const action = chip.getAttribute('data-action');
+        if (action === 'draft') {
+          processUserQuery('Can you help me draft a legal notice?');
+        } else if (action === 'dealership') {
+          processUserQuery('How do I recover withheld dealership deposit and margins?');
+        } else if (action === 'rent') {
+          processUserQuery('My landlord is withholding my caution deposit for painting and cleaning');
+        } else if (action === 'salary') {
+          processUserQuery('My employer is withholding my unpaid salary and relieving letter');
+        } else if (action === 'pay') {
+          processUserQuery('How do I make payment and unlock my notice documents?');
+        }
+      });
+    });
+
+    // Initialize welcome message
+    initWelcome();
+  }
+
+  // ==========================================================================
   // Initialize Country & City Data on Page Load
   // ==========================================================================
   let initialCountry = 'IN';
@@ -4773,4 +5039,5 @@ ${d.tenantName}`;
   updateCheckerDropdown('dealership');
   applyNoticeType('dealership', true);
   initCountryCookieModal(initialCountry);
+  initAiLegalBot();
 });

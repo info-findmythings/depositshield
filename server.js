@@ -21,6 +21,19 @@ const {
   generateAffidavitPdf
 } = require('./services/pdfService');
 
+// Blog Database & 100-Day Automated Release Engine
+const {
+  ALL_100_BLOG_POSTS,
+  getPublishedArticles,
+  getArticleBySlug,
+  getBlogReleaseStats
+} = require('./data/blogDatabase');
+const {
+  renderBlogIndexHtml,
+  renderArticleHtml,
+  renderDynamicSitemapXml
+} = require('./services/blogService');
+
 // Set non-blocking buffer timeout for MongoDB Atlas
 mongoose.set('bufferTimeoutMS', 2500);
 
@@ -36,6 +49,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Dynamic Rank #1 XML Sitemap (Includes all live 100-day blog articles automatically)
+app.get('/sitemap.xml', (req, res) => {
+  const published = getPublishedArticles();
+  res.header('Content-Type', 'application/xml');
+  res.send(renderDynamicSitemapXml(published));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // In-memory persistent caches for resilience
@@ -282,6 +303,101 @@ app.post('/api/acquisition-offer', async (req, res) => {
   } catch (err) {
     console.error('Acquisition offer error:', err.message);
     return res.status(500).json({ error: 'Failed to submit offer. Please contact directly via WhatsApp.' });
+  }
+});
+
+// ==========================================================================
+// PUBLIC API: AI Legal Bot Chat Endpoint
+// ==========================================================================
+app.post('/api/ai-chat', async (req, res) => {
+  try {
+    const { message, country = 'IN', noticeType = 'dealership' } = req.body;
+    const q = (message || '').toLowerCase().trim();
+
+    if (!q) {
+      return res.status(400).json({ error: 'Message cannot be empty.' });
+    }
+
+    let reply = '';
+    let action = null;
+    let targetNotice = null;
+
+    const isPayment = q.includes('pay') || q.includes('cost') || q.includes('price') || q.includes('fee') || q.includes('charge') || q.includes('upi') || q.includes('razorpay') || q.includes('unlock') || q.includes('buy');
+    const isDraft = q.includes('draft') || q.includes('create') || q.includes('make') || q.includes('book') || q.includes('write') || q.includes('prepare') || q.includes('start');
+    const isDealership = q.includes('dealer') || q.includes('franchise') || q.includes('margin') || q.includes('stock buyback') || q.includes('showroom');
+    const isTenancy = q.includes('rent') || q.includes('landlord') || q.includes('flat') || q.includes('painting') || q.includes('cleaning') || q.includes('wear') || q.includes('tenant');
+    const isSalary = q.includes('salary') || q.includes('employer') || q.includes('wage') || q.includes('relieving') || q.includes('f&f') || q.includes('resign') || q.includes('job');
+    const isCheque = q.includes('cheque') || q.includes('check') || q.includes('bounce') || q.includes('138') || q.includes('dishonour') || q.includes('insufficient');
+    const isInvoice = q.includes('invoice') || q.includes('b2b') || q.includes('vendor') || q.includes('msme') || q.includes('bill');
+    const isLoan = q.includes('loan') || q.includes('borrow') || q.includes('promissory') || q.includes('debt');
+    const isBuilder = q.includes('builder') || q.includes('rera') || q.includes('possession') || q.includes('flat delay');
+
+    if (isPayment) {
+      reply = `You can complete payment and download your official documents immediately:<br><br>
+      • <strong>Starter Legal Demand Notice (₹99 / $9.99)</strong>: Complete 2-Page Advocate Notice + WhatsApp & Speed-Post Ready text.<br>
+      • <strong>Full Legal & Court Kit (₹499 / $24.99)</strong>: Legal Notice + e-Daakhil / Consumer Court Petition (Form 1) + Police Criminal Complaint + Notarized Affidavit.<br><br>
+      Payments are 100% secure via Google Pay, PhonePe, Paytm, Any UPI QR, or Credit/Debit Cards.`;
+      action = 'pay';
+    } else if (isDealership) {
+      reply = `<strong>Dealership & Franchise Disputes:</strong><br>
+      Under Section 73 of the Indian Contract Act, 1872 and the Commercial Courts Act 2015, principal brands and manufacturers cannot arbitrarily forfeit or freeze dealer caution deposits, bank guarantees, or unpaid margins. You are statutorily entitled to full refund with 18% commercial interest and stock buyback of unsold inventory/spares.<br><br>
+      Would you like me to prepare your Dealership Legal Demand Notice right now?`;
+      action = 'draft';
+      targetNotice = 'dealership';
+    } else if (isTenancy) {
+      reply = `<strong>Tenancy Caution Deposit Rights:</strong><br>
+      Under Section 108(m) of the Transfer of Property Act, 1882 and multiple High Court rulings, normal wear, tear, and aging are the sole statutory responsibility of the landlord. Deductions for painting or deep cleaning without third-party GST vendor invoices are illegal and actionable before the Consumer Commission (e-Daakhil) with ₹0 court fee.<br><br>
+      Shall I generate your 7-Day Pre-Litigation Legal Demand Notice?`;
+      action = 'draft';
+      targetNotice = 'tenancy';
+    } else if (isSalary) {
+      reply = `<strong>Unpaid Salary & Relieving Letter Dues:</strong><br>
+      Under the Payment of Wages Act and state Shops & Commercial Establishments Acts, full and final (F&F) settlement must be disbursed within 2 working days. Refusing to issue a Relieving Letter or service certificate violates your fundamental right to livelihood under Article 19/21. An employer withholding earned wages is also liable under Section 405 IPC for Criminal Breach of Trust.<br><br>
+      I can draft an urgent Employment Legal Demand Notice for you right now!`;
+      action = 'draft';
+      targetNotice = 'employment';
+    } else if (isCheque) {
+      reply = `<strong>Cheque Bounce Criminal Recourse (Section 138 NI Act):</strong><br>
+      Dishonour of a cheque due to "Funds Insufficient", "Stop Payment", or "Account Closed" is a cognizable criminal offence punishable with up to 2 years imprisonment and twice the cheque amount. A mandatory 15-day statutory legal notice must be served within 30 days of the bank return memo.<br><br>
+      Click below to prepare your official Section 138 Demand Notice:`;
+      action = 'draft';
+      targetNotice = 'cheque';
+    } else if (isInvoice) {
+      reply = `<strong>B2B Invoices & MSME Recovery:</strong><br>
+      Under Section 15 & 16 of the MSME Development Act, 2006, clients must settle invoices within 45 days. Default attracts mandatory compound interest at three times the RBI bank rate. You can also file a Summary Suit under Order XXXVII CPC for rapid asset decree.`;
+      action = 'draft';
+      targetNotice = 'commercial';
+    } else if (isLoan) {
+      reply = `<strong>Loan & Debt Recovery:</strong><br>
+      When a borrower defaults on a promissory note or written debt acknowledgment, you can file a Summary Suit under Order XXXVII CPC where the borrower has no automatic right of defense. Pre-litigation demand notice triggers immediate settlement in over 85% of cases.`;
+      action = 'draft';
+      targetNotice = 'loan';
+    } else if (isBuilder) {
+      reply = `<strong>Builder Delay & RERA Compensation:</strong><br>
+      Under Section 18 of RERA 2016, if a real estate developer delays flat possession past the sanctioned date, you have the absolute statutory right to claim 100% refund with interest (MCLR + 2%) or monthly delay compensation.`;
+      action = 'draft';
+      targetNotice = 'builder';
+    } else if (isDraft) {
+      reply = `I can help you draft a court-admissible, advocate-grade Pre-Litigation Legal Demand Notice right now! Answer a few quick details or click below to launch the automated drafting wizard. Which domain is your dispute in?`;
+      action = 'draft';
+      targetNotice = noticeType || 'dealership';
+    } else {
+      reply = `Under statutory commercial and contract law (Section 73 of the Indian Contract Act / Common Law), withholding money or breaching express agreements is an actionable wrong. Serving a formal Pre-Litigation Legal Demand Notice with speed post tracking creates conclusive legal proof and resolves 85% of disputes within 7 days.<br><br>
+      I can prepare your notice right now, or help you complete payment to unlock your documents!`;
+      action = 'draft';
+      targetNotice = noticeType || 'dealership';
+    }
+
+    return res.json({
+      success: true,
+      reply,
+      action,
+      targetNotice,
+      country
+    });
+  } catch (err) {
+    console.error('AI chat error:', err.message);
+    return res.status(500).json({ error: 'AI counsel service temporarily busy.' });
   }
 });
 
@@ -1290,6 +1406,31 @@ app.get('/for-sale', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'acquisition.html'));
 });
 
+// ==========================================================================
+// 100-DAY AUTOMATED SEO LEGAL BLOG ROUTES (Authored by DepositShield Team)
+// ==========================================================================
+app.get('/blog', (req, res) => {
+  const published = getPublishedArticles();
+  const stats = getBlogReleaseStats();
+  res.send(renderBlogIndexHtml(published, stats));
+});
+
+app.get('/blog/:slug', (req, res) => {
+  const article = getArticleBySlug(req.params.slug);
+  if (!article) {
+    return res.redirect('/blog');
+  }
+  res.send(renderArticleHtml(article));
+});
+
+app.get('/api/blog/posts', (req, res) => {
+  res.json({
+    success: true,
+    stats: getBlogReleaseStats(),
+    posts: getPublishedArticles()
+  });
+});
+
 // Fallback to SPA homepage
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -1322,5 +1463,18 @@ app.listen(PORT, () => {
     setInterval(sendKeepAlivePing, 10 * 60 * 1000);
     console.log(`[RENDER KEEP-ALIVE] Active: Pinging ${pingTarget} every 10 mins to maintain 24/7 uptime.`);
   }
+
+  // ========================================================================
+  // 100-DAY AUTOMATED 07:00 AM IST MORNING RELEASE ENGINE
+  // ========================================================================
+  const startDaily7AmBlogScheduler = () => {
+    const checkSchedule = () => {
+      const stats = getBlogReleaseStats();
+      console.log(`[BLOG 7:00 AM ENGINE] Active live articles: ${stats.publishedCount}/${stats.totalArticles} | Next release: ${stats.nextReleaseFormatted}`);
+    };
+    checkSchedule();
+    setInterval(checkSchedule, 60 * 60 * 1000);
+  };
+  startDaily7AmBlogScheduler();
 });
 
