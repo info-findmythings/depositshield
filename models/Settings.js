@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const SettingsSchema = new mongoose.Schema({
   key: { type: String, required: true, unique: true, default: 'app_config' },
-  tier1Price: { type: Number, default: 99 },
+  tier1Price: { type: Number, default: 1 },
   tier2Price: { type: Number, default: 499 },
   upiId: { type: String, default: '8000757744@upi' },
   razorpayAccountId: { type: String, default: 'acc_RkgFhN1xao5sNF' },

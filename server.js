@@ -64,8 +64,8 @@ const memoryNotices = [];
 const memoryPayments = [];
 const memoryInquiries = [];
 let memorySettings = {
-  tier1Price: Number(process.env.PRICE_TIER_1) || 99,
-  tier2Price: Number(process.env.PRICE_TIER_2) || 499,
+  tier1Price: process.env.PRICE_TIER_1 !== undefined ? Number(process.env.PRICE_TIER_1) : 1,
+  tier2Price: process.env.PRICE_TIER_2 !== undefined ? Number(process.env.PRICE_TIER_2) : 499,
   upiId: process.env.UPI_ID || '',
   razorpayAccountId: process.env.RAZORPAY_ACCOUNT_ID || 'acc_RkgFhN1xao5sNF',
   razorpayMerchantId: process.env.RAZORPAY_MERCHANT_ID || 'RkgFhN1xao5sNF',
@@ -89,6 +89,10 @@ connectDB().then(async () => {
         });
         console.log('[SETTINGS] Default settings initialized in MongoDB Atlas from .env');
       } else {
+        if (process.env.PRICE_TIER_1 !== undefined) {
+          config.tier1Price = Number(process.env.PRICE_TIER_1);
+          await config.save();
+        }
         memorySettings = { ...memorySettings, ...config.toObject() };
       }
     }
@@ -135,8 +139,8 @@ app.get('/api/config', async (req, res) => {
   res.json({
     appName: 'DepositShield India',
     gateway: 'RAZORPAY',
-    priceInr: config.tier1Price || 99,
-    tier2PriceInr: config.tier2Price || 499,
+    priceInr: config.tier1Price !== undefined ? config.tier1Price : 1,
+    tier2PriceInr: config.tier2Price !== undefined ? config.tier2Price : 499,
     razorpayKeyId: config.razorpayKeyId || '',
     razorpayMerchantId: config.razorpayMerchantId || 'RkgFhN1xao5sNF',
     razorpayAccountId: config.razorpayAccountId || 'acc_RkgFhN1xao5sNF',
@@ -334,7 +338,7 @@ app.post('/api/ai-chat', async (req, res) => {
 
     if (isPayment) {
       reply = `You can complete payment and download your official documents immediately:<br><br>
-      • <strong>Starter Legal Demand Notice (₹99 / $9.99)</strong>: Complete 2-Page Advocate Notice + WhatsApp & Speed-Post Ready text.<br>
+      • <strong>Starter Legal Demand Notice (₹1 / $9.99)</strong>: Complete 2-Page Advocate Notice + WhatsApp & Speed-Post Ready text.<br>
       • <strong>Full Legal & Court Kit (₹499 / $24.99)</strong>: Legal Notice + e-Daakhil / Consumer Court Petition (Form 1) + Police Criminal Complaint + Notarized Affidavit.<br><br>
       Payments are 100% secure via Google Pay, PhonePe, Paytm, Any UPI QR, or Credit/Debit Cards.`;
       action = 'pay';
@@ -414,7 +418,7 @@ app.post('/api/razorpay/create-order', async (req, res) => {
         success: true,
         isDemo: true,
         orderId: 'order_rzp_' + Date.now(),
-        amount: Math.round(Number(amount || 99) * 100),
+        amount: Math.round(Number(amount !== undefined && amount !== null ? amount : 1) * 100),
         currency: 'INR',
         keyId: '',
         merchantId: config.razorpayMerchantId || 'RkgFhN1xao5sNF',
@@ -428,7 +432,7 @@ app.post('/api/razorpay/create-order', async (req, res) => {
     });
 
     const options = {
-      amount: Math.round(Number(amount || 99) * 100), // in paise
+      amount: Math.round(Number(amount !== undefined && amount !== null ? amount : 1) * 100), // in paise
       currency: 'INR',
       receipt: 'rcpt_' + (noticeRefNo || Date.now()).toString().replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30),
       notes: {
@@ -476,7 +480,7 @@ app.post('/api/razorpay/verify', async (req, res) => {
 
     const cleanEmail = customerEmail && customerEmail.includes('@') ? customerEmail.trim() : '';
 
-    const numAmount = Number(amount) || 99;
+    const numAmount = Number(amount !== undefined && amount !== null ? amount : 1);
     const effectiveTier = (tier === 'TIER_2' || numAmount >= 400) ? 'TIER_2' : 'TIER_1';
 
     const paymentRecord = {
@@ -677,7 +681,7 @@ app.post('/api/webhook/payment', async (req, res) => {
 
     let utr = body.utr || body.paymentRef || body.transactionId || body.rrn;
     let orderId = body.orderId || '';
-    let amount = Number(body.amount) || 99;
+    let amount = Number(body.amount !== undefined ? body.amount : 1);
     let status = (body.status || 'SUCCESS').toUpperCase();
     let tier = body.tier || (amount >= 400 ? 'TIER_2' : 'TIER_1');
     let noticeId = body.noticeId || '';
@@ -726,7 +730,7 @@ app.post('/api/webhook/payment', async (req, res) => {
       paymentId: cleanUtr,
       orderId,
       noticeRefNo: noticeId || 'UNKNOWN',
-      amount: Number(amount) || 99,
+      amount: Number(amount !== undefined ? amount : 1),
       tier: tier || 'TIER_1',
       gateway,
       status: isSuccess ? 'CONFIRMED' : 'FAILED',
@@ -847,7 +851,7 @@ app.post('/api/verify-payment', async (req, res) => {
       );
     }
 
-    const numAmount = Number(amount) || 99;
+    const numAmount = Number(amount !== undefined && amount !== null ? amount : 1);
     const effectiveTier = (tier === 'TIER_2' || numAmount >= 400) ? 'TIER_2' : 'TIER_1';
 
     // CASE 2: Payment is PENDING - Create or update Payment record

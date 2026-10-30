@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     isUnlocked: false,
     config: {
       upiId: '8000757744@upi',
-      priceInr: 99,
+      priceInr: 1,
       testMode: true
     },
     formData: {
@@ -57,18 +57,36 @@ document.addEventListener('DOMContentLoaded', () => {
           showToast('✓ Cloud server connected & ready!', 'success');
         }
         state.config = { ...state.config, ...data };
+        const effectiveTier1 = state.config.priceInr !== undefined ? state.config.priceInr : 1;
+        const effectiveTier2 = state.config.tier2PriceInr !== undefined ? state.config.tier2PriceInr : 499;
+
+        if (typeof COUNTRIES_DB !== 'undefined' && COUNTRIES_DB.IN) {
+          COUNTRIES_DB.IN.starterPrice = effectiveTier1;
+          COUNTRIES_DB.IN.starterPriceFormatted = `₹${effectiveTier1}`;
+          COUNTRIES_DB.IN.proPrice = effectiveTier2;
+          COUNTRIES_DB.IN.proPriceFormatted = `₹${effectiveTier2}`;
+        }
+
         const t1El = document.getElementById('planTier1PriceVal');
         const t2El = document.getElementById('planTier2PriceVal');
-        if (t1El) t1El.textContent = `₹${state.config.priceInr || 99}`;
-        if (t2El) t2El.textContent = `₹${state.config.tier2PriceInr || 499}`;
-        if (typeof setPaymentTier === 'function') setPaymentTier('TIER_2');
+        const btnP1 = document.getElementById('btnSelectPlanTier1');
+        const btnUnlockM = document.getElementById('btnUnlockModal');
+        const mVal3 = document.getElementById('metricValue3');
+
+        if (t1El) t1El.textContent = `₹${effectiveTier1}`;
+        if (t2El) t2El.textContent = `₹${effectiveTier2}`;
+        if (btnP1) btnP1.innerHTML = `<i class="fa-solid fa-bolt"></i> Pay ₹${effectiveTier1} with Razorpay`;
+        if (btnUnlockM) btnUnlockM.innerHTML = `<i class="fa-solid fa-file-contract"></i> Unlock 7-Day Legal Notice for ₹${effectiveTier1} (Starter)`;
+        if (mVal3 && state.country === 'IN') mVal3.innerHTML = `₹${effectiveTier1} &bull; ₹${effectiveTier2}`;
+
+        if (typeof setPaymentTier === 'function') setPaymentTier('TIER_1');
       })
       .catch(() => {
         if (retriesLeft > 0) {
           setTimeout(() => loadConfig(retriesLeft - 1), 3000);
         } else {
           clearTimeout(coldStartTimer);
-          if (typeof setPaymentTier === 'function') setPaymentTier('TIER_2');
+          if (typeof setPaymentTier === 'function') setPaymentTier('TIER_1');
         }
       });
   }
@@ -1158,9 +1176,9 @@ document.addEventListener('DOMContentLoaded', () => {
       flag: '🇮🇳',
       currency: 'INR',
       currencySymbol: '₹',
-      starterPrice: 99,
-      starterPriceFormatted: '₹99',
-      starterStrike: '₹1,999',
+      starterPrice: 1,
+      starterPriceFormatted: '₹1',
+      starterStrike: '₹99',
       proPrice: 499,
       proPriceFormatted: '₹499',
       proStrike: '₹20,000',
@@ -1197,7 +1215,7 @@ document.addEventListener('DOMContentLoaded', () => {
       plan2Name: 'Notice + Consumer Court & Police Kit',
       plan2Desc: 'Full legal arsenal if landlord ignores notice: ready-to-file court petition, affidavit, and police complaint.',
       plan2Features: [
-        '<strong>Includes Everything in ₹99 Legal Notice</strong>',
+        '<strong>Includes Everything in ₹1 Legal Notice</strong>',
         '<strong>e-Jagriti Consumer Court Formal Petition</strong> (Form 1)',
         '<strong>Notary Verification Affidavit</strong> ready format',
         '<strong>Police Criminal Complaint</strong> (Sec 405 IPC / 316 BNS)',
@@ -3825,7 +3843,7 @@ ${d.tenantName} (${d.tenantPhone})`;
   // ==========================================================================
   let activePaymentTier = 'TIER_1';
   let currentDemoOrderId = '';
-  let currentDemoPayAmount = 99;
+  let currentDemoPayAmount = 1;
 
   const upiModalBackdrop = document.getElementById('upiModalBackdrop');
   const modalCloseBtn = document.getElementById('modalCloseBtn');
@@ -3873,8 +3891,8 @@ ${d.tenantName} (${d.tenantPhone})`;
 
   function setPaymentTier(tier) {
     activePaymentTier = tier;
-    const tier1Price = state.config.priceInr || 99;
-    const tier2Price = state.config.tier2PriceInr || 499;
+    const tier1Price = state.config.priceInr !== undefined ? state.config.priceInr : 1;
+    const tier2Price = state.config.tier2PriceInr !== undefined ? state.config.tier2PriceInr : 499;
     const chosenPrice = tier === 'TIER_2' ? tier2Price : tier1Price;
     const upiId = state.config.upiId || '8000757744@upi';
 
@@ -4018,7 +4036,7 @@ ${d.tenantName} (${d.tenantPhone})`;
       const emailVal = emailInput ? emailInput.value.trim() : '';
       const utrInput = document.getElementById('inputUpiUtr');
       const utrVal = utrInput ? utrInput.value.trim().toUpperCase() : '';
-      const chosenPrice = activePaymentTier === 'TIER_2' ? (state.config.tier2PriceInr || 499) : (state.config.priceInr || 99);
+      const chosenPrice = activePaymentTier === 'TIER_2' ? (state.config.tier2PriceInr || 499) : (state.config.priceInr !== undefined ? state.config.priceInr : 1);
 
       if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
         showToast('Please enter a valid email address to receive your notice PDF.', 'error');
@@ -4138,7 +4156,7 @@ ${d.tenantName} (${d.tenantPhone})`;
   // ==========================================================================
   if (btnPayRazorpay) {
     btnPayRazorpay.addEventListener('click', () => {
-      const payAmount = activePaymentTier === 'TIER_2' ? (state.config.tier2PriceInr || 499) : (state.config.priceInr || 99);
+      const payAmount = activePaymentTier === 'TIER_2' ? (state.config.tier2PriceInr || 499) : (state.config.priceInr !== undefined ? state.config.priceInr : 1);
 
       // Validate delivery email address
       const checkoutEmailInput = document.getElementById('checkoutUserEmail');
@@ -4943,7 +4961,7 @@ ${d.tenantName}`;
         const tier = act.tier || 'TIER_1';
         setPaymentTier(tier);
         openRazorpayModal();
-        showToast(`Payment checkout opened for ${tier === 'TIER_2' ? 'Full Court Kit (₹499)' : 'Starter Notice (₹99)'}.`, 'info');
+        showToast(`Payment checkout opened for ${tier === 'TIER_2' ? 'Full Court Kit (₹499)' : `Starter Notice (₹${state.config.priceInr !== undefined ? state.config.priceInr : 1})`}.`, 'info');
       } else if (act.type === 'check') {
         const quickCheck = document.getElementById('quickCheck');
         if (quickCheck) quickCheck.scrollIntoView({ behavior: 'smooth' });
@@ -4965,7 +4983,7 @@ ${d.tenantName}`;
 
       const initialActions = [
         { type: 'draft', notice: 'dealership', cls: 'btn-ai-draft', html: '<i class="fa-solid fa-file-pen"></i> Draft My Legal Notice' },
-        { type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay ₹99 & Unlock Notice' },
+        { type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay ₹1 & Unlock Notice' },
         { type: 'check', category: 'dealership', cls: 'btn-ai-check', html: '<i class="fa-solid fa-scale-balanced"></i> Check Case Legality' }
       ];
 
@@ -4993,7 +5011,7 @@ ${d.tenantName}`;
         if (data && data.success && data.reply) {
           const actions = [];
           if (data.action === 'pay') {
-            actions.push({ type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay ₹99 (Starter Notice)' });
+            actions.push({ type: 'pay', tier: 'TIER_1', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-credit-card"></i> Pay ₹1 (Starter Notice)' });
             actions.push({ type: 'pay', tier: 'TIER_2', cls: 'btn-ai-pay', html: '<i class="fa-solid fa-star"></i> Pay ₹499 (Full Court Kit)' });
           } else if (data.action === 'draft') {
             const nType = data.targetNotice || state.noticeType || 'dealership';
