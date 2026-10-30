@@ -1,31 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DepositShield India | Legal Demand Notice & Court Kit for Security Deposit Recovery</title>
-  <meta name="description" content="Recover your unlawfully withheld rental security deposit from landlords in Bangalore, Pune, Mumbai, Delhi-NCR & Hyderabad. Generate court-admissible 7-Day Legal Notice, e-Jagriti Consumer Court Petition, and Police Complaint (BNS 316).">
-  <meta name="keywords" content="tenant security deposit refund, landlord not returning deposit bangalore, legal notice to landlord security deposit, model tenancy act india, painting deduction illegal, e-jagriti landlord complaint, consumer court tenant petition, section 316 bns landlord breach of trust, recover pg deposit pune">
+  <meta name="description"
+    content="Recover your unlawfully withheld rental security deposit from landlords in Bangalore, Pune, Mumbai, Delhi-NCR & Hyderabad. Generate court-admissible 7-Day Legal Notice, e-Jagriti Consumer Court Petition, and Police Complaint (BNS 316).">
+  <meta name="keywords"
+    content="tenant security deposit refund, landlord not returning deposit bangalore, legal notice to landlord security deposit, model tenancy act india, painting deduction illegal, e-jagriti landlord complaint, consumer court tenant petition, section 316 bns landlord breach of trust, recover pg deposit pune">
   <meta name="author" content="DepositShield India">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://depositshield.onrender.com/">
-  
+
   <!-- Open Graph / Facebook / WhatsApp Preview -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://depositshield.onrender.com/">
   <meta property="og:title" content="Recover Withheld Rental Deposit from Landlord in 7 Days | DepositShield India">
-  <meta property="og:description" content="Landlords in Bangalore, Pune & Mumbai deducting ₹30,000+ for painting? Generate a formal, court-admissible 7-Day Pre-Litigation Legal Demand Notice citing Indian Central Tenancy Law.">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta property="og:description"
+    content="Landlords in Bangalore, Pune & Mumbai deducting ₹30,000+ for painting? Generate a formal, court-admissible 7-Day Pre-Litigation Legal Demand Notice citing Indian Central Tenancy Law.">
+  <meta property="og:image"
+    content="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&h=630&q=80">
   <meta property="og:site_name" content="DepositShield India">
   <meta property="og:locale" content="en_IN">
-  
+
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://depositshield.onrender.com/">
   <meta name="twitter:title" content="DepositShield India | Legal Notice for Security Deposit Refund">
-  <meta name="twitter:description" content="Recover your rental caution deposit from landlords across India. Automated 7-Day Legal Notice & e-Jagriti Court Petition.">
-  <meta name="twitter:image" content="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&h=630&q=80">
-  
+  <meta name="twitter:description"
+    content="Recover your rental caution deposit from landlords across India. Automated 7-Day Legal Notice & e-Jagriti Court Petition.">
+  <meta name="twitter:image"
+    content="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&h=630&q=80">
+
   <!-- JSON-LD Structured Data: Organization, SoftwareApplication & FAQPage -->
   <script type="application/ld+json">
   {
@@ -136,14 +143,16 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <!-- Font Awesome Icons for polished aesthetics -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
+
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="/style.css">
-  
+
   <!-- jsPDF & html2canvas for instant client-side PDF generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -151,6 +160,7 @@
   <!-- Razorpay Checkout SDK -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
+
 <body>
 
   <!-- Navigation Bar -->
@@ -163,12 +173,70 @@
           <span class="logo-badge">INDIA</span>
         </div>
       </a>
-      
+
       <div class="nav-links">
+        <!-- Country & Currency Selector -->
+        <div class="country-picker-wrapper" id="countryPickerWrapper">
+          <button type="button" class="country-picker-btn" id="navCountryPickerBtn"
+            aria-label="Select Country & Currency">
+            <span class="cp-flag" id="navCurrentFlag">🇮🇳</span>
+            <span class="cp-text" id="navCurrentCountryText">India (₹)</span>
+            <i class="fa-solid fa-chevron-down cp-arrow"></i>
+          </button>
+          <div class="country-picker-menu" id="navCountryPickerMenu">
+            <div class="country-item active" data-country="IN">
+              <span class="ci-flag">🇮🇳</span>
+              <div class="ci-info">
+                <span class="ci-name">India</span>
+                <span class="ci-sub">Sec 108 TPA & Contract Act • INR (₹)</span>
+              </div>
+            </div>
+            <div class="country-item" data-country="US">
+              <span class="ci-flag">🇺🇸</span>
+              <div class="ci-info">
+                <span class="ci-name">United States</span>
+                <span class="ci-sub">State Civil Codes & Treble Damages • USD ($)</span>
+              </div>
+            </div>
+            <div class="country-item" data-country="GB">
+              <span class="ci-flag">🇬🇧</span>
+              <div class="ci-info">
+                <span class="ci-name">United Kingdom</span>
+                <span class="ci-sub">Housing Act 2004 & TDS 3x Penalty • GBP (£)</span>
+              </div>
+            </div>
+            <div class="country-item" data-country="CA">
+              <span class="ci-flag">🇨🇦</span>
+              <div class="ci-info">
+                <span class="ci-name">Canada</span>
+                <span class="ci-sub">Provincial RTA & LTB Tribunal • CAD ($)</span>
+              </div>
+            </div>
+            <div class="country-item" data-country="AU">
+              <span class="ci-flag">🇦🇺</span>
+              <div class="ci-info">
+                <span class="ci-name">Australia</span>
+                <span class="ci-sub">Residential Tenancies & Bond Authority • AUD ($)</span>
+              </div>
+            </div>
+            <div class="country-item" data-country="GLOBAL">
+              <span class="ci-flag">🌍</span>
+              <div class="ci-info">
+                <span class="ci-name">Worldwide / Other</span>
+                <span class="ci-sub">International Common Law • USD ($)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <a href="#quickCheck" class="nav-link" id="navLinkChecker">Legality Checker</a>
+        <a href="#countryLawsSection" class="nav-link" id="navLinkCountryLaws"><i
+            class="fa-solid fa-earth-americas"></i> Country Laws</a>
         <a href="#howItWorks" class="nav-link" id="navLinkHow">How It Works</a>
-        <a href="/laws" class="nav-link" id="navLinkLaws" style="color: #38bdf8; font-weight: 600;"><i class="fa-solid fa-scale-balanced"></i> Statutory Laws</a>
-        <a href="#inquirySection" class="nav-link" id="navLinkInquiry"><i class="fa-solid fa-headset"></i> Request Callback</a>
+        <a href="/laws" class="nav-link" id="navLinkLaws" style="color: #38bdf8; font-weight: 600;"><i
+            class="fa-solid fa-scale-balanced"></i> Statutory Laws</a>
+        <a href="#inquirySection" class="nav-link" id="navLinkInquiry"><i class="fa-solid fa-headset"></i> Request
+          Callback</a>
         <a href="#faqSection" class="nav-link" id="navLinkFaq">FAQ</a>
         <a href="#generatorSection" class="nav-btn-cta" id="navCtaBtn">
           <i class="fa-solid fa-gavel"></i> Draft Legal Notice
@@ -180,14 +248,17 @@
   <!-- Hero Section -->
   <section class="hero-section" id="heroSection">
     <div class="hero-container">
-      <div class="hero-badge">
-        <i class="fa-solid fa-scale-balanced"></i> Model Tenancy Act & Consumer Protection Act 2019 Compliant
+      <div class="hero-badge" id="heroBadge">
+        <i class="fa-solid fa-scale-balanced"></i> <span id="heroBadgeText">Model Tenancy Act & Consumer Protection Act
+          2019 Compliant</span>
       </div>
       <h1 class="hero-title" id="mainHeroTitle">
         Recover Your <span class="highlight-text">Security Deposit</span> from Your Landlord in 7 Days.
       </h1>
-      <p class="hero-subtitle">
-        Landlords in Bangalore, Pune, Mumbai & Delhi routinely withhold ₹20,000 to ₹80,000 for fake "painting" or "deep cleaning." Generate a formal, legally intimidating <strong>Pre-Litigation Demand Notice</strong> with official penal clauses to recover 100% of your money.
+      <p class="hero-subtitle" id="mainHeroSubtitle">
+        Landlords in Bangalore, Pune, Mumbai & Delhi routinely withhold ₹20,000 to ₹80,000 for fake "painting" or "deep
+        cleaning." Generate a formal, legally intimidating <strong>Pre-Litigation Demand Notice</strong> with official
+        penal clauses to recover 100% of your money.
       </p>
 
       <div class="hero-actions">
@@ -202,20 +273,20 @@
       <!-- Trust Metrics -->
       <div class="metrics-grid" id="metricsGrid">
         <div class="metric-card">
-          <div class="metric-value">₹24.8 Lakhs+</div>
-          <div class="metric-label">Recovered by Tenants</div>
+          <div class="metric-value" id="metricValue1">₹24.8 Lakhs+</div>
+          <div class="metric-label" id="metricLabel1">Recovered by Tenants</div>
         </div>
         <div class="metric-card">
-          <div class="metric-value">94.2%</div>
-          <div class="metric-label">Settled in 7 Days Before Court</div>
+          <div class="metric-value" id="metricValue2">94.2%</div>
+          <div class="metric-label" id="metricLabel2">Settled in 7 Days Before Court</div>
         </div>
         <div class="metric-card">
-          <div class="metric-value">₹99 &bull; ₹499</div>
-          <div class="metric-label">Starter Notice &bull; High Package Kit (Save ₹20k)</div>
+          <div class="metric-value" id="metricValue3">₹99 &bull; ₹499</div>
+          <div class="metric-label" id="metricLabel3">Starter Notice &bull; Full Court Kit</div>
         </div>
         <div class="metric-card">
-          <div class="metric-value">1,420+</div>
-          <div class="metric-label">Legal Notices Generated</div>
+          <div class="metric-value" id="metricValue4">1,420+</div>
+          <div class="metric-label" id="metricLabel4">Legal Notices Generated</div>
         </div>
       </div>
     </div>
@@ -224,32 +295,32 @@
   <!-- Trust & Credibility Bar -->
   <div class="trust-bar" id="trustBar">
     <div class="trust-bar-inner">
-      <div class="trust-item">
+      <div class="trust-item" id="trustItem1">
         <div class="trust-icon gov"><i class="fa-solid fa-landmark"></i></div>
         <div class="trust-content">
-          <strong>Central Tenancy Acts</strong>
-          <span>Sec 106/108 TPA 1882 & Sec 316 BNS</span>
+          <strong id="trustLawHeading">Central Tenancy Acts</strong>
+          <span id="trustLawSub">Sec 106/108 TPA 1882 & Sec 316 BNS</span>
         </div>
       </div>
-      <div class="trust-item">
+      <div class="trust-item" id="trustItem2">
         <div class="trust-icon rzp"><i class="fa-solid fa-shield-halved"></i></div>
         <div class="trust-content">
-          <strong>Razorpay Verified Merchant</strong>
+          <strong>Verified Merchant Gateway</strong>
           <span>256-Bit Bank-Grade SSL Encryption</span>
         </div>
       </div>
-      <div class="trust-item">
+      <div class="trust-item" id="trustItem3">
         <div class="trust-icon court"><i class="fa-solid fa-scale-balanced"></i></div>
         <div class="trust-content">
-          <strong>e-Jagriti Court Admissible</strong>
-          <span>Party-in-Person Legal Standing</span>
+          <strong id="trustCourtHeading">Court & Tribunal Admissible</strong>
+          <span id="trustCourtSub">Party-in-Person Legal Standing</span>
         </div>
       </div>
-      <div class="trust-item">
+      <div class="trust-item" id="trustItem4">
         <div class="trust-icon stars"><i class="fa-solid fa-star"></i></div>
         <div class="trust-content">
-          <strong>4.9 / 5 Rating (1,420+ Reviews)</strong>
-          <span>₹24.8L+ Recovered Across Metros</span>
+          <strong id="trustRatingHeading">4.9 / 5 Rating (1,420+ Reviews)</strong>
+          <span id="trustRatingSub">Worldwide Tenant Success Stories</span>
         </div>
       </div>
     </div>
@@ -259,37 +330,46 @@
   <section class="quick-check-section" id="quickCheck">
     <div class="section-container">
       <div class="section-header">
-        <span class="section-tag">Instant Legal Verdict</span>
-        <h2>Is Your Landlord's Deduction Illegal?</h2>
-        <p>Select what your landlord is deducting or complaining about to view the exact Indian High Court ruling.</p>
+        <span class="section-tag"><i class="fa-solid fa-scale-balanced"></i> Instant Legal Assessment • All Dispute Fields & Dealerships</span>
+        <h2>Is Your Opponent's Action Illegal? Check Your Case</h2>
+        <p>Select your dispute category below to view the exact statutory violation, High Court ruling, and legal recovery remedy.</p>
       </div>
 
       <div class="checker-card" id="checkerCard">
+        <!-- Category Filter Tabs (Dealerships, Tenancy, Invoices, Consumer, Employment, Cheque, Custom) -->
+        <div class="checker-category-tabs" id="checkerCategoryTabs">
+          <button type="button" class="check-tab-btn active" data-category="dealership"><i class="fa-solid fa-car-side"></i> Dealership & Franchise</button>
+          <button type="button" class="check-tab-btn" data-category="tenancy"><i class="fa-solid fa-house-chimney-user"></i> Tenancy & Rent Deposit</button>
+          <button type="button" class="check-tab-btn" data-category="commercial"><i class="fa-solid fa-file-invoice-dollar"></i> B2B Invoices & MSME</button>
+          <button type="button" class="check-tab-btn" data-category="consumer"><i class="fa-solid fa-cart-shopping"></i> Consumer & Defective Goods</button>
+          <button type="button" class="check-tab-btn" data-category="employment"><i class="fa-solid fa-user-tie"></i> Employment & Salary</button>
+          <button type="button" class="check-tab-btn" data-category="cheque"><i class="fa-solid fa-money-check-dollar"></i> Cheque Bounce (Sec 138)</button>
+          <button type="button" class="check-tab-btn" data-category="custom"><i class="fa-solid fa-pen-ruler"></i> Any Other Field</button>
+        </div>
+
         <div class="checker-input-group">
-          <label for="deductionTypeSelect">Select Landlord's Reason for Deduction:</label>
+          <label for="deductionTypeSelect" id="checkerSelectLabel">
+            <i class="fa-solid fa-triangle-exclamation text-primary"></i> Select Specific Dealership / Legal Breach to Evaluate:
+          </label>
           <select id="deductionTypeSelect" class="form-select">
-            <option value="painting">Painting Charges (Deducting 1 month rent or ₹15,000 - ₹30,000)</option>
-            <option value="cleaning">Deep Cleaning Fee (Deducting ₹5,000 - ₹15,000)</option>
-            <option value="wear_tear">Normal Wear & Tear (Minor wall marks, floor scuffs)</option>
-            <option value="gujarat_hc">Gujarat Tenancy: Landlord deducting repairs without verified bills (Gujarat HC)</option>
-            <option value="pg_lockin">PG / Co-Living: Forfeiting caution deposit for early exit under lock-in</option>
-            <option value="job_relocation">Corporate Employee: Job transfer/relocation (Landlord refusing deposit)</option>
-            <option value="student_threat">Student Tenant: Landlord withholding marksheets/laptops or calling college</option>
-            <option value="delay">"No Funds Right Now" / Delaying Beyond 30 Days</option>
-            <option value="ghosting">Ghosting / Not Answering WhatsApp or Calls</option>
-            <option value="fake_repairs">Old Plumbing / Pre-existing Appliance Breakdown</option>
+            <!-- Dynamically populated by JS based on selected category -->
           </select>
         </div>
 
         <div class="verdict-box" id="verdictBox">
           <div class="verdict-status illegal" id="verdictStatus">
-            <i class="fa-solid fa-triangle-exclamation"></i> <strong>VERDICT: 100% UNLAWFUL DEDUCTION</strong>
+            <i class="fa-solid fa-triangle-exclamation"></i> <strong>VERDICT: 100% UNLAWFUL BREACH OF DEALERSHIP AGREEMENT</strong>
           </div>
           <div class="verdict-details" id="verdictDetails">
-            <p id="verdictExplanation">Under Section 108 of the <em>Transfer of Property Act, 1882</em> and repeated High Court rulings, normal weathering, fading paint, and ordinary wear & tear are the sole maintenance obligation of the property owner. Forcing tenants to pay for fresh repainting without willful vandalism constitutes an illegal forfeiture of caution deposit.</p>
+            <p id="verdictExplanation"></p>
             <div class="verdict-statute" id="verdictStatute">
-              <span><i class="fa-solid fa-book-bookmark"></i> Legal Grounds:</span> Sec 73 Indian Contract Act, Sec 108 Transfer of Property Act, Model Tenancy Act (Sec 13).
+              <span><i class="fa-solid fa-book-bookmark"></i> Legal Grounds:</span> <span id="verdictStatuteText">Sec 73 Indian Contract Act, Sale of Goods Act 1930, Commercial Courts Act 2015.</span>
             </div>
+          </div>
+          <div class="verdict-action-bar" style="margin-top: 1.25rem; display: flex; justify-content: flex-end;">
+            <button type="button" class="btn-primary-hero btn-draft-from-verdict" id="btnDraftFromVerdict" style="padding: 0.75rem 1.4rem; font-size: 0.9rem;">
+              <i class="fa-solid fa-bolt"></i> Draft Legal Notice for this Dispute <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -302,7 +382,8 @@
       <div class="section-header">
         <span class="section-tag">Automated Legal Drafting</span>
         <h2>Draft Your Pre-Litigation Legal Demand Notice</h2>
-        <p>Answer a few simple questions. Our system drafts a court-ready, formal notice ready for Speed Post & WhatsApp.</p>
+        <p>Answer a few simple questions. Our system drafts a court-ready, formal notice ready for Speed Post &
+          WhatsApp.</p>
       </div>
 
       <!-- Generator Stepper Card -->
@@ -311,12 +392,12 @@
         <div class="wizard-steps" id="wizardSteps">
           <div class="step-item active" id="stepIndicator1">
             <div class="step-num">1</div>
-            <div class="step-title">Tenancy Info</div>
+            <div class="step-title">Notice & Parties</div>
           </div>
           <div class="step-line"></div>
           <div class="step-item" id="stepIndicator2">
             <div class="step-num">2</div>
-            <div class="step-title">Disputed Money</div>
+            <div class="step-title">Disputed Claims</div>
           </div>
           <div class="step-line"></div>
           <div class="step-item" id="stepIndicator3">
@@ -333,32 +414,151 @@
         <!-- STEP 1: Tenancy Info Form -->
         <div class="wizard-step-content active" id="wizardStep1">
           <div class="step-heading">
-            <h3><i class="fa-solid fa-house-user"></i> Step 1: Tenancy & Party Details</h3>
-            <p>Enter the details as they appear on your rental agreement.</p>
+            <h3><i class="fa-solid fa-scale-balanced" id="step1Icon"></i> <span id="step1HeadingText">Step 1: Notice Type & Party Details</span></h3>
+            <p id="wizardStep1Desc">Select your legal notice type (Dealership, Tenancy, Invoices, Consumer, Employment, Cheque, or Custom), jurisdiction, and parties.</p>
           </div>
 
           <div class="form-grid">
-            <div class="form-group custom-dropdown-group">
-              <label for="tenantCity">Rental City / District *</label>
+            <!-- NOTICE TYPE SELECTOR: ALL FIELDS & DEALERSHIPS ALLOWED -->
+            <div class="form-group full-width" style="margin-bottom: 1.25rem;">
+              <label class="form-label-highlight" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                <span><i class="fa-solid fa-folder-tree text-primary"></i> Select Legal Notice Type / Dispute Domain *</span>
+                <span class="badge-all-allowed"><i class="fa-solid fa-circle-check text-success"></i> ALL FIELDS ALLOWED</span>
+              </label>
+              <div class="notice-type-chips" id="noticeTypeChips">
+                <button type="button" class="notice-chip-btn active" data-type="dealership">
+                  <div class="chip-icon"><i class="fa-solid fa-car-side"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Dealership & Franchise</span>
+                    <span class="chip-desc">Deposit return, margin, stock buyback, termination</span>
+                  </div>
+                </button>
+                <button type="button" class="notice-chip-btn" data-type="tenancy">
+                  <div class="chip-icon"><i class="fa-solid fa-house-chimney-user"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Tenancy & Rent Deposit</span>
+                    <span class="chip-desc">Caution deposit, wear & tear, deductions</span>
+                  </div>
+                </button>
+                <button type="button" class="notice-chip-btn" data-type="commercial">
+                  <div class="chip-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Commercial Invoices & MSME</span>
+                    <span class="chip-desc">Unpaid vendor bills, overdue invoices, contract breach</span>
+                  </div>
+                </button>
+                <button type="button" class="notice-chip-btn" data-type="consumer">
+                  <div class="chip-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Consumer & Defective Goods</span>
+                    <span class="chip-desc">Defective vehicle/goods from dealer, deficiency in service</span>
+                  </div>
+                </button>
+                <button type="button" class="notice-chip-btn" data-type="employment">
+                  <div class="chip-icon"><i class="fa-solid fa-user-tie"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Employment & Salary</span>
+                    <span class="chip-desc">Unpaid salary, F&F settlement, relieving certificate</span>
+                  </div>
+                </button>
+                <button type="button" class="notice-chip-btn" data-type="cheque">
+                  <div class="chip-icon"><i class="fa-solid fa-money-check-dollar"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Cheque Bounce (Sec 138)</span>
+                    <span class="chip-desc">Dishonoured cheque statutory 15-day demand notice</span>
+                  </div>
+                </button>
+                <button type="button" class="notice-chip-btn" data-type="loan">
+                  <div class="chip-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Loan & Debt Recovery</span>
+                    <span class="chip-desc">Promissory note, friendly/business loan default</span>
+                  </div>
+                </button>
+                <button type="button" class="notice-chip-btn" data-type="builder">
+                  <div class="chip-icon"><i class="fa-solid fa-city"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Builder & RERA Dispute</span>
+                    <span class="chip-desc">Possession delay, booking advance refund</span>
+                  </div>
+                </button>
+                <button type="button" class="notice-chip-btn" data-type="freelance">
+                  <div class="chip-icon"><i class="fa-solid fa-laptop-code"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Freelancer & Agency Fees</span>
+                    <span class="chip-desc">Client non-payment, milestone payment withholding</span>
+                  </div>
+                </button>
+                <button type="button" class="notice-chip-btn" data-type="custom">
+                  <div class="chip-icon"><i class="fa-solid fa-pen-ruler"></i></div>
+                  <div class="chip-content">
+                    <span class="chip-title">Any Field / Custom Notice</span>
+                    <span class="chip-desc">Universal legal notice for ANY industry, dealer or claim</span>
+                  </div>
+                </button>
+              </div>
+              <select id="noticeTypeSelect" class="form-input" style="display:none;">
+                <option value="dealership" selected>Dealership & Franchise Dispute</option>
+                <option value="tenancy">Tenancy & Rental Caution Deposit</option>
+                <option value="commercial">Commercial Invoices & MSME Recovery</option>
+                <option value="consumer">Consumer & Defective Goods/Vehicles</option>
+                <option value="employment">Employment, Salary & Relieving Letter</option>
+                <option value="cheque">Dishonour of Cheque (Section 138 NI Act)</option>
+                <option value="loan">Loan Recovery & Promissory Note Breach</option>
+                <option value="builder">Builder & Real Estate Delay (RERA)</option>
+                <option value="freelance">Freelancer & Agency Fee Recovery</option>
+                <option value="custom">Any Field / Custom Legal Notice</option>
+              </select>
+            </div>
+
+            <!-- Custom Field Specific Name Input (for dealership or custom) -->
+            <div class="form-group full-width" id="customFieldContainer" style="display:none; margin-bottom: 0.75rem;">
+              <label for="customFieldName" id="labelCustomFieldName"><i class="fa-solid fa-tag text-primary"></i> Specify Your Dispute Industry / Dealership Field *</label>
+              <input type="text" id="customFieldName" class="form-input" placeholder="e.g. Automobile Two-Wheeler Dealership, Solar Franchise, Healthcare Agency, Logistics, etc.">
+            </div>
+
+            <div class="form-group full-width" style="margin-bottom: 0.75rem;">
+              <label for="wizardCountrySelect"><i class="fa-solid fa-earth-americas"></i> Select Your Country / Legal
+                Jurisdiction *</label>
+              <select id="wizardCountrySelect" class="form-input"
+                style="font-weight: 700; background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.4); color: #f8fafc; font-size: 0.95rem;">
+                <option value="IN" selected>🇮🇳 India (Transfer of Property Act, Contract Act & Commercial Courts • INR ₹)
+                </option>
+                <option value="US">🇺🇸 United States (UCC Commercial Codes, State Civil Codes & Small Claims • USD $)
+                </option>
+                <option value="GB">🇬🇧 United Kingdom (Sale of Goods Act, Housing Act & Pre-Action Protocol • GBP £)</option>
+                <option value="CA">🇨🇦 Canada (Commercial & Residential Tenancies Act, Tribunals • CAD $)</option>
+                <option value="AU">🇦🇺 Australia (Competition & Consumer Act, Franchising Code & Tribunals • AUD $)</option>
+                <option value="GLOBAL">🌍 Worldwide / Other (International Commercial & Common Law Rules • USD $)</option>
+              </select>
+            </div>
+
+            <div class="form-group custom-dropdown-group" id="cityGroupContainer">
+              <label for="tenantCity" id="labelTenantCity">Rental City / District *</label>
               <div class="custom-select-wrapper" id="citySelectWrapper">
                 <div class="custom-select-input-box">
                   <i class="fa-solid fa-location-dot select-icon-left"></i>
-                  <input type="text" id="tenantCity" name="search_rental_district_custom" class="form-input custom-city-input" placeholder="Search or type any city..." value="Bengaluru, Karnataka" autocomplete="new-password" spellcheck="false" required>
+                  <input type="text" id="tenantCity" name="search_rental_district_custom"
+                    class="form-input custom-city-input" placeholder="Search or type any city..."
+                    value="Bengaluru, Karnataka" autocomplete="new-password" spellcheck="false" required>
                   <i class="fa-solid fa-chevron-down select-chevron" id="cityChevron"></i>
                 </div>
                 <div class="custom-select-dropdown" id="cityDropdownList">
                   <div class="dropdown-group-label">MAJOR METROS</div>
-                  <div class="dropdown-item selected" data-value="Bengaluru, Karnataka">Bengaluru (Bangalore), Karnataka</div>
+                  <div class="dropdown-item selected" data-value="Bengaluru, Karnataka">Bengaluru (Bangalore), Karnataka
+                  </div>
                   <div class="dropdown-item" data-value="Pune, Maharashtra">Pune, Maharashtra</div>
                   <div class="dropdown-item" data-value="Mumbai, Maharashtra">Mumbai / Navi Mumbai / Thane</div>
-                  <div class="dropdown-item" data-value="Delhi-NCR (Gurgaon/Noida)">Delhi-NCR (Delhi / Gurgaon / Noida)</div>
+                  <div class="dropdown-item" data-value="Delhi-NCR (Gurgaon/Noida)">Delhi-NCR (Delhi / Gurgaon / Noida)
+                  </div>
                   <div class="dropdown-item" data-value="Hyderabad, Telangana">Hyderabad, Telangana</div>
                   <div class="dropdown-item" data-value="Chennai, Tamil Nadu">Chennai, Tamil Nadu</div>
                   <div class="dropdown-item" data-value="Kolkata, West Bengal">Kolkata, West Bengal</div>
-                  
+
                   <div class="dropdown-group-label">GUJARAT</div>
                   <div class="dropdown-item" data-value="Ahmedabad, Gujarat">Ahmedabad, Gujarat</div>
-                  <div class="dropdown-item" data-value="Gandhinagar, Gujarat">Gandhinagar, Gujarat (GIFT City / Infocity)</div>
+                  <div class="dropdown-item" data-value="Gandhinagar, Gujarat">Gandhinagar, Gujarat (GIFT City /
+                    Infocity)</div>
                   <div class="dropdown-item" data-value="Surat, Gujarat">Surat, Gujarat</div>
                   <div class="dropdown-item" data-value="Vadodara, Gujarat">Vadodara, Gujarat</div>
                   <div class="dropdown-item" data-value="Rajkot, Gujarat">Rajkot, Gujarat</div>
@@ -395,52 +595,55 @@
             </div>
 
             <div class="form-group">
-              <label for="tenantName">Your Full Name (Tenant) *</label>
-              <input type="text" id="tenantName" class="form-input" placeholder="e.g. Rahul Sharma" required>
+              <label for="tenantName" id="labelTenantName">Your Full Name / Dealership Name (Claimant) *</label>
+              <input type="text" id="tenantName" class="form-input" placeholder="e.g. Rajesh Patel (M/s Apex Auto Dealership)" required>
             </div>
 
             <div class="form-group">
-              <label for="tenantPhone">Your Mobile / WhatsApp *</label>
+              <label for="tenantPhone" id="labelTenantPhone">Your Mobile / WhatsApp *</label>
               <input type="tel" id="tenantPhone" class="form-input" placeholder="e.g. +91 9876543210" required>
             </div>
 
             <div class="form-group">
-              <label for="tenantEmail">Your Email *</label>
-              <input type="email" id="tenantEmail" class="form-input" placeholder="e.g. rahul@example.com" required>
+              <label for="tenantEmail" id="labelTenantEmail">Your Email *</label>
+              <input type="email" id="tenantEmail" class="form-input" placeholder="e.g. rajesh@apexdealership.com" required>
             </div>
 
             <div class="form-group">
-              <label for="landlordName">Landlord's Full Name *</label>
-              <input type="text" id="landlordName" class="form-input" placeholder="e.g. K. V. Narayana" required>
+              <label for="landlordName" id="labelLandlordName">Opponent Principal Brand / Company / Landlord *</label>
+              <input type="text" id="landlordName" class="form-input" placeholder="e.g. Automobile Manufacturing Brand Ltd." required>
             </div>
 
             <div class="form-group">
-              <label for="landlordPhone">Landlord's Mobile / WhatsApp *</label>
+              <label for="landlordPhone" id="labelLandlordPhone">Opponent Mobile / Corporate Phone *</label>
               <input type="tel" id="landlordPhone" class="form-input" placeholder="e.g. +91 9811122233" required>
             </div>
 
             <div class="form-group full-width">
-              <label for="propertyAddress">Rented House / Flat Full Address *</label>
-              <input type="text" id="propertyAddress" class="form-input" placeholder="e.g. Flat 302, Green Glen Layout, Bellandur, Bengaluru - 560103" required>
+              <label for="propertyAddress" id="labelPropertyAddress">Dealership Showroom / Business / Property Address *</label>
+              <input type="text" id="propertyAddress" class="form-input"
+                placeholder="e.g. Plot 42, Auto Zone, Industrial Area, Ahmedabad, Gujarat - 382445" required>
             </div>
 
             <div class="form-group">
-              <label for="tenancyStartDate">Tenancy Start Date</label>
+              <label for="tenancyStartDate" id="labelTenancyStartDate">Agreement / Start Date</label>
               <input type="date" id="tenancyStartDate" class="form-input">
             </div>
 
             <div class="form-group">
-              <label for="accommodationType">Accommodation / Occupancy Category *</label>
+              <label for="accommodationType" id="labelAccommodationType">Business / Industry Category *</label>
               <select id="accommodationType" class="form-input">
-                <option value="Residential Apartment / Flat" selected>Residential Apartment / Independent House</option>
-                <option value="Paying Guest (PG) / Co-Living Space">Paying Guest (PG) / Co-Living Space (Zolo, Stanza, etc.)</option>
-                <option value="College Student Hostel / Room">College Student Hostel / Private Room</option>
-                <option value="Corporate Employee Leased Residence">Corporate Employee / Relocated Professional Flat</option>
+                <option value="Automobile 2-Wheeler / 4-Wheeler Dealership" selected>Automobile 2-Wheeler / 4-Wheeler Dealership</option>
+                <option value="Commercial Vehicle / Heavy Machinery Dealership">Commercial Vehicle / Heavy Machinery Dealership</option>
+                <option value="FMCG & Consumer Goods Distributorship">FMCG & Consumer Goods Distributorship</option>
+                <option value="Residential Apartment / Independent House">Residential Apartment / Independent House (Tenancy)</option>
+                <option value="Corporate / MSME Commercial Contract">Corporate / MSME Commercial Contract</option>
+                <option value="Retail Franchise / Agency">Retail Franchise / Agency</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="vacateDate">Date You Handed Over Keys / Vacated *</label>
+              <label for="vacateDate" id="labelVacateDate">Date of Breach / Dispute Occurred *</label>
               <input type="date" id="vacateDate" class="form-input" required>
             </div>
           </div>
@@ -456,34 +659,36 @@
         <!-- STEP 2: Disputed Money & Reasons -->
         <div class="wizard-step-content" id="wizardStep2">
           <div class="step-heading">
-            <h3><i class="fa-solid fa-indian-rupee-sign"></i> Step 2: Financial Details & Illegal Deductions</h3>
-            <p>Tell us how much money was paid and what is being withheld.</p>
+            <h3><i class="fa-solid fa-coins" id="step2CurrencyIcon"></i> <span id="step2HeadingText">Step 2: Financial
+                Details & Illegal Deductions</span></h3>
+            <p id="step2Subtitle">Tell us how much money was paid and what is being withheld.</p>
           </div>
 
           <div class="form-grid">
             <div class="form-group">
-              <label for="depositPaid">Total Security Deposit Paid (₹) *</label>
-              <input type="number" id="depositPaid" class="form-input" placeholder="e.g. 100000" min="1000" required>
+              <label for="depositPaid" id="labelDepositPaid">Total Security Deposit Paid (₹) *</label>
+              <input type="number" id="depositPaid" class="form-input" placeholder="e.g. 100000" min="1" required>
             </div>
 
             <div class="form-group">
-              <label for="monthlyRent">Monthly Rent Amount (₹) *</label>
-              <input type="number" id="monthlyRent" class="form-input" placeholder="e.g. 25000" min="1000" required>
+              <label for="monthlyRent" id="labelMonthlyRent">Monthly Rent Amount (₹) *</label>
+              <input type="number" id="monthlyRent" class="form-input" placeholder="e.g. 25000" min="1" required>
             </div>
 
             <div class="form-group">
-              <label for="amountRefunded">Amount Refunded So Far (₹, enter 0 if none)</label>
+              <label for="amountRefunded" id="labelAmountRefunded">Amount Refunded So Far (₹, enter 0 if none)</label>
               <input type="number" id="amountRefunded" class="form-input" placeholder="e.g. 0" value="0">
             </div>
 
             <div class="form-group">
-              <label for="amountWithheld">Amount Unlawfully Withheld / Demanded Back (₹) *</label>
+              <label for="amountWithheld" id="labelAmountWithheld">Amount Unlawfully Withheld / Demanded Back (₹)
+                *</label>
               <input type="number" id="amountWithheld" class="form-input" placeholder="e.g. 45000" required>
             </div>
 
             <div class="form-group full-width">
-              <label>Select All Excuses / Reasons Landlord is Using:</label>
-              <div class="checkbox-grid">
+              <label id="labelLandlordExcuses">Select All Excuses / Reasons Landlord is Using:</label>
+              <div class="checkbox-grid" id="excusesCheckboxGrid">
                 <label class="custom-checkbox">
                   <input type="checkbox" name="landlordExcuse" value="Painting Charges" checked>
                   <span class="checkmark"></span>
@@ -507,27 +712,22 @@
                 <label class="custom-checkbox">
                   <input type="checkbox" name="landlordExcuse" value="No Breakdown or Bills">
                   <span class="checkmark"></span>
-                  Failed to provide valid GST bills/quotations for deductions
+                  Failed to provide valid itemized bills/invoices for deductions
                 </label>
                 <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Arbitrary PG/Hostel Lock-in Forfeiture">
+                  <input type="checkbox" name="landlordExcuse" value="Arbitrary Lock-in Forfeiture">
                   <span class="checkmark"></span>
-                  PG / Hostel arbitrary lock-in period forfeiture (Sec 52 Easements Act)
+                  Arbitrary lock-in period deposit forfeiture
                 </label>
                 <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Corporate Job Transfer / Relocation Deduction">
+                  <input type="checkbox" name="landlordExcuse" value="Corporate Relocation Deduction">
                   <span class="checkmark"></span>
-                  Corporate Job Transfer / Employee relocation deduction (Sec 56 ICA Frustration)
+                  Job Transfer / Employee relocation deduction
                 </label>
                 <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Student Threats or Withholding Belongings">
+                  <input type="checkbox" name="landlordExcuse" value="Unverified Repairs without Invoices">
                   <span class="checkmark"></span>
-                  Threatening student / withholding deposit or documents (BNS Sec 308)
-                </label>
-                <label class="custom-checkbox">
-                  <input type="checkbox" name="landlordExcuse" value="Unverified Repairs without Invoices (Gujarat HC)">
-                  <span class="checkmark"></span>
-                  Gujarat HC violation: Deducting repairs without authentic GST invoices
+                  Unverified repairs without genuine third-party invoices
                 </label>
               </div>
             </div>
@@ -535,17 +735,17 @@
             <div class="form-group">
               <label for="noticeServed">Did you serve proper vacating notice as per agreement?</label>
               <select id="noticeServed" class="form-input">
-                <option value="Yes">Yes, served 1-month (or required) notice</option>
+                <option value="Yes">Yes, served proper written notice</option>
                 <option value="Mutual">Vacated with mutual verbal/written consent</option>
                 <option value="No">No prior notice served</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="flatCondition">Was flat handed over peacefully with all keys returned?</label>
+              <label for="flatCondition">Was property handed over peacefully with all keys returned?</label>
               <select id="flatCondition" class="form-input">
-                <option value="Yes">Yes, keys handed over and room inspected</option>
-                <option value="KeysLeft">Keys handed over to security / flat locked as agreed</option>
+                <option value="Yes">Yes, keys handed over and walkthrough completed</option>
+                <option value="KeysLeft">Keys returned as mutually agreed</option>
               </select>
             </div>
           </div>
@@ -563,44 +763,52 @@
         <!-- STEP 3: Legal Strength & Dispute Analysis -->
         <div class="wizard-step-content" id="wizardStep3">
           <div class="step-heading">
-            <h3><i class="fa-solid fa-chart-pie"></i> Step 3: Legal Strength Assessment & Statues</h3>
-            <p>Based on Indian Tenancy jurisprudence and consumer protection acts.</p>
+            <h3><i class="fa-solid fa-chart-pie"></i> Step 3: Legal Strength Assessment & Statutes</h3>
+            <p id="step3JurisdictionSub">Based on statutory tenancy jurisprudence and consumer protection acts.</p>
           </div>
 
           <div class="analysis-box">
             <div class="score-container">
               <div class="score-circle">
                 <svg viewBox="0 0 36 36" class="circular-chart">
-                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                  <path class="circle" stroke-dasharray="96, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                  <text x="18" y="20.35" class="percentage">96%</text>
+                  <path class="circle-bg"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path class="circle" stroke-dasharray="96, 100"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <text x="18" y="20.35" class="percentage" id="scorePercentageVal">96%</text>
                 </svg>
               </div>
               <div class="score-text">
-                <span class="score-badge">EXCELLENT LEGAL STANDING</span>
-                <h4>High Probability of Full Settlement Without Litigation</h4>
-                <p>The landlord's deductions directly violate established statutory protections under Section 73 of the Indian Contract Act and Section 108 of the Transfer of Property Act.</p>
+                <span class="score-badge" id="scoreBadgeText">EXCELLENT LEGAL STANDING</span>
+                <h4 id="step3ScoreHeadline">High Probability of Full Settlement Without Litigation</h4>
+                <p id="step3ScoreDesc">The landlord's deductions directly violate established statutory protections
+                  under Section 73 of the Indian Contract Act and Section 108 of the Transfer of Property Act.</p>
               </div>
             </div>
 
             <div class="legal-clauses-preview">
-              <h4><i class="fa-solid fa-file-contract"></i> Statutory Grounds Identified in Your Case:</h4>
-              <ul class="clauses-list">
+              <h4 id="clausesHeading"><i class="fa-solid fa-file-contract"></i> Statutory Grounds Identified in Your
+                Case:</h4>
+              <ul class="clauses-list" id="step3ClausesList">
                 <li>
                   <i class="fa-solid fa-circle-check text-success"></i>
-                  <strong>Illegal Painting / Wear & Tear Forfeiture:</strong> Landlord is legally prohibited from charging painting costs for ordinary weathering or tenancy tenure over 11 months.
+                  <strong>Illegal Painting / Wear & Tear Forfeiture:</strong> Landlord is legally prohibited from
+                  charging painting costs for ordinary weathering or tenancy tenure over 11 months.
                 </li>
                 <li>
                   <i class="fa-solid fa-circle-check text-success"></i>
-                  <strong>30-Day Mandatory Handover Limit Exceeded:</strong> Under Model Tenancy guidelines and standard lease covenants, withholding deposit beyond 30 days incurs penal liability.
+                  <strong>Mandatory Handover Limit Exceeded:</strong> Withholding deposit beyond statutory limits incurs
+                  penal interest liability.
                 </li>
                 <li>
                   <i class="fa-solid fa-circle-check text-success"></i>
-                  <strong>Unjustified Enrichment (Sec 72, Indian Contract Act):</strong> Retaining tenant funds without verifiable itemized tax invoices constitutes criminal breach of trust (Sec 405 IPC / BNS).
+                  <strong>Unjustified Enrichment Doctrine:</strong> Retaining tenant funds without verifiable itemized
+                  tax invoices constitutes unlawful withholding.
                 </li>
                 <li>
                   <i class="fa-solid fa-circle-check text-success"></i>
-                  <strong>18% Compound Interest Claim:</strong> Landlord is made liable for 18% per annum commercial interest from the date of handover until full realization.
+                  <strong>Statutory Damages & Penal Interest:</strong> Landlord is made liable for penal interest and
+                  damages from the date of handover until full realization.
                 </li>
               </ul>
             </div>
@@ -628,27 +836,32 @@
             <div class="plans-header">
               <span class="plans-pill"><i class="fa-solid fa-scale-balanced"></i> CHOOSE YOUR RECOVERY PLAN</span>
               <h3 class="plans-title">Select Your Legal Action Level</h3>
-              <p class="plans-subtitle">Both plans are instantly processed via official <strong>Razorpay Checkout</strong> (UPI, Google Pay, Cards, NetBanking)</p>
+              <p class="plans-subtitle">Both plans are instantly processed via official <strong>Razorpay
+                  Checkout</strong> (UPI, Google Pay, Cards, NetBanking)</p>
             </div>
 
             <div class="plans-grid">
-              <!-- PLAN 1: ₹99 -->
+              <!-- PLAN 1 -->
               <div class="plan-card" id="planCardTier1">
-                <div class="plan-header-badge">STARTER OPTION</div>
-                <h4 class="plan-name">7-Day Pre-Litigation Legal Notice</h4>
+                <div class="plan-header-badge" id="plan1Badge">STARTER OPTION</div>
+                <h4 class="plan-name" id="plan1Name">7-Day Pre-Litigation Legal Notice</h4>
                 <div class="plan-pricing">
-                  <span class="plan-strike">₹1,999</span>
+                  <span class="plan-strike" id="planTier1StrikeVal">₹1,999</span>
                   <span class="plan-price" id="planTier1PriceVal">₹99</span>
                   <span class="plan-period">one-time</span>
                 </div>
-                <p class="plan-desc">Formal advocate-grade demand notice with strict 7-day penal deadline and High Court precedents.</p>
-                
-                <ul class="plan-features">
-                  <li><i class="fa-solid fa-circle-check"></i> <strong>2-Page Court-Admissible</strong> Legal Notice PDF</li>
-                  <li><i class="fa-solid fa-circle-check"></i> Sec 108 Transfer of Property Act Grounds</li>
-                  <li><i class="fa-solid fa-circle-check"></i> Sec 73 Contract Act 18% Interest Claim</li>
+                <p class="plan-desc" id="plan1Desc">Formal legal demand notice with strict 7-day penal deadline and
+                  statutory precedents.</p>
+
+                <ul class="plan-features" id="planFeaturesTier1">
+                  <li><i class="fa-solid fa-circle-check"></i> <strong>2-Page Court-Admissible</strong> Legal Notice PDF
+                  </li>
+                  <li id="p1FeatStatute"><i class="fa-solid fa-circle-check"></i> Sec 108 Transfer of Property Act
+                    Grounds</li>
+                  <li id="p1FeatDamages"><i class="fa-solid fa-circle-check"></i> 18% Statutory Penal Interest Claim
+                  </li>
                   <li><i class="fa-solid fa-circle-check"></i> 1-Click WhatsApp Format for Landlord</li>
-                  <li><i class="fa-solid fa-circle-check"></i> Speed Post RPAD Dispatch Template</li>
+                  <li id="p1FeatPost"><i class="fa-solid fa-circle-check"></i> Speed Post RPAD Dispatch Template</li>
                 </ul>
 
                 <button type="button" class="btn-select-plan btn-plan-tier1" id="btnSelectPlanTier1">
@@ -656,29 +869,36 @@
                 </button>
               </div>
 
-              <!-- PLAN 2: ₹499 (RECOMMENDED) -->
+              <!-- PLAN 2 (RECOMMENDED) -->
               <div class="plan-card featured" id="planCardTier2">
                 <div class="plan-featured-badge"><i class="fa-solid fa-crown"></i> RECOMMENDED • FULL SUITE</div>
                 <div class="plan-header-badge gold">MAXIMUM RECOVERY POWER</div>
-                <h4 class="plan-name">Notice + Consumer Court & Police Kit</h4>
+                <h4 class="plan-name" id="plan2Name">Notice + Consumer Court & Police Kit</h4>
                 <div class="plan-pricing">
-                  <span class="plan-strike">₹20,000</span>
+                  <span class="plan-strike" id="planTier2StrikeVal">₹20,000</span>
                   <span class="plan-price" id="planTier2PriceVal">₹499</span>
-                  <span class="plan-period">Save ₹19,500</span>
+                  <span class="plan-period">Save High Cost</span>
                 </div>
-                <p class="plan-desc">Full legal arsenal if landlord ignores notice: ready-to-file court petition, affidavit, and police complaint.</p>
-                
-                <ul class="plan-features">
-                  <li class="feat-highlight"><i class="fa-solid fa-circle-check"></i> <strong>Includes Everything in ₹99 Legal Notice</strong></li>
-                  <li><i class="fa-solid fa-circle-check"></i> <strong>e-Jagriti Consumer Court Formal Petition</strong> (Form 1)</li>
-                  <li><i class="fa-solid fa-circle-check"></i> <strong>Notary Verification Affidavit</strong> ready format</li>
-                  <li><i class="fa-solid fa-circle-check"></i> <strong>Police Criminal Complaint</strong> (Sec 405 IPC / 316 BNS)</li>
-                  <li><i class="fa-solid fa-circle-check"></i> <strong>₹0 Court Fee Online Filing Manual</strong></li>
-                  <li><i class="fa-solid fa-circle-check"></i> <strong>₹1,00,000 Punitive Damages Claim</strong> for agony</li>
+                <p class="plan-desc" id="plan2Desc">Full legal arsenal if landlord ignores notice: ready-to-file court
+                  petition, affidavit, and escalation complaint.</p>
+
+                <ul class="plan-features" id="planFeaturesTier2">
+                  <li class="feat-highlight"><i class="fa-solid fa-circle-check"></i> <strong>Includes Everything in
+                      Starter Legal Notice</strong></li>
+                  <li id="p2FeatCourt"><i class="fa-solid fa-circle-check"></i> <strong>e-Jagriti Consumer Court Formal
+                      Petition</strong> (Form 1)</li>
+                  <li id="p2FeatAffidavit"><i class="fa-solid fa-circle-check"></i> <strong>Notary Verification
+                      Affidavit</strong> ready format</li>
+                  <li id="p2FeatComplaint"><i class="fa-solid fa-circle-check"></i> <strong>Police Criminal
+                      Complaint</strong> (Sec 405 IPC / 316 BNS)</li>
+                  <li id="p2FeatFiling"><i class="fa-solid fa-circle-check"></i> <strong>₹0 Court Fee Online Filing
+                      Manual</strong></li>
+                  <li id="p2FeatDamages"><i class="fa-solid fa-circle-check"></i> <strong>₹1,00,000 Punitive Damages
+                      Claim</strong> for agony</li>
                 </ul>
 
                 <button type="button" class="btn-select-plan btn-plan-tier2" id="btnSelectPlanTier2">
-                  <i class="fa-solid fa-shield-halved"></i> Pay ₹499 with Razorpay (Save ₹20,000)
+                  <i class="fa-solid fa-shield-halved"></i> Pay ₹499 with Razorpay
                 </button>
               </div>
             </div>
@@ -690,16 +910,18 @@
               <div class="watermark-preview" id="watermarkPreview">PREVIEW COPY - UNLOCK TO REMOVE</div>
 
               <div class="notice-header">
-                <div class="notice-badge">FORMAL LEGAL NOTICE</div>
+                <div class="notice-badge" id="docNoticeBadge">FORMAL LEGAL NOTICE</div>
                 <div class="notice-meta">
                   <div><strong>REF NO:</strong> <span id="docRefNo">DS/2026/BLR-9841</span></div>
                   <div><strong>DATE:</strong> <span id="docDate">23-10-2026</span></div>
-                  <div><strong>TRANSMISSION:</strong> Speed Post A.D. & WhatsApp Messenger</div>
+                  <div id="docTransmission"><strong>TRANSMISSION:</strong> Speed Post A.D. & WhatsApp Messenger</div>
                 </div>
               </div>
 
               <div class="notice-subject" id="docSubject">
-                <strong>SUBJECT:</strong> FORMAL LEGAL DEMAND NOTICE UNDER SECTION 73 OF THE INDIAN CONTRACT ACT, 1872 AND THE CONSUMER PROTECTION ACT, 2019 FOR IMMEDIATE REFUND OF UNLAWFULLY WITHHELD SECURITY DEPOSIT OF <strong>₹<span id="docWithheldAmount">45,000</span>/-</strong> WITH STATUTORY ACCRUED INTEREST.
+                <strong>SUBJECT:</strong> FORMAL LEGAL DEMAND NOTICE UNDER SECTION 73 OF THE INDIAN CONTRACT ACT, 1872
+                AND THE CONSUMER PROTECTION ACT, 2019 FOR IMMEDIATE REFUND OF UNLAWFULLY WITHHELD SECURITY DEPOSIT OF
+                <strong>₹<span id="docWithheldAmount">45,000</span>/-</strong> WITH STATUTORY ACCRUED INTEREST.
               </div>
 
               <div class="notice-parties">
@@ -707,7 +929,8 @@
                   <strong>TO (OPPOSITE PARTY / LANDLORD):</strong><br>
                   <span id="docLandlordName">K. V. Narayana</span><br>
                   Mobile: <span id="docLandlordPhone">+91 9811122233</span><br>
-                  Rented Premises: <span id="docPropertyAddress">Flat 302, Green Glen Layout, Bellandur, Bengaluru - 560103</span>
+                  Rented Premises: <span id="docPropertyAddress">Flat 302, Green Glen Layout, Bellandur, Bengaluru -
+                    560103</span>
                 </div>
                 <div class="party-block">
                   <strong>FROM (CLAIMANT / OUTGOING TENANT):</strong><br>
@@ -719,11 +942,12 @@
 
               <div class="notice-body">
                 <p><strong>SIR / MADAM,</strong></p>
-                <p>Under instructions and authorization from my Client (the Claimant named above), I hereby issue and serve upon you this formal <strong>Pre-Litigation Legal Demand Notice</strong> as follows:</p>
-                
-                <p><strong>1. TENANCY BACKGROUND:</strong> That my Client was a bona fide, lawful tenant occupying your residential premises situated at <span id="docBodyAddress">Flat 302, Green Glen Layout, Bellandur</span>, under a valid rental agreement. At the inception of the tenancy, my Client paid an advance interest-free security deposit of <strong>₹<span id="docDepositPaid">1,00,000</span>/-</strong>, with the categorical covenant that said deposit was fully refundable upon peaceful delivery of vacant possession.</p>
+                <p>Under instructions and authorization from my Client (the Claimant named above), I hereby issue and
+                  serve upon you this formal <strong>Pre-Litigation Legal Demand Notice</strong> as follows:</p>
 
-                <p><strong>2. PEACEFUL VACATION & DUE NOTICE:</strong> That my Client dutifully served the required vacating notice and peacefully handed over vacant possession along with physical keys on <span id="docVacateDate">15-10-2026</span>. At the time of handover, the premises were in habitable, sound, and clean order.</p>
+                <p id="docNoticePara1"><strong>1. TRANSACTION BACKGROUND:</strong> That my Client was an authorized party operating at <span id="docBodyAddress">Flat 302, Green Glen Layout, Bellandur</span>, under a valid commercial/contractual agreement. At the inception of the agreement, my Client paid an advance financial security/deposit of <strong>₹<span id="docDepositPaid">1,00,000</span>/-</strong>, with the categorical covenant that said sum was fully refundable/reconcilable upon peaceful completion.</p>
+
+                <p id="docNoticePara2"><strong>2. PERFORMANCE & TIMELINE:</strong> That my Client dutifully performed all contractual covenants and formally completed obligations on <span id="docVacateDate">15-10-2026</span>. At said time, all accounts were clear and all terms fulfilled in good faith.</p>
 
                 <!-- Blurred / Paywalled Section -->
                 <div class="notice-blurred-section" id="noticeBlurredSection">
@@ -738,7 +962,8 @@
                           <i class="fa-solid fa-file-contract"></i> Unlock 7-Day Legal Notice for ₹99 (Starter)
                         </button>
                         <button type="button" class="btn-unlock-tier2-gold" id="btnUnlockTier2Direct">
-                          <i class="fa-solid fa-crown"></i> Unlock Notice + Court & Police Kit for ₹499 <span>HIGH PACKAGE • Save ₹19,500</span>
+                          <i class="fa-solid fa-crown"></i> Unlock Notice + Court & Police Kit for ₹499 <span>HIGH
+                            PACKAGE • Save ₹19,500</span>
                         </button>
                       </div>
 
@@ -748,32 +973,33 @@
                     </div>
                   </div>
 
-                  <p><strong>3. UNLAWFUL DEDUCTION & UNJUST ENRICHMENT:</strong> That despite repeated demands and delivery of vacant possession, you have unlawfully and arbitrarily deducted / refused to refund the sum of <strong>₹<span id="docBlurredWithheld">45,000</span>/-</strong> under the pretext of <span id="docBlurredReasons">painting charges and deep cleaning</span>. It is a settled position of law (per Section 108(m) of the Transfer of Property Act, 1882) that normal wear, tear, and natural weathering cannot be burdened upon a tenant.</p>
+                  <p id="docBlurredPara3"><strong>3. UNLAWFUL WITHHOLDING & MATERIAL BREACH:</strong> That despite repeated demands and formal handover, you have unlawfully and arbitrarily deducted / refused to refund the sum of <strong>₹<span id="docBlurredWithheld">45,000</span>/-</strong> under the pretext of <span id="docBlurredReasons">arbitrary deductions</span>. It is a settled position of statutory law that caution deposits and earned dues cannot be arbitrarily forfeited without strict legal proof of willful damage.</p>
 
-                  <p><strong>4. DEMAND FOR PAYMENT (7 DAYS NOTICE):</strong> My Client hereby demands that you remit the withheld sum of <strong>₹<span id="docBlurredTotal">45,000</span>/-</strong> along with statutory interest at the rate of 18% per annum directly to my Client's bank account within <strong>SEVEN (7) DAYS</strong> of receipt of this notice.</p>
+                  <p id="docBlurredPara4"><strong>4. DEMAND FOR PAYMENT:</strong> My Client hereby demands that you remit the withheld sum of <strong>₹<span id="docBlurredTotal">45,000</span>/-</strong> along with statutory interest at the rate of 18% per annum directly to my Client's bank account within <strong>SEVEN (7) TO FIFTEEN (15) DAYS</strong> of receipt of this notice.</p>
 
-                  <p><strong>5. NOTICE OF CIVIL & CONSUMER REMEDIES:</strong> Take notice that should you fail to comply with this demand within the stipulated period of 7 days, my Client has given peremptory instructions to initiate appropriate legal proceedings before the Competent <strong>District Consumer Disputes Redressal Commission (DCDRC)</strong> and Civil Court for recovery of the principal sum, interest, damages of ₹1,00,000/- for mental harassment, and legal costs.</p>
+                  <p id="docBlurredPara5"><strong>5. NOTICE OF LEGAL ACTION:</strong> Take notice that should you fail to comply with this demand, my Client has given peremptory instructions to initiate appropriate legal proceedings before the Competent Commercial Court, DCDRC Consumer Commission, or Civil Court for recovery of the principal sum, interest, compensation for mental harassment, and legal costs.</p>
                 </div>
 
                 <!-- Unlocked View (Hidden until payment) -->
                 <div class="notice-unlocked-section hidden" id="noticeUnlockedSection">
-                  <p><strong>3. UNLAWFUL DEDUCTION & UNJUST ENRICHMENT:</strong> That despite repeated demands and delivery of vacant possession, you have unlawfully and arbitrarily deducted / refused to refund the sum of <strong>₹<span id="docUnlockedWithheld">45,000</span>/-</strong> under the pretext of <span id="docUnlockedReasons">painting charges and deep cleaning</span>. It is a settled position of law (per Section 108(m) of the Transfer of Property Act, 1882 and authoritative High Court precedents) that normal wear, tear, and natural weathering are the sole liability of the property owner.</p>
+                  <p id="docUnlockedPara3"><strong>3. UNLAWFUL WITHHOLDING & MATERIAL BREACH:</strong> That despite repeated demands, you have unlawfully and arbitrarily deducted / refused to refund the sum of <strong>₹<span id="docUnlockedWithheld">45,000</span>/-</strong> under the pretext of <span id="docUnlockedReasons">arbitrary deductions</span>. It is a settled position of law that caution deposits and commercial dues cannot be forfeited without verifiable proof of actual damage.</p>
 
-                  <p><strong>4. STATUTORY VIOLATIONS:</strong> Your refusal to provide registered GST contractor bills and invoices for the claimed deductions confirms that said deductions are fictitious, punitive, and constitute an unfair trade practice under Section 2(47) of the Consumer Protection Act, 2019, as well as Criminal Breach of Trust under Section 405 of the Indian Penal Code / Bharatiya Nyaya Sanhita.</p>
+                  <p id="docUnlockedPara4"><strong>4. STATUTORY VIOLATIONS:</strong> Your refusal to provide registered GST contractor bills and accounting invoices for the claimed deductions confirms that said deductions are fictitious, punitive, and constitute an unfair trade practice under Section 2(47) of the Consumer Protection Act, 2019, Sale of Goods Act, 1930, as well as Criminal Breach of Trust under Section 405 of the Indian Penal Code / Bharatiya Nyaya Sanhita.</p>
 
-                  <p><strong>5. FINAL 7-DAY PEREMPTORY DEMAND:</strong> You are hereby called upon to immediately refund the withheld balance of <strong>₹<span id="docUnlockedFinalTotal">45,000</span>/-</strong> along with accrued statutory interest at 18% per annum to my Client's bank account / UPI within <strong>SEVEN (7) DAYS</strong> of the delivery of this notice via WhatsApp or Speed Post, failing which:</p>
+                  <p id="docUnlockedPara5"><strong>5. FINAL PEREMPTORY DEMAND:</strong> You are hereby called upon to immediately refund the withheld balance of <strong>₹<span id="docUnlockedFinalTotal">45,000</span>/-</strong> along with accrued statutory interest at 18% per annum to my Client's bank account / UPI within <strong>SEVEN (7) TO FIFTEEN (15) DAYS</strong> of delivery of this notice, failing which:
+                  </p>
 
-                  <ul class="legal-action-list">
-                    <li>An official petition will be registered on the <strong>National Consumer Helpline (NCH)</strong> and filed through the <strong>e-Jagriti Consumer Portal (e-jagriti.gov.in)</strong> before the District Consumer Disputes Redressal Commission seeking the deposit + ₹1,00,000/- punitive compensation for mental agony.</li>
-                    <li>A formal complaint shall be tendered to the local Police Station for wrongful retention and criminal breach of trust under Section 405/406 IPC.</li>
+                  <ul class="legal-action-list" id="docLegalActionList">
+                    <li>An official commercial recovery suit / consumer petition will be filed before the Competent Court / Commission seeking full refund + ₹1,00,000/- punitive damages.</li>
+                    <li>A formal complaint shall be tendered to the regulatory authority / Police Station for wrongful retention and criminal breach of trust under Section 405/406 IPC.</li>
                     <li>All litigation costs, advocate fees (₹25,000), and interest shall be claimed solely at your risk and expense.</li>
                   </ul>
 
                   <div class="notice-footer-sign">
                     <p>Yours faithfully,</p>
                     <div class="signature-box">
-                      <strong>(Rahul Sharma)</strong><br>
-                      Aggrieved Tenant & Claimant<br>
+                      <strong>(<span id="docSignName">Rahul Sharma</span>)</strong><br>
+                      <span id="docSignRole">Aggrieved Claimant & Claimant</span><br>
                       Date: <span id="docUnlockedDate">23-10-2026</span>
                     </div>
                   </div>
@@ -803,7 +1029,8 @@
               <button type="button" class="btn-action-guide" id="btnViewEscalation">
                 <i class="fa-solid fa-list-check"></i> 7-Day Action Playbook
               </button>
-              <button type="button" class="btn-action-guide" id="btnScrollToTimeline" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;">
+              <button type="button" class="btn-action-guide" id="btnScrollToTimeline"
+                style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;">
                 <i class="fa-solid fa-clock-rotate-left"></i> Timeline Done? Next Steps
               </button>
             </div>
@@ -812,49 +1039,59 @@
           <!-- TIMELINE TRACKER & WHAT TO DO IF 7 DAYS EXPIRE -->
           <div class="timeline-guide-container" id="timelineGuideSection">
             <div class="timeline-guide-header">
-              <span class="timeline-pill"><i class="fa-solid fa-clock-rotate-left"></i> STATUTORY RECOVERY TIMELINE</span>
-              <h3 class="timeline-title">What To Do If The 7-Day Timeline Is Done?</h3>
-              <p class="timeline-subtitle">Once you serve your formal notice, your landlord is subject to a strict 7-day deadline. If they refuse to refund or the timeline finishes, execute this 4-step enforcement protocol.</p>
+              <span class="timeline-pill" id="timelinePill"><i class="fa-solid fa-clock-rotate-left"></i> STATUTORY
+                RECOVERY TIMELINE</span>
+              <h3 class="timeline-title" id="timelineTitle">What To Do If The 7-Day Timeline Is Done?</h3>
+              <p class="timeline-subtitle" id="timelineSubtitle">Once you serve your formal notice, your landlord is
+                subject to a strict 7-day deadline. If they refuse to refund or the timeline finishes, execute this
+                4-step enforcement protocol.</p>
             </div>
 
             <!-- 4-Stage Stepper -->
-            <div class="timeline-stepper">
-              <div class="timeline-node">
-                <span class="timeline-node-day">DAY 1</span>
-                <h4>Notice Delivered</h4>
-                <p>Send via WhatsApp & Speed Post RPAD. Retain postal receipt as conclusive statutory proof of service under Section 27 General Clauses Act.</p>
+            <div class="timeline-stepper" id="timelineStepperNodes">
+              <div class="timeline-node" id="tlNode1">
+                <span class="timeline-node-day" id="tlDay1">DAY 1</span>
+                <h4 id="tlTitle1">Notice Delivered</h4>
+                <p id="tlDesc1">Send via WhatsApp & Speed Post RPAD. Retain postal receipt as conclusive statutory proof
+                  of service.</p>
               </div>
 
-              <div class="timeline-node">
-                <span class="timeline-node-day">DAYS 2–4</span>
-                <h4>Settlement Window</h4>
-                <p>85% of landlords settle here once they realize court litigation carries 18% penal interest. Send the 72h reminder.</p>
+              <div class="timeline-node" id="tlNode2">
+                <span class="timeline-node-day" id="tlDay2">DAYS 2–4</span>
+                <h4 id="tlTitle2">Settlement Window</h4>
+                <p id="tlDesc2">85% of landlords settle here once they realize court litigation carries 18% penal
+                  interest. Send the 72h reminder.</p>
               </div>
 
-              <div class="timeline-node">
-                <span class="timeline-node-day">DAY 7</span>
-                <h4>Peremptory Deadline</h4>
-                <p>Statutory window closes at 11:59 PM. Landlord is now officially in willful default under Section 73 Indian Contract Act.</p>
+              <div class="timeline-node" id="tlNode3">
+                <span class="timeline-node-day" id="tlDay3">DAY 7</span>
+                <h4 id="tlTitle3">Peremptory Deadline</h4>
+                <p id="tlDesc3">Statutory window closes at 11:59 PM. Landlord is now officially in willful default under
+                  Section 73 Indian Contract Act.</p>
               </div>
 
-              <div class="timeline-node highlight-node">
-                <span class="timeline-node-day">DAY 8+ (TIMELINE DONE)</span>
-                <h4>Enforcement Active</h4>
-                <p>Notice period is over. Proceed with the 4 legal remedies below. Disputes under ₹5 Lakh carry ₹0 court filing fees!</p>
+              <div class="timeline-node highlight-node" id="tlNode4">
+                <span class="timeline-node-day" id="tlDay4">DAY 8+ (TIMELINE DONE)</span>
+                <h4 id="tlTitle4">Enforcement Active</h4>
+                <p id="tlDesc4">Notice period is over. Proceed with the legal remedies below. Free statutory grievance
+                  filing available!</p>
               </div>
             </div>
 
             <!-- Timeline Done Alert -->
-            <div class="timeline-done-alert">
+            <div class="timeline-done-alert" id="timelineDoneAlertBox">
               <div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
               <div>
-                <h4>7 Days Expired Without Refund? Your Landlord Is Now In Willful Default!</h4>
-                <p>Under Section 73 of the Indian Contract Act, 1872 and the Consumer Protection Act, 2019, your landlord is liable for the full deposit, statutory accrued interest at 18% p.a., and ₹1,00,000 punitive damages for mental agony. Execute the 4 remedies below:</p>
+                <h4 id="timelineAlertHeadline">7 Days Expired Without Refund? Your Landlord Is Now In Willful Default!
+                </h4>
+                <p id="timelineAlertBody">Under Section 73 of the Indian Contract Act, 1872 and the Consumer Protection
+                  Act, 2019, your landlord is liable for the full deposit, statutory accrued interest at 18% p.a., and
+                  punitive damages for mental agony. Execute the 4 remedies below:</p>
               </div>
             </div>
 
             <!-- 4 Concrete Legal Enforcement Steps -->
-            <div class="timeline-actions-grid">
+            <div class="timeline-actions-grid" id="timelineActionsGrid">
               <!-- Action 1: National Consumer Helpline -->
               <div class="timeline-action-card">
                 <div class="action-card-top">
@@ -865,11 +1102,15 @@
                   </div>
                 </div>
                 <div class="action-card-desc">
-                  Call toll-free <strong>1915</strong> or submit online on <strong>consumerhelpline.gov.in</strong>. A Ministry of Consumer Affairs officer registers an official grievance docket and directly calls the landlord on phone.
+                  Call toll-free <strong>1915</strong> or submit online on <strong>consumerhelpline.gov.in</strong>. A
+                  Ministry of Consumer Affairs officer registers an official grievance docket and directly calls the
+                  landlord on phone.
                 </div>
                 <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
                   <a href="tel:1915" class="btn-action-trigger primary"><i class="fa-solid fa-phone"></i> Call 1915</a>
-                  <a href="https://consumerhelpline.gov.in" target="_blank" rel="noopener" class="btn-action-trigger primary" style="background:#0369a1;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open NCH Portal</a>
+                  <a href="https://consumerhelpline.gov.in" target="_blank" rel="noopener"
+                    class="btn-action-trigger primary" style="background:#0369a1;"><i
+                      class="fa-solid fa-arrow-up-right-from-square"></i> Open NCH Portal</a>
                 </div>
               </div>
 
@@ -883,7 +1124,11 @@
                   </div>
                 </div>
                 <div class="action-card-desc">
-                  File your pre-drafted <strong>Formal Consumer Court Petition (Form 1)</strong> on <strong><a href="https://e-jagriti.gov.in/" target="_blank" style="color:#38bdf8; text-decoration:underline;">e-jagriti.gov.in</a></strong> (e-Daakhil unified portal). No advocate needed (Complainant-in-Person). The Commission issues official legal summons to the landlord's doorstep.
+                  File your pre-drafted <strong>Formal Consumer Court Petition (Form 1)</strong> on <strong><a
+                      href="https://e-jagriti.gov.in/" target="_blank"
+                      style="color:#38bdf8; text-decoration:underline;">e-jagriti.gov.in</a></strong> (e-Daakhil unified
+                  portal). No advocate needed (Complainant-in-Person). The Commission issues official legal summons to
+                  the landlord's doorstep.
                 </div>
                 <button type="button" class="btn-action-trigger gold" id="btnTimelineOpenEdaakhil">
                   <i class="fa-solid fa-book-open"></i> View 5-Min Filing Guide
@@ -900,7 +1145,9 @@
                   </div>
                 </div>
                 <div class="action-card-desc">
-                  A caution deposit is entrusted in fiduciary capacity (Amanat). Arbitrary deduction without GST bills constitutes <strong>Criminal Breach of Trust (Section 405/406 IPC / Section 316 BNS)</strong>. Submit our pre-drafted letter to the local SHO.
+                  A caution deposit is entrusted in fiduciary capacity (Amanat). Arbitrary deduction without GST bills
+                  constitutes <strong>Criminal Breach of Trust (Section 405/406 IPC / Section 316 BNS)</strong>. Submit
+                  our pre-drafted letter to the local SHO.
                 </div>
                 <button type="button" class="btn-action-trigger red" id="btnTimelinePolicePrompt">
                   <i class="fa-solid fa-shield-halved"></i> Get Police Complaint Format
@@ -917,7 +1164,9 @@
                   </div>
                 </div>
                 <div class="action-card-desc">
-                  Under tax law, painting/repair deductions require verified <strong>GST invoices with contractor GSTIN</strong>. Fake handwritten estimates carry severe penalties under Section 420 IPC / 318 BNS and liability for reporting to the GST Intelligence Directorate.
+                  Under tax law, painting/repair deductions require verified <strong>GST invoices with contractor
+                    GSTIN</strong>. Fake handwritten estimates carry severe penalties under Section 420 IPC / 318 BNS
+                  and liability for reporting to the GST Intelligence Directorate.
                 </div>
                 <button type="button" class="btn-action-trigger purple" id="btnCopyGstDemand">
                   <i class="fa-solid fa-copy"></i> Copy GST Demand Script
@@ -928,7 +1177,8 @@
             <!-- Ready-to-Send WhatsApp Scripts for Days 4 and 8 -->
             <div class="timeline-scripts-box">
               <div class="scripts-box-header">
-                <h4><i class="fa-brands fa-whatsapp text-success"></i> 1-Click WhatsApp Follow-up & Post-Timeline Warning Messages</h4>
+                <h4><i class="fa-brands fa-whatsapp text-success"></i> 1-Click WhatsApp Follow-up & Post-Timeline
+                  Warning Messages</h4>
                 <span style="font-size:0.8rem; color:#94a3b8;">Copy & send directly to landlord</span>
               </div>
               <div class="scripts-box-grid">
@@ -941,20 +1191,24 @@
                     </button>
                   </div>
                   <div class="script-text-preview" id="previewDay4Script">
-                    REMINDER: Legal Notice Ref: [REF_NO]. The 7-day peremptory deadline expires in 72 hours. To avoid consumer court litigation and 18% penal interest, please refund ₹[AMOUNT]/- immediately.
+                    REMINDER: Legal Notice Ref: [REF_NO]. The 7-day peremptory deadline expires in 72 hours. To avoid
+                    consumer court litigation and 18% penal interest, please refund ₹[AMOUNT]/- immediately.
                   </div>
                 </div>
 
                 <!-- Day 8 Timeline Expired Warning -->
                 <div class="script-item">
                   <div class="script-item-top">
-                    <span><i class="fa-solid fa-circle-exclamation text-danger"></i> Day 8 (Timeline Done Final Warning)</span>
+                    <span><i class="fa-solid fa-circle-exclamation text-danger"></i> Day 8 (Timeline Done Final
+                      Warning)</span>
                     <button type="button" class="btn-copy-script" id="btnCopyDay8Script">
                       <i class="fa-solid fa-copy"></i> Copy Text
                     </button>
                   </div>
                   <div class="script-text-preview" id="previewDay8Script">
-                    FINAL NOTICE: 7-day statutory deadline expired. You are now in willful default under Sec 73 Contract Act. Case docket is being submitted to e-Daakhil Consumer Court & Police Station for Criminal Breach of Trust.
+                    FINAL NOTICE: 7-day statutory deadline expired. You are now in willful default under Sec 73 Contract
+                    Act. Case docket is being submitted to e-Daakhil Consumer Court & Police Station for Criminal Breach
+                    of Trust.
                   </div>
                 </div>
               </div>
@@ -966,7 +1220,9 @@
             <div class="tier2-badge"><i class="fa-solid fa-gavel"></i> TIER 2: LEGAL ESCALATION POWER-PACK</div>
             <div class="tier2-header">
               <h3>Has Your Landlord Ignored the Notice or Refused Refund?</h3>
-              <p>Do not spend ₹20,000 on high-priced advocates. Generate your formal <strong>e-Jagriti District Consumer Court Petition</strong>, <strong>Notary Verification Affidavit</strong>, and <strong>Police Complaint Letter (Sec 405 IPC / 316 BNS)</strong> ready to file online for ₹0 court fees!</p>
+              <p>Do not spend ₹20,000 on high-priced advocates. Generate your formal <strong>e-Jagriti District Consumer
+                  Court Petition</strong>, <strong>Notary Verification Affidavit</strong>, and <strong>Police Complaint
+                  Letter (Sec 405 IPC / 316 BNS)</strong> ready to file online for ₹0 court fees!</p>
             </div>
 
             <!-- Tier 2 Locked State -->
@@ -975,25 +1231,29 @@
                 <div class="tier2-feat">
                   <i class="fa-solid fa-file-contract text-warning"></i>
                   <div>
-                    <strong>Court Petition (Form 1):</strong> Pre-drafted with 4 prayer clauses demanding deposit + 18% interest + ₹50,000 mental agony compensation.
+                    <strong>Court Petition (Form 1):</strong> Pre-drafted with 4 prayer clauses demanding deposit + 18%
+                    interest + ₹50,000 mental agony compensation.
                   </div>
                 </div>
                 <div class="tier2-feat">
                   <i class="fa-solid fa-stamp text-warning"></i>
                   <div>
-                    <strong>Notary Verification Affidavit:</strong> Mandatory court verification on stamp paper format required by e-Jagriti.
+                    <strong>Notary Verification Affidavit:</strong> Mandatory court verification on stamp paper format
+                    required by e-Jagriti.
                   </div>
                 </div>
                 <div class="tier2-feat">
                   <i class="fa-solid fa-building-shield text-warning"></i>
                   <div>
-                    <strong>Police Criminal Complaint:</strong> Formal letter to local SHO for Criminal Breach of Trust (Section 405 IPC / 316 BNS).
+                    <strong>Police Criminal Complaint:</strong> Formal letter to local SHO for Criminal Breach of Trust
+                    (Section 405 IPC / 316 BNS).
                   </div>
                 </div>
                 <div class="tier2-feat">
                   <i class="fa-solid fa-laptop-code text-warning"></i>
                   <div>
-                    <strong>e-Jagriti Portal Guide:</strong> Step-by-step guidance on how to submit online with ₹0 court filing fee.
+                    <strong>e-Jagriti Portal Guide:</strong> Step-by-step guidance on how to submit online with ₹0 court
+                    filing fee.
                   </div>
                 </div>
               </div>
@@ -1016,7 +1276,8 @@
                 <i class="fa-solid fa-circle-check"></i>
                 <div>
                   <h4>Consumer Court & Police Escalation Kit Unlocked!</h4>
-                  <p>All legal documents have been generated using your tenancy data. Download your ready-to-file documents below:</p>
+                  <p>All legal documents have been generated using your tenancy data. Download your ready-to-file
+                    documents below:</p>
                 </div>
               </div>
 
@@ -1066,16 +1327,33 @@
                 </div>
 
                 <div class="court-subject-banner">
-                  COMPLAINT UNDER SECTION 35 OF THE CONSUMER PROTECTION ACT, 2019 FOR DEFICIENCY IN SERVICE, UNFAIR TRADE PRACTICE AND UNLAWFUL WITHHOLDING OF SECURITY CAUTION DEPOSIT
+                  COMPLAINT UNDER SECTION 35 OF THE CONSUMER PROTECTION ACT, 2019 FOR DEFICIENCY IN SERVICE, UNFAIR
+                  TRADE PRACTICE AND UNLAWFUL WITHHOLDING OF SECURITY CAUTION DEPOSIT
                 </div>
 
                 <div class="court-body-paras">
                   <p><strong>MOST RESPECTFULLY SHOWETH:</strong></p>
-                  <p><strong>1. STATUS OF CONSUMER:</strong> That the Complainant is a 'Consumer' within the statutory definition of Section 2(7) of the Consumer Protection Act, 2019, having hired residential tenancy accommodation for valuable monthly rental consideration of <strong>₹<span id="courtRent">25,000</span>/-</strong> per month from the Opposite Party.</p>
-                  <p><strong>2. ADVANCE ENTRUSTMENT:</strong> That at the commencement of the tenancy, the Complainant entrusted an advance interest-free security caution deposit of <strong>₹<span id="courtDeposit">1,00,000</span>/-</strong> via verified banking channels, with the express covenant that the entire sum would be refunded in full upon delivery of vacant possession.</p>
-                  <p><strong>3. PEACEFUL VACATION & ILLEGAL DEDUCTION:</strong> That on <span id="courtVacateDate">15-10-2026</span>, the Complainant peacefully vacated the premises and handed over vacant possession and physical keys. Despite prompt handover, the Opposite Party unlawfully withheld and refused to refund the sum of <strong>₹<span id="courtWithheld">45,000</span>/-</strong> under the illegal pretext of routine repainting and deep cleaning.</p>
-                  <p><strong>4. STATUTORY VIOLATION OF SEC 108(m) TPA:</strong> That ordinary weathering, wear, and paint fading are the sole statutory obligations of the lessor under Section 108(m) of the Transfer of Property Act, 1882. The Opposite Party's unilateral deduction without registered contractor GST tax invoices constitutes unfair trade practice and gross deficiency in service.</p>
-                  <p><strong>5. JURISDICTION & LIMITATION:</strong> That the cause of action arose within the territorial jurisdiction of this Hon'ble Commission where the rented premises are located. This complaint is filed well within the 2-year limitation period prescribed under Section 69 of the Consumer Protection Act, 2019.</p>
+                  <p><strong>1. STATUS OF CONSUMER:</strong> That the Complainant is a 'Consumer' within the statutory
+                    definition of Section 2(7) of the Consumer Protection Act, 2019, having hired residential tenancy
+                    accommodation for valuable monthly rental consideration of <strong>₹<span
+                        id="courtRent">25,000</span>/-</strong> per month from the Opposite Party.</p>
+                  <p><strong>2. ADVANCE ENTRUSTMENT:</strong> That at the commencement of the tenancy, the Complainant
+                    entrusted an advance interest-free security caution deposit of <strong>₹<span
+                        id="courtDeposit">1,00,000</span>/-</strong> via verified banking channels, with the express
+                    covenant that the entire sum would be refunded in full upon delivery of vacant possession.</p>
+                  <p><strong>3. PEACEFUL VACATION & ILLEGAL DEDUCTION:</strong> That on <span
+                      id="courtVacateDate">15-10-2026</span>, the Complainant peacefully vacated the premises and handed
+                    over vacant possession and physical keys. Despite prompt handover, the Opposite Party unlawfully
+                    withheld and refused to refund the sum of <strong>₹<span id="courtWithheld">45,000</span>/-</strong>
+                    under the illegal pretext of routine repainting and deep cleaning.</p>
+                  <p><strong>4. STATUTORY VIOLATION OF SEC 108(m) TPA:</strong> That ordinary weathering, wear, and
+                    paint fading are the sole statutory obligations of the lessor under Section 108(m) of the Transfer
+                    of Property Act, 1882. The Opposite Party's unilateral deduction without registered contractor GST
+                    tax invoices constitutes unfair trade practice and gross deficiency in service.</p>
+                  <p><strong>5. JURISDICTION & LIMITATION:</strong> That the cause of action arose within the
+                    territorial jurisdiction of this Hon'ble Commission where the rented premises are located. This
+                    complaint is filed well within the 2-year limitation period prescribed under Section 69 of the
+                    Consumer Protection Act, 2019.</p>
                 </div>
               </div>
 
@@ -1096,12 +1374,20 @@
 
                 <div class="court-prayer-box">
                   <h4>PRAYER:</h4>
-                  <p style="margin-bottom: 8px;">It is, therefore, most respectfully prayed that this Hon'ble District Consumer Commission may graciously be pleased to:</p>
+                  <p style="margin-bottom: 8px;">It is, therefore, most respectfully prayed that this Hon'ble District
+                    Consumer Commission may graciously be pleased to:</p>
                   <ol>
-                    <li><strong>(a) Direct the Opposite Party</strong> to immediately refund the unlawfully withheld caution deposit sum of <strong>₹<span id="courtPrayerTotal">45,000</span>/-</strong> in full to the Complainant;</li>
-                    <li><strong>(b) Direct the Opposite Party</strong> to pay commercial interest at <strong>18% per annum</strong> on the withheld deposit from <span id="courtPrayerVacateDate">15-10-2026</span> until the date of actual realization;</li>
-                    <li><strong>(c) Award punitive compensation of ₹50,000/-</strong> in favour of the Complainant for severe mental harassment, financial agony, and deficiency in service;</li>
-                    <li><strong>(d) Award litigation costs of ₹10,000/-</strong> in favour of the Complainant towards legal drafting and filing expenses; and pass such further order(s) as this Hon'ble Commission deems fit in the interest of justice.</li>
+                    <li><strong>(a) Direct the Opposite Party</strong> to immediately refund the unlawfully withheld
+                      caution deposit sum of <strong>₹<span id="courtPrayerTotal">45,000</span>/-</strong> in full to
+                      the Complainant;</li>
+                    <li><strong>(b) Direct the Opposite Party</strong> to pay commercial interest at <strong>18% per
+                        annum</strong> on the withheld deposit from <span id="courtPrayerVacateDate">15-10-2026</span>
+                      until the date of actual realization;</li>
+                    <li><strong>(c) Award punitive compensation of ₹50,000/-</strong> in favour of the Complainant for
+                      severe mental harassment, financial agony, and deficiency in service;</li>
+                    <li><strong>(d) Award litigation costs of ₹10,000/-</strong> in favour of the Complainant towards
+                      legal drafting and filing expenses; and pass such further order(s) as this Hon'ble Commission
+                      deems fit in the interest of justice.</li>
                   </ol>
                 </div>
 
@@ -1119,18 +1405,25 @@
 
                 <!-- STATUTORY VERIFICATION (CPC Order VI Rule 15 / CPA Regulations 2020) -->
                 <div class="court-verification-box">
-                  <div style="text-align: center; font-weight: bold; font-size: 12.5px; margin-bottom: 4px; letter-spacing: 0.5px;">
+                  <div
+                    style="text-align: center; font-weight: bold; font-size: 12.5px; margin-bottom: 4px; letter-spacing: 0.5px;">
                     STATUTORY VERIFICATION CLAUSE
                   </div>
                   <div style="text-align: center; font-size: 10.5px; margin-bottom: 8px; color: #334155;">
-                    [Pursuant to Order VI Rule 15 of Code of Civil Procedure, 1908 & Section 35 of Consumer Protection Act, 2019]
+                    [Pursuant to Order VI Rule 15 of Code of Civil Procedure, 1908 & Section 35 of Consumer Protection
+                    Act, 2019]
                   </div>
                   <p style="text-align: justify; margin-bottom: 10px; font-size: 12px; line-height: 1.45;">
-                    I, <strong id="courtVerifyTenant">Rahul Sharma</strong>, the Complainant named above, do hereby solemnly verify and affirm that the contents of paragraphs 1 to 5 and Prayers (a) to (d) of the accompanying complaint are true and correct to the best of my personal knowledge derived from tenancy records, bank transfers, and official correspondence, that no part thereof is false, and that no material facts have been concealed therefrom.
+                    I, <strong id="courtVerifyTenant">Rahul Sharma</strong>, the Complainant named above, do hereby
+                    solemnly verify and affirm that the contents of paragraphs 1 to 5 and Prayers (a) to (d) of the
+                    accompanying complaint are true and correct to the best of my personal knowledge derived from
+                    tenancy records, bank transfers, and official correspondence, that no part thereof is false, and
+                    that no material facts have been concealed therefrom.
                   </p>
                   <div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 11.5px;">
                     <div>
-                      Verified at <strong id="courtVerifyCity">Bengaluru</strong> on this <strong id="courtVerifyDate">23-10-2026</strong>.
+                      Verified at <strong id="courtVerifyCity">Bengaluru</strong> on this <strong
+                        id="courtVerifyDate">23-10-2026</strong>.
                     </div>
                     <div style="text-align: right;">
                       _______________________________<br>
@@ -1151,24 +1444,43 @@
           <div class="printable-offscreen" id="printablePoliceComplaintContainer">
             <div class="court-a4-page" id="printablePoliceComplaint">
               <div>
-                <div class="police-header" style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px;">
+                <div class="police-header"
+                  style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px;">
                   <strong>TO,</strong><br>
                   THE STATION HOUSE OFFICER (SHO),<br>
                   POLICE STATION JURISDICTION: <span id="policeJurisdiction">LOCAL POLICE STATION</span><br>
                   CITY: <span id="policeCity">BENGALURU, KARNATAKA</span>
                 </div>
 
-                <div class="court-subject-banner" style="background: #fef2f2; border: 1.5px solid #dc2626; color: #991b1b;">
-                  SUBJECT: FORMAL CRIMINAL COMPLAINT UNDER SECTION 405/406 OF THE INDIAN PENAL CODE (SECTION 316 BHARATIYA NYAYA SANHITA, 2023) FOR CRIMINAL BREACH OF TRUST AND DISHONEST MISAPPROPRIATION OF CAUTION SECURITY DEPOSIT OF ₹<span id="policeWithheldAmount">45,000</span>/-.
+                <div class="court-subject-banner"
+                  style="background: #fef2f2; border: 1.5px solid #dc2626; color: #991b1b;">
+                  SUBJECT: FORMAL CRIMINAL COMPLAINT UNDER SECTION 405/406 OF THE INDIAN PENAL CODE (SECTION 316
+                  BHARATIYA NYAYA SANHITA, 2023) FOR CRIMINAL BREACH OF TRUST AND DISHONEST MISAPPROPRIATION OF CAUTION
+                  SECURITY DEPOSIT OF ₹<span id="policeWithheldAmount">45,000</span>/-.
                 </div>
 
                 <div class="court-body-paras">
                   <p><strong>RESPECTED SIR/MADAM,</strong></p>
-                  <p>I, <strong id="policeTenantName">Rahul Sharma</strong>, residing at <span id="policeTenantAddress">Bengaluru</span> (Mobile: <span id="policeTenantPhone">+91 9876543210</span>), state as follows:</p>
-                  <p><strong>1. ENTRUSTMENT OF PROPERTY:</strong> That I was an authorized tenant in the premises owned by the accused person, namely <strong><span id="policeLandlordName">K. V. Narayana</span></strong> (Mobile: <span id="policeLandlordPhone">+91 9811122233</span>) situated at <span id="policePropertyAddress">Flat 302, Green Glen Layout, Bellandur</span>. At the start of tenancy, I entrusted the accused with an advance caution security deposit of <strong>₹<span id="policeDepositAmount">1,00,000</span>/-</strong> purely in fiduciary capacity (Amanat).</p>
-                  <p><strong>2. DISHONEST MISAPPROPRIATION:</strong> That upon vacating the premises peacefully on <span id="policeVacateDate">15-10-2026</span>, the accused dishonestly converted and refused to return the sum of <strong>₹<span id="policeWithheld2">45,000</span>/-</strong>, with fraudulent intention to cause wrongful loss to me and wrongful gain to himself.</p>
-                  <p><strong>3. STATUTORY BREACH UNDER SEC 405 IPC / 316 BNS:</strong> That despite receiving a formal 7-Day Pre-Litigation Legal Demand Notice, the accused has misappropriated the said entrusted funds, which clearly attracts the ingredients of Criminal Breach of Trust under Section 405/406 IPC & Section 316 BNS.</p>
-                  <p><strong>PRAYER:</strong> It is humbly requested that an official General Diary (GD) entry be registered, an inquiry be initiated, and the accused be summoned to the Police Station to return my lawful caution deposit.</p>
+                  <p>I, <strong id="policeTenantName">Rahul Sharma</strong>, residing at <span
+                      id="policeTenantAddress">Bengaluru</span> (Mobile: <span id="policeTenantPhone">+91
+                      9876543210</span>), state as follows:</p>
+                  <p><strong>1. ENTRUSTMENT OF PROPERTY:</strong> That I was an authorized tenant in the premises owned
+                    by the accused person, namely <strong><span id="policeLandlordName">K. V. Narayana</span></strong>
+                    (Mobile: <span id="policeLandlordPhone">+91 9811122233</span>) situated at <span
+                      id="policePropertyAddress">Flat 302, Green Glen Layout, Bellandur</span>. At the start of tenancy,
+                    I entrusted the accused with an advance caution security deposit of <strong>₹<span
+                        id="policeDepositAmount">1,00,000</span>/-</strong> purely in fiduciary capacity (Amanat).</p>
+                  <p><strong>2. DISHONEST MISAPPROPRIATION:</strong> That upon vacating the premises peacefully on <span
+                      id="policeVacateDate">15-10-2026</span>, the accused dishonestly converted and refused to return
+                    the sum of <strong>₹<span id="policeWithheld2">45,000</span>/-</strong>, with fraudulent intention
+                    to cause wrongful loss to me and wrongful gain to himself.</p>
+                  <p><strong>3. STATUTORY BREACH UNDER SEC 405 IPC / 316 BNS:</strong> That despite receiving a formal
+                    7-Day Pre-Litigation Legal Demand Notice, the accused has misappropriated the said entrusted funds,
+                    which clearly attracts the ingredients of Criminal Breach of Trust under Section 405/406 IPC &
+                    Section 316 BNS.</p>
+                  <p><strong>PRAYER:</strong> It is humbly requested that an official General Diary (GD) entry be
+                    registered, an inquiry be initiated, and the accused be summoned to the Police Station to return my
+                    lawful caution deposit.</p>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin: 15px 0;">
@@ -1215,11 +1527,15 @@
               <div>
                 <div class="court-page-header">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <span style="font-size: 11px; font-weight: bold; background: #000; color: #fff; padding: 2px 8px; border-radius: 2px;">SPEED POST RPAD & WHATSAPP</span>
-                    <span style="font-size: 11px; font-weight: bold;">REF NO: <span id="noticeRefP1">DS/2026/BLR-9841</span></span>
+                    <span
+                      style="font-size: 11px; font-weight: bold; background: #000; color: #fff; padding: 2px 8px; border-radius: 2px;">SPEED
+                      POST RPAD & WHATSAPP</span>
+                    <span style="font-size: 11px; font-weight: bold;">REF NO: <span
+                        id="noticeRefP1">DS/2026/BLR-9841</span></span>
                   </div>
                   <h3>FORMAL PRE-LITIGATION LEGAL DEMAND NOTICE</h3>
-                  <div style="font-size: 11px; font-weight: bold; color: #334155;">ISSUED UNDER SECTION 73 OF THE INDIAN CONTRACT ACT, 1872 & CONSUMER PROTECTION ACT, 2019</div>
+                  <div style="font-size: 11px; font-weight: bold; color: #334155;">ISSUED UNDER SECTION 73 OF THE INDIAN
+                    CONTRACT ACT, 1872 & CONSUMER PROTECTION ACT, 2019</div>
                 </div>
 
                 <div class="court-memo-parties" style="margin-top: 10px;">
@@ -1227,25 +1543,39 @@
                     <strong>TO (OPPOSITE PARTY / LANDLORD):</strong><br>
                     <span id="noticeLandlordP1">K. V. Narayana</span><br>
                     Mobile: <span id="noticeLandlordPhoneP1">+91 9811122233</span><br>
-                    Rented Premises: <span id="noticePropertyP1">Flat 302, Green Glen Layout, Bellandur, Bengaluru - 560103</span>
+                    Rented Premises: <span id="noticePropertyP1">Flat 302, Green Glen Layout, Bellandur, Bengaluru -
+                      560103</span>
                   </div>
                   <div class="party-row" style="margin-top: 8px;">
                     <strong>FROM (CLAIMANT / OUTGOING TENANT):</strong><br>
                     <span id="noticeTenantP1">Rahul Sharma</span><br>
-                    Mobile: <span id="noticeTenantPhoneP1">+91 9876543210</span> | Email: <span id="noticeTenantEmailP1">rahul@example.com</span>
+                    Mobile: <span id="noticeTenantPhoneP1">+91 9876543210</span> | Email: <span
+                      id="noticeTenantEmailP1">rahul@example.com</span>
                   </div>
                 </div>
 
                 <div class="court-subject-banner">
-                  SUBJECT: DEMAND FOR IMMEDIATE REFUND OF UNLAWFULLY WITHHELD CAUTION DEPOSIT OF ₹<span id="noticeWithheldP1">45,000</span>/- WITH STATUTORY 18% ACCRUED INTEREST
+                  SUBJECT: DEMAND FOR IMMEDIATE REFUND OF UNLAWFULLY WITHHELD CAUTION DEPOSIT OF ₹<span
+                    id="noticeWithheldP1">45,000</span>/- WITH STATUTORY 18% ACCRUED INTEREST
                 </div>
 
                 <div class="court-body-paras">
                   <p><strong>SIR / MADAM,</strong></p>
-                  <p>Under instructions and authorization from my Client (the Claimant named above), I hereby serve upon you this formal 7-Day Pre-Litigation Legal Demand Notice:</p>
-                  <p><strong>1. TENANCY & DEPOSIT ENTRUSTMENT:</strong> That my Client was an authorized tenant occupying your residential property situated at <span id="noticePropertyBodyP1">Flat 302, Green Glen Layout, Bellandur</span>. At the start of tenancy, my Client paid an advance security caution deposit of <strong>₹<span id="noticeDepositP1">1,00,000</span>/-</strong> purely in fiduciary capacity (Amanat), strictly refundable upon peaceful handover of possession.</p>
-                  <p><strong>2. VACATION & PHYSICAL HANDOVER:</strong> That on <span id="noticeVacateP1">15-10-2026</span>, my Client peacefully delivered vacant physical possession and keys. At the time of handover, the premises were in sound, clean, and habitable condition with zero tenant damage.</p>
-                  <p><strong>3. UNLAWFUL DEDUCTION & UNJUST ENRICHMENT:</strong> That despite repeated requests, you have arbitrarily withheld <strong>₹<span id="noticeWithheldBodyP1">45,000</span>/-</strong> under the unlawful pretext of <span id="noticeReasonsP1">painting and maintenance</span> without providing registered GST invoices. This constitutes criminal breach of trust and unfair trade practice.</p>
+                  <p>Under instructions and authorization from my Client (the Claimant named above), I hereby serve upon
+                    you this formal 7-Day Pre-Litigation Legal Demand Notice:</p>
+                  <p><strong>1. TENANCY & DEPOSIT ENTRUSTMENT:</strong> That my Client was an authorized tenant
+                    occupying your residential property situated at <span id="noticePropertyBodyP1">Flat 302, Green Glen
+                      Layout, Bellandur</span>. At the start of tenancy, my Client paid an advance security caution
+                    deposit of <strong>₹<span id="noticeDepositP1">1,00,000</span>/-</strong> purely in fiduciary
+                    capacity (Amanat), strictly refundable upon peaceful handover of possession.</p>
+                  <p><strong>2. VACATION & PHYSICAL HANDOVER:</strong> That on <span
+                      id="noticeVacateP1">15-10-2026</span>, my Client peacefully delivered vacant physical possession
+                    and keys. At the time of handover, the premises were in sound, clean, and habitable condition with
+                    zero tenant damage.</p>
+                  <p><strong>3. UNLAWFUL DEDUCTION & UNJUST ENRICHMENT:</strong> That despite repeated requests, you
+                    have arbitrarily withheld <strong>₹<span id="noticeWithheldBodyP1">45,000</span>/-</strong> under
+                    the unlawful pretext of <span id="noticeReasonsP1">painting and maintenance</span> without providing
+                    registered GST invoices. This constitutes criminal breach of trust and unfair trade practice.</p>
                 </div>
               </div>
 
@@ -1260,28 +1590,48 @@
               <div>
                 <div class="court-page-header">
                   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <span style="font-size: 11px; font-weight: bold;">REF NO: <span id="noticeRefP2">DS/2026/BLR-9841</span></span>
-                    <span style="font-size: 11px; font-weight: bold;">DATE: <span id="noticeDateP2">23-10-2026</span></span>
+                    <span style="font-size: 11px; font-weight: bold;">REF NO: <span
+                        id="noticeRefP2">DS/2026/BLR-9841</span></span>
+                    <span style="font-size: 11px; font-weight: bold;">DATE: <span
+                        id="noticeDateP2">23-10-2026</span></span>
                   </div>
                   <h3>FORMAL PRE-LITIGATION LEGAL DEMAND NOTICE</h3>
-                  <div style="font-size: 11px; font-weight: bold; color: #334155;">(STATUTORY GROUNDS, PENAL DEMAND & SIGNATURE - PAGE 2)</div>
+                  <div style="font-size: 11px; font-weight: bold; color: #334155;">(STATUTORY GROUNDS, PENAL DEMAND &
+                    SIGNATURE - PAGE 2)</div>
                 </div>
 
                 <div class="court-body-paras">
-                  <p><strong>4. SETTLED HIGH COURT PRECEDENTS & SEC 108(m) TPA:</strong> It is a settled position of law (reiterated by the High Court of Gujarat, High Court of Karnataka, and Delhi High Court) that normal wear, tear, and natural weathering are the statutory responsibility of the lessor under Section 108(m) of the Transfer of Property Act, 1882. Arbitrary deductions without verified third-party GST bills are illegal, ultra vires, and actionable under consumer protection law.</p>
-                  <p><strong>5. STRICT SEVEN (7) DAYS PEREMPTORY DEMAND:</strong> You are hereby called upon to refund the withheld sum of <strong>₹<span id="noticeWithheldP2">45,000</span>/-</strong> along with statutory accrued interest at 18% per annum directly to my Client's bank account / UPI within <strong>SEVEN (7) DAYS</strong> of receipt of this notice.</p>
-                  
-                  <div style="background: #fef2f2; border: 1.5px solid #dc2626; padding: 10px 14px; margin: 12px 0; border-radius: 4px;">
+                  <p><strong>4. SETTLED HIGH COURT PRECEDENTS & SEC 108(m) TPA:</strong> It is a settled position of law
+                    (reiterated by the High Court of Gujarat, High Court of Karnataka, and Delhi High Court) that normal
+                    wear, tear, and natural weathering are the statutory responsibility of the lessor under Section
+                    108(m) of the Transfer of Property Act, 1882. Arbitrary deductions without verified third-party GST
+                    bills are illegal, ultra vires, and actionable under consumer protection law.</p>
+                  <p><strong>5. STRICT SEVEN (7) DAYS PEREMPTORY DEMAND:</strong> You are hereby called upon to refund
+                    the withheld sum of <strong>₹<span id="noticeWithheldP2">45,000</span>/-</strong> along with
+                    statutory accrued interest at 18% per annum directly to my Client's bank account / UPI within
+                    <strong>SEVEN (7) DAYS</strong> of receipt of this notice.
+                  </p>
+
+                  <div
+                    style="background: #fef2f2; border: 1.5px solid #dc2626; padding: 10px 14px; margin: 12px 0; border-radius: 4px;">
                     <strong style="color: #991b1b; font-size: 12.5px;">CONSEQUENCES OF DEFAULT (DAY 8 ONWARD):</strong>
                     <ul style="margin: 6px 0 0 18px; padding: 0; font-size: 11.5px; color: #7f1d1d; line-height: 1.45;">
-                      <li><strong>National Consumer Helpline (NCH 1915):</strong> Grievance docket will be escalated directly to Ministry of Consumer Affairs.</li>
-                      <li><strong>e-Daakhil Consumer Court Summons:</strong> Formal Petition (Form 1) will be filed before the District Consumer Commission claiming deposit + 18% penal interest + ₹50,000/- damages for harassment.</li>
-                      <li><strong>Police Criminal Complaint:</strong> Formal complaint under Section 405/406 IPC (Section 316 BNS) for Criminal Breach of Trust.</li>
-                      <li><strong>GST Audit Challenge:</strong> Reporting to Directorate General of GST Intelligence for unbilled deductions.</li>
+                      <li><strong>National Consumer Helpline (NCH 1915):</strong> Grievance docket will be escalated
+                        directly to Ministry of Consumer Affairs.</li>
+                      <li><strong>e-Daakhil Consumer Court Summons:</strong> Formal Petition (Form 1) will be filed
+                        before the District Consumer Commission claiming deposit + 18% penal interest + ₹50,000/-
+                        damages for harassment.</li>
+                      <li><strong>Police Criminal Complaint:</strong> Formal complaint under Section 405/406 IPC
+                        (Section 316 BNS) for Criminal Breach of Trust.</li>
+                      <li><strong>GST Audit Challenge:</strong> Reporting to Directorate General of GST Intelligence for
+                        unbilled deductions.</li>
                     </ul>
                   </div>
 
-                  <p><strong>REMITTANCE INSTRUCTION:</strong> You are directed to remit the refund sum of <strong>₹<span id="noticeWithheldRemitP2">45,000</span>/-</strong> directly to the undersigned Aggrieved Tenant's registered bank account / original payment method from which deposit funds were remitted, or contact the undersigned immediately for current RTGS/NEFT/IMPS bank coordinates.</p>
+                  <p><strong>REMITTANCE INSTRUCTION:</strong> You are directed to remit the refund sum of <strong>₹<span
+                        id="noticeWithheldRemitP2">45,000</span>/-</strong> directly to the undersigned Aggrieved
+                    Tenant's registered bank account / original payment method from which deposit funds were remitted,
+                    or contact the undersigned immediately for current RTGS/NEFT/IMPS bank coordinates.</p>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 25px;">
@@ -1319,7 +1669,7 @@
   <div class="modal-backdrop hidden" id="upiModalBackdrop">
     <div class="modal-card razorpay-modal-card" id="upiModalCard">
       <button type="button" class="modal-close" id="modalCloseBtn">&times;</button>
-      
+
       <div class="modal-header">
         <div class="modal-badge razorpay-badge"><i class="fa-solid fa-shield-halved"></i> SECURE RAZORPAY CHECKOUT</div>
         <h3 id="modalTitle">Unlock Your Recovery Documents</h3>
@@ -1347,10 +1697,11 @@
             <span id="summaryPlanTitle">7-Day Pre-Litigation Legal Demand Notice</span>
             <strong id="summaryPlanPrice">₹99</strong>
           </div>
-          <div class="summary-sub" id="summaryPlanSubtitle">Includes 2-Page Notice + WhatsApp Format + Speed Post Template</div>
-          
+          <div class="summary-sub" id="summaryPlanSubtitle">Includes 2-Page Notice + WhatsApp Format + Speed Post
+            Template</div>
+
           <div class="summary-divider"></div>
-          
+
           <div class="summary-total-line">
             <span>Total Amount Payable:</span>
             <span class="total-highlight" id="modalAmountVal">₹99 Only</span>
@@ -1358,54 +1709,71 @@
         </div>
 
         <!-- Customer Email Capture Field -->
-        <div class="checkout-email-group" style="background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;">
-          <label for="checkoutUserEmail" style="display: block; font-size: 12.5px; font-weight: 700; color: #f8fafc; margin-bottom: 4px;">
-            <i class="fa-solid fa-envelope" style="color: #38bdf8; margin-right: 5px;"></i> Delivery Email Address <span style="color: #f43f5e;">*</span>
+        <div class="checkout-email-group"
+          style="background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px;">
+          <label for="checkoutUserEmail"
+            style="display: block; font-size: 12.5px; font-weight: 700; color: #f8fafc; margin-bottom: 4px;">
+            <i class="fa-solid fa-envelope" style="color: #38bdf8; margin-right: 5px;"></i> Delivery Email Address <span
+              style="color: #f43f5e;">*</span>
           </label>
-          <input type="email" id="checkoutUserEmail" class="form-input" placeholder="Enter your email to receive notice PDF" required style="width: 100%; box-sizing: border-box; background: #0b1329; border: 1px solid #38bdf8; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13.5px;">
+          <input type="email" id="checkoutUserEmail" class="form-input"
+            placeholder="Enter your email to receive notice PDF" required
+            style="width: 100%; box-sizing: border-box; background: #0b1329; border: 1px solid #38bdf8; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 13.5px;">
           <span style="font-size: 11px; color: #94a3b8; display: block; margin-top: 4px;">
-            <i class="fa-solid fa-circle-info" style="color: #38bdf8;"></i> Your official signed 2-Page Legal Notice PDF will be automatically delivered here.
+            <i class="fa-solid fa-circle-info" style="color: #38bdf8;"></i> Your official signed 2-Page Legal Notice PDF
+            will be automatically delivered here.
           </span>
         </div>
 
         <!-- Primary Razorpay Checkout Action View -->
         <div id="standardRzpView">
-          <div class="razorpay-direct-card" style="background: linear-gradient(145deg, #0b1329, #1e293b); border: 1.5px solid #0284c7; border-radius: 12px; padding: 18px 16px; margin-bottom: 12px; text-align: center;">
-            <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(2, 132, 199, 0.15); color: #38bdf8; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; margin-bottom: 14px; border: 1px solid rgba(56, 189, 248, 0.3);">
+          <div class="razorpay-direct-card"
+            style="background: linear-gradient(145deg, #0b1329, #1e293b); border: 1.5px solid #0284c7; border-radius: 12px; padding: 18px 16px; margin-bottom: 12px; text-align: center;">
+            <div
+              style="display: inline-flex; align-items: center; gap: 6px; background: rgba(2, 132, 199, 0.15); color: #38bdf8; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; margin-bottom: 14px; border: 1px solid rgba(56, 189, 248, 0.3);">
               <i class="fa-solid fa-bolt"></i> 1-CLICK INSTANT ACTIVATION & DOWNLOAD
             </div>
 
             <p style="margin: 0 0 16px; font-size: 12.5px; color: #cbd5e1; line-height: 1.5;">
-              Pay securely via <strong>Razorpay</strong> using <strong>Google Pay, PhonePe, Paytm, Any UPI, Credit/Debit Cards, or NetBanking</strong>. Instant unlock on screen & PDF emailed to you immediately.
+              Pay securely via <strong>Razorpay</strong> using <strong>Google Pay, PhonePe, Paytm, Any UPI, Credit/Debit
+                Cards, or NetBanking</strong>. Instant unlock on screen & PDF emailed to you immediately.
             </p>
 
             <!-- Primary Razorpay CTA Button -->
-            <button type="button" class="btn-pay-razorpay-primary" id="btnPayRazorpay" style="width: 100%; box-sizing: border-box; padding: 14px 20px; font-size: 15px; font-weight: 800; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #2563eb); box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4); display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; border: none; color: #ffffff; transition: all 0.2s ease;">
+            <button type="button" class="btn-pay-razorpay-primary" id="btnPayRazorpay"
+              style="width: 100%; box-sizing: border-box; padding: 14px 20px; font-size: 15px; font-weight: 800; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #2563eb); box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4); display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; border: none; color: #ffffff; transition: all 0.2s ease;">
               <i class="fa-solid fa-lock"></i>
               <span id="btnPayRazorpayText">Pay ₹99 Securely via Razorpay</span>
             </button>
 
             <!-- Payment Methods Supported -->
-            <div style="display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid #334155;">
-              <span class="method-tag" style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
+            <div
+              style="display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid #334155;">
+              <span class="method-tag"
+                style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
                 <i class="fa-brands fa-google-pay" style="color: #4285f4;"></i> GPay
               </span>
-              <span class="method-tag" style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
+              <span class="method-tag"
+                style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
                 <i class="fa-solid fa-mobile-screen" style="color: #673ab7;"></i> PhonePe
               </span>
-              <span class="method-tag" style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
+              <span class="method-tag"
+                style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
                 <i class="fa-solid fa-wallet" style="color: #00b9f1;"></i> Paytm
               </span>
-              <span class="method-tag" style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
+              <span class="method-tag"
+                style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
                 <i class="fa-regular fa-credit-card" style="color: #38bdf8;"></i> All Cards
               </span>
-              <span class="method-tag" style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
+              <span class="method-tag"
+                style="background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: #e2e8f0; font-size: 11px; padding: 4px 9px; border-radius: 5px;">
                 <i class="fa-solid fa-building-columns" style="color: #34d399;"></i> NetBanking
               </span>
             </div>
 
             <!-- Trust Features -->
-            <div style="margin-top: 12px; display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 11px; color: #94a3b8; flex-wrap: wrap;">
+            <div
+              style="margin-top: 12px; display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 11px; color: #94a3b8; flex-wrap: wrap;">
               <span><i class="fa-solid fa-shield-check" style="color: #10b981;"></i> 256-Bit SSL Secured</span>
               <span><i class="fa-solid fa-bolt" style="color: #fbbf24;"></i> Instant Auto-Unlock</span>
               <span><i class="fa-solid fa-file-pdf" style="color: #f43f5e;"></i> Court-Admissible PDF</span>
@@ -1420,7 +1788,7 @@
   <div class="modal-backdrop hidden" id="guideModalBackdrop">
     <div class="modal-card wide" id="guideModalCard">
       <button type="button" class="modal-close" id="guideModalCloseBtn">&times;</button>
-      
+
       <div class="modal-header">
         <div class="modal-badge"><i class="fa-solid fa-gavel"></i> ACTION BLUEPRINT</div>
         <h3>The 7-Day Deposit Recovery Playbook</h3>
@@ -1431,19 +1799,25 @@
         <div class="bp-step">
           <div class="bp-badge">Day 1</div>
           <h4>Send via WhatsApp & Speed Post (RPAD)</h4>
-          <p>Copy the formatted WhatsApp legal text and send it directly to your landlord. Also print the PDF and send it via India Post Speed Post with Acknowledgment Due (RPAD) to their home address. A physical postal notice creates immediate psychological panic.</p>
+          <p>Copy the formatted WhatsApp legal text and send it directly to your landlord. Also print the PDF and send
+            it via India Post Speed Post with Acknowledgment Due (RPAD) to their home address. A physical postal notice
+            creates immediate psychological panic.</p>
         </div>
 
         <div class="bp-step">
           <div class="bp-badge">Day 4</div>
           <h4>Follow Up & Mention NCH Docket</h4>
-          <p>If the landlord hasn't replied, send a reminder: <em>"Notice period expires in 72 hours. File is scheduled for submission to National Consumer Helpline on Day 7."</em> In 85% of cases, landlords settle here.</p>
+          <p>If the landlord hasn't replied, send a reminder: <em>"Notice period expires in 72 hours. File is scheduled
+              for submission to National Consumer Helpline on Day 7."</em> In 85% of cases, landlords settle here.</p>
         </div>
 
         <div class="bp-step">
           <div class="bp-badge">Day 7</div>
           <h4>File Free Complaint on e-Daakhil / NCH 1915</h4>
-          <p>If they still refuse, call <strong>1915</strong> (National Consumer Helpline) or file on <strong>consumerhelpline.gov.in</strong>. It is 100% free, takes 10 minutes from your phone, and a government consumer officer calls the landlord directly.</p>
+          <p>If they still refuse, call <strong>1915</strong> (National Consumer Helpline) or file on
+            <strong>consumerhelpline.gov.in</strong>. It is 100% free, takes 10 minutes from your phone, and a
+            government consumer officer calls the landlord directly.
+          </p>
         </div>
       </div>
     </div>
@@ -1453,24 +1827,30 @@
   <div class="modal-backdrop hidden" id="edaakhilModalBackdrop">
     <div class="modal-card wide" id="edaakhilModalCard">
       <button type="button" class="modal-close" id="edaakhilModalCloseBtn">&times;</button>
-      
+
       <div class="modal-header">
         <div class="modal-badge"><i class="fa-solid fa-scale-balanced"></i> CONSUMER COURT GUIDE</div>
         <h3>e-Jagriti 5-Minute Online Filing Manual</h3>
-        <p>How to file your pre-generated petition on <strong><a href="https://e-jagriti.gov.in/" target="_blank" style="color:#38bdf8;">e-jagriti.gov.in</a></strong> with ₹0 court fee</p>
+        <p>How to file your pre-generated petition on <strong><a href="https://e-jagriti.gov.in/" target="_blank"
+              style="color:#38bdf8;">e-jagriti.gov.in</a></strong> with ₹0 court fee</p>
       </div>
 
       <div class="blueprint-steps">
         <div class="bp-step">
           <div class="bp-badge">Step 1</div>
           <h4>Register as Consumer / Citizen on e-Jagriti</h4>
-          <p>Go to <a href="https://e-jagriti.gov.in/" target="_blank" style="color:#38bdf8; text-decoration:underline;">e-jagriti.gov.in</a> and click on <strong>"Citizen Login / Register"</strong>. Enter your name, mobile, and Aadhaar OTP. Takes 2 minutes to create a free account.</p>
+          <p>Go to <a href="https://e-jagriti.gov.in/" target="_blank"
+              style="color:#38bdf8; text-decoration:underline;">e-jagriti.gov.in</a> and click on <strong>"Citizen Login
+              / Register"</strong>. Enter your name, mobile, and Aadhaar OTP. Takes 2 minutes to create a free account.
+          </p>
         </div>
 
         <div class="bp-step">
           <div class="bp-badge">Step 2</div>
           <h4>Select Your District Commission</h4>
-          <p>Click on <strong>"File New Case"</strong> &rarr; Select your State (e.g. Karnataka / Maharashtra) &rarr; Select District Commission (e.g. DCDRC Bengaluru Urban / Pune). The jurisdiction is based on where the flat was located.</p>
+          <p>Click on <strong>"File New Case"</strong> &rarr; Select your State (e.g. Karnataka / Maharashtra) &rarr;
+            Select District Commission (e.g. DCDRC Bengaluru Urban / Pune). The jurisdiction is based on where the flat
+            was located.</p>
         </div>
 
         <div class="bp-step">
@@ -1487,7 +1867,9 @@
         <div class="bp-step">
           <div class="bp-badge">Step 4</div>
           <h4>Submit Case (₹0 Court Fee for claims under ₹5 Lakhs)</h4>
-          <p>Under the Consumer Protection Rules 2020, disputes claiming under ₹5,00,000 carry <strong>ZERO court fee</strong>. Click submit. You get an official Case Diary Number. The Commission will issue court summons directly to the landlord's mobile and address!</p>
+          <p>Under the Consumer Protection Rules 2020, disputes claiming under ₹5,00,000 carry <strong>ZERO court
+              fee</strong>. Click submit. You get an official Case Diary Number. The Commission will issue court summons
+            directly to the landlord's mobile and address!</p>
         </div>
       </div>
     </div>
@@ -1511,19 +1893,107 @@
         <div class="feature-step-card">
           <div class="feature-step-number">01</div>
           <h3>Fill in 2 Minutes</h3>
-          <p>Enter the rental address, withheld amount, and the fake excuses your landlord used. No legal knowledge required.</p>
+          <p>Enter the rental address, withheld amount, and the fake excuses your landlord used. No legal knowledge
+            required.</p>
         </div>
 
         <div class="feature-step-card">
           <div class="feature-step-number">02</div>
           <h3>Get Pre-Litigation Notice</h3>
-          <p>Our engine applies the relevant Model Tenancy sections, Section 73 Contract Act, and Supreme Court wear & tear rulings.</p>
+          <p>Our engine applies the relevant Model Tenancy sections, Section 73 Contract Act, and Supreme Court wear &
+            tear rulings.</p>
         </div>
 
         <div class="feature-step-card">
           <div class="feature-step-number">03</div>
           <h3>Landlord Settles</h3>
-          <p>Send via WhatsApp and Speed Post. Landlords realize you know the law and quickly refund rather than risk a consumer court summons.</p>
+          <p>Send via WhatsApp and Speed Post. Landlords realize you know the law and quickly refund rather than risk a
+            consumer court summons.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Worldwide Tenancy Laws & Next Steps Explorer -->
+  <section class="country-laws-section" id="countryLawsSection">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fa-solid fa-earth-americas"></i> Statutory Protections Worldwide</span>
+        <h2>Tenancy Laws & Next Steps by Country</h2>
+        <p>Different countries have completely different tenancy laws, statutory return windows, and court enforcement
+          mechanisms. Select your country below to see how our pre-litigation recovery system protects your rights.</p>
+      </div>
+
+      <!-- Country Navigation Tabs -->
+      <div class="country-nav-tabs" id="countryNavTabs">
+        <button type="button" class="cnt-tab-btn active" data-country="IN"><span class="tab-flag">🇮🇳</span>
+          India</button>
+        <button type="button" class="cnt-tab-btn" data-country="US"><span class="tab-flag">🇺🇸</span> United
+          States</button>
+        <button type="button" class="cnt-tab-btn" data-country="GB"><span class="tab-flag">🇬🇧</span> United
+          Kingdom</button>
+        <button type="button" class="cnt-tab-btn" data-country="CA"><span class="tab-flag">🇨🇦</span> Canada</button>
+        <button type="button" class="cnt-tab-btn" data-country="AU"><span class="tab-flag">🇦🇺</span>
+          Australia</button>
+        <button type="button" class="cnt-tab-btn" data-country="GLOBAL"><span class="tab-flag">🌍</span> Worldwide /
+          Other</button>
+      </div>
+
+      <!-- Country Law & Process Panel -->
+      <div class="country-law-panel" id="countryLawPanel">
+        <div class="law-panel-header">
+          <div class="law-panel-title-group">
+            <h3 id="clpHeading"><span id="clpFlag">🇮🇳</span> <span id="clpCountryName">India</span> Tenancy Recovery
+              Protocol</h3>
+            <p id="clpSubtitle">Governed by the Transfer of Property Act 1882, Indian Contract Act 1872, and Consumer
+              Protection Act 2019.</p>
+          </div>
+          <div class="country-change-badge" id="clpPenaltyBadge">
+            <i class="fa-solid fa-scale-balanced"></i> 18% Statutory Compound Interest
+          </div>
+        </div>
+
+        <!-- 4 Pillars of Law -->
+        <div class="law-summary-grid" id="clpLawGrid">
+          <!-- Dynamically populated by renderCountryLawPanel() -->
+        </div>
+
+        <!-- Step-by-Step What's Next Process -->
+        <div class="process-roadmap-box">
+          <div class="process-roadmap-header">
+            <h4><i class="fa-solid fa-route text-primary"></i> What's Next Process (Enforcement Roadmap)</h4>
+            <p id="clpRoadmapSub">How the recovery timeline unfolds from formal notice delivery to full restitution:</p>
+          </div>
+          <div class="process-roadmap-steps" id="clpRoadmapSteps">
+            <!-- Dynamically populated by renderCountryLawPanel() -->
+          </div>
+        </div>
+
+        <!-- How It Works vs How It Helps You -->
+        <div class="action-card-body" style="margin-bottom: 2rem;">
+          <div class="action-how-block how-works" style="padding: 1.25rem 1.5rem; font-size: 0.92rem;">
+            <span class="how-tag" style="font-size: 0.8rem;"><i class="fa-solid fa-gears"></i> How It Works (The Legal
+              Mechanism):</span>
+            <p id="clpHowItWorksDesc" style="font-size: 0.88rem; margin-top: 0.5rem;"></p>
+          </div>
+          <div class="action-how-block how-helps" style="padding: 1.25rem 1.5rem; font-size: 0.92rem;">
+            <span class="how-tag" style="font-size: 0.8rem;"><i class="fa-solid fa-shield-heart"></i> How It Helps You
+              (Your Direct Advantage):</span>
+            <p id="clpHowItHelpsDesc" style="font-size: 0.88rem; margin-top: 0.5rem;"></p>
+          </div>
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="law-panel-cta-bar">
+          <div class="law-panel-cta-text">
+            <h4 id="clpCtaTitle">Ready to Recover Your Deposit in India?</h4>
+            <p id="clpCtaSub">Generate your advocate-grade 7-day pre-litigation legal demand notice in under 2 minutes.
+            </p>
+          </div>
+          <button type="button" class="btn-primary-hero" id="btnClpStartNotice"
+            style="padding: 0.8rem 1.6rem; font-size: 0.95rem;">
+            <i class="fa-solid fa-bolt"></i> Draft Pre-Litigation Notice Now
+          </button>
         </div>
       </div>
     </div>
@@ -1535,7 +2005,8 @@
       <div class="section-header">
         <span class="section-tag"><i class="fa-solid fa-star text-warning"></i> Verified Tenant Stories</span>
         <h2>Over ₹24.8 Lakhs Recovered from Unlawful Deductions</h2>
-        <p>Real experiences from tenants in Bangalore, Pune, Mumbai & Delhi who took a stand against deposit extortion.</p>
+        <p>Real experiences from tenants in Bangalore, Pune, Mumbai & Delhi who took a stand against deposit extortion.
+        </p>
       </div>
 
       <div class="testimonials-grid">
@@ -1557,7 +2028,9 @@
             </div>
           </div>
           <p class="testimonial-quote">
-            "My landlord deducted ₹40k for painting and ₹25k for deep cleaning on a flat I lived in for 2 years. I generated the DepositShield 7-day notice and dispatched via Speed Post. On Day 4, he panicked and Google Pay-ed me the full ₹65,000! Saved me ₹20k lawyer fees."
+            "My landlord deducted ₹40k for painting and ₹25k for deep cleaning on a flat I lived in for 2 years. I
+            generated the DepositShield 7-day notice and dispatched via Speed Post. On Day 4, he panicked and Google
+            Pay-ed me the full ₹65,000! Saved me ₹20k lawyer fees."
           </p>
           <div class="tenant-profile">
             <div class="tenant-avatar">PS</div>
@@ -1586,7 +2059,9 @@
             </div>
           </div>
           <p class="testimonial-quote">
-            "The PG owner was completely ghosting my WhatsApp messages for 3 weeks after I vacated. I unlocked the Tier 2 kit for ₹499 and sent the drafted police complaint (Sec 316 BNS Criminal Breach of Trust). Within 2 hours he called apologizing and refunded the entire ₹32,000."
+            "The PG owner was completely ghosting my WhatsApp messages for 3 weeks after I vacated. I unlocked the Tier
+            2 kit for ₹499 and sent the drafted police complaint (Sec 316 BNS Criminal Breach of Trust). Within 2 hours
+            he called apologizing and refunded the entire ₹32,000."
           </p>
           <div class="tenant-profile">
             <div class="tenant-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">RK</div>
@@ -1615,7 +2090,9 @@
             </div>
           </div>
           <p class="testimonial-quote">
-            "Landlord handed me handwritten chits with zero GST numbers for polish and wall repairs. I used the statutory notice citing Section 108(m) Transfer of Property Act. He realized I was filing on the e-Jagriti consumer court and immediately transferred the balance."
+            "Landlord handed me handwritten chits with zero GST numbers for polish and wall repairs. I used the
+            statutory notice citing Section 108(m) Transfer of Property Act. He realized I was filing on the e-Jagriti
+            consumer court and immediately transferred the balance."
           </p>
           <div class="tenant-profile">
             <div class="tenant-avatar" style="background: linear-gradient(135deg, #8b5cf6, #6366f1);">AM</div>
@@ -1634,10 +2111,13 @@
     <div class="section-container">
       <div class="inquiry-container-card" style="grid-template-columns: 1fr;">
         <div class="inquiry-left" style="max-width: 100%; text-align: center; margin: 0 auto;">
-          <div class="section-tag" style="margin: 0 auto 14px;"><i class="fa-solid fa-bolt"></i> 100% Automated Self-Service SaaS Platform</div>
+          <div class="section-tag" style="margin: 0 auto 14px;"><i class="fa-solid fa-bolt"></i> 100% Automated
+            Self-Service SaaS Platform</div>
           <h2>Instant Document Generation & Dual Delivery</h2>
           <p class="inquiry-desc" style="max-width: 700px; margin: 0 auto 24px;">
-            DepositShield is an algorithmic legal document drafting software. You do not need to wait for lawyers or callbacks. Input your tenancy dispute details, and our software engine instantly formats your court-admissible pre-litigation demand notice under Indian Central Tenancy Law.
+            DepositShield is an algorithmic legal document drafting software. You do not need to wait for lawyers or
+            callbacks. Input your tenancy dispute details, and our software engine instantly formats your
+            court-admissible pre-litigation demand notice under Indian Central Tenancy Law.
           </p>
           <div class="inquiry-perks" style="justify-content: center; max-width: 800px; margin: 0 auto;">
             <div class="inquiry-perk">
@@ -1683,7 +2163,9 @@
             <i class="fa-solid fa-chevron-down"></i>
           </button>
           <div class="faq-answer">
-            <p><strong>Yes, absolutely.</strong> Under the Indian Evidence Act (Sec 65B) and the Code of Civil Procedure (CPC), any individual has the constitutional right to issue a formal Pre-Litigation Demand Notice in their own name. A notice issued by the aggrieved party carries equal legal weight before Consumer Forums.</p>
+            <p><strong>Yes, absolutely.</strong> Under the Indian Evidence Act (Sec 65B) and the Code of Civil Procedure
+              (CPC), any individual has the constitutional right to issue a formal Pre-Litigation Demand Notice in their
+              own name. A notice issued by the aggrieved party carries equal legal weight before Consumer Forums.</p>
           </div>
         </div>
 
@@ -1693,7 +2175,10 @@
             <i class="fa-solid fa-chevron-down"></i>
           </button>
           <div class="faq-answer">
-            <p><strong>No.</strong> In multiple judgments, Indian High Courts have ruled that painting falls under natural wear, tear, and weathering caused by lapse of time. Unless the tenant has physically vandalized or severely damaged walls beyond normal usage, landlords cannot deduct painting costs from the caution deposit.</p>
+            <p><strong>No.</strong> In multiple judgments, Indian High Courts have ruled that painting falls under
+              natural wear, tear, and weathering caused by lapse of time. Unless the tenant has physically vandalized or
+              severely damaged walls beyond normal usage, landlords cannot deduct painting costs from the caution
+              deposit.</p>
           </div>
         </div>
 
@@ -1703,12 +2188,22 @@
             <i class="fa-solid fa-chevron-down"></i>
           </button>
           <div class="faq-answer">
-            <p><strong>When the 7 days are done, your landlord is officially in willful statutory default.</strong> Because you served a formal pre-litigation notice, you are now legally entitled to initiate 4 direct enforcement actions immediately:</p>
+            <p><strong>When the 7 days are done, your landlord is officially in willful statutory default.</strong>
+              Because you served a formal pre-litigation notice, you are now legally entitled to initiate 4 direct
+              enforcement actions immediately:</p>
             <ol style="margin-top:0.5rem; padding-left:1.2rem; line-height:1.6;">
-              <li><strong>Call National Consumer Helpline (1915):</strong> Free government grievance docket. An officer dials the landlord directly to demand settlement.</li>
-              <li><strong>File on e-Jagriti District Consumer Forum (e-jagriti.gov.in):</strong> Disputes under ₹5 Lakh carry <strong>ZERO court filing fees</strong>. You can file online as Complainant-in-Person without paying lawyer fees. The court issues formal summons and awards the deposit + <strong>18% statutory interest</strong> + up to <strong>₹1,00,000 compensation</strong> for mental agony.</li>
-              <li><strong>Lodge Police Complaint for Criminal Breach of Trust:</strong> Under Section 405/406 IPC (Section 316 BNS), security deposit is held in fiduciary trust ("Amanat"). Unlawful retention without GST bills is a criminal offense.</li>
-              <li><strong>Demand Verified GST Bills:</strong> Tell the landlord that arbitrary repair deductions require contractor GST invoices. Fake handwritten receipts constitute cheating under Section 420 IPC / 318 BNS.</li>
+              <li><strong>Call National Consumer Helpline (1915):</strong> Free government grievance docket. An officer
+                dials the landlord directly to demand settlement.</li>
+              <li><strong>File on e-Jagriti District Consumer Forum (e-jagriti.gov.in):</strong> Disputes under ₹5 Lakh
+                carry <strong>ZERO court filing fees</strong>. You can file online as Complainant-in-Person without
+                paying lawyer fees. The court issues formal summons and awards the deposit + <strong>18% statutory
+                  interest</strong> + up to <strong>₹1,00,000 compensation</strong> for mental agony.</li>
+              <li><strong>Lodge Police Complaint for Criminal Breach of Trust:</strong> Under Section 405/406 IPC
+                (Section 316 BNS), security deposit is held in fiduciary trust ("Amanat"). Unlawful retention without
+                GST bills is a criminal offense.</li>
+              <li><strong>Demand Verified GST Bills:</strong> Tell the landlord that arbitrary repair deductions require
+                contractor GST invoices. Fake handwritten receipts constitute cheating under Section 420 IPC / 318 BNS.
+              </li>
             </ol>
           </div>
         </div>
@@ -1719,7 +2214,11 @@
             <i class="fa-solid fa-chevron-down"></i>
           </button>
           <div class="faq-answer">
-            <p>If the landlord ignores the 7-day notice, you can lodge a 100% free complaint on the government's <strong>National Consumer Helpline (NCH - Call 1915)</strong> or file an online case via the <strong>e-Daakhil portal</strong>. Having served this formal legal notice is mandatory evidence that proves the landlord acted in bad faith.</p>
+            <p>If the landlord ignores the 7-day notice, you can lodge a 100% free complaint on the government's
+              <strong>National Consumer Helpline (NCH - Call 1915)</strong> or file an online case via the
+              <strong>e-Daakhil portal</strong>. Having served this formal legal notice is mandatory evidence that
+              proves the landlord acted in bad faith.
+            </p>
           </div>
         </div>
 
@@ -1729,7 +2228,9 @@
             <i class="fa-solid fa-chevron-down"></i>
           </button>
           <div class="faq-answer">
-            <p><strong>Yes.</strong> The notice is tailored to cite Indian Central Acts (Transfer of Property Act, Contract Act 1872, Consumer Protection Act 2019) which apply uniformly across all Indian states and union territories.</p>
+            <p><strong>Yes.</strong> The notice is tailored to cite Indian Central Acts (Transfer of Property Act,
+              Contract Act 1872, Consumer Protection Act 2019) which apply uniformly across all Indian states and union
+              territories.</p>
           </div>
         </div>
       </div>
@@ -1745,7 +2246,11 @@
       <div class="guarantee-text">
         <h3>100% Statutory Admissibility Guarantee or Full Refund</h3>
         <p>
-          Every formal notice generated on DepositShield India complies strictly with the <strong>Bhartiya Nyaya Sanhita (BNS) 2023</strong>, <strong>Bhartiya Sakshya Adhiniyam (BSA) 2023</strong>, <strong>Transfer of Property Act 1882 (§108)</strong>, and the <strong>Consumer Protection Act 2019</strong>. If any Indian consumer forum, civil court, or rent tribunal rules our statutory notice procedurally inadmissible due to drafting defects, we guarantee an instant 100% refund without questions.
+          Every formal notice generated on DepositShield India complies strictly with the <strong>Bhartiya Nyaya Sanhita
+            (BNS) 2023</strong>, <strong>Bhartiya Sakshya Adhiniyam (BSA) 2023</strong>, <strong>Transfer of Property
+            Act 1882 (§108)</strong>, and the <strong>Consumer Protection Act 2019</strong>. If any Indian consumer
+          forum, civil court, or rent tribunal rules our statutory notice procedurally inadmissible due to drafting
+          defects, we guarantee an instant 100% refund without questions.
         </p>
       </div>
     </div>
@@ -1759,20 +2264,29 @@
         <h3>Deposit<span>Shield</span> India</h3>
         <p>Empowering Indian tenants against unlawful security deposit deductions.</p>
         <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #94a3b8;">
-          <a href="/contact" style="color: #38bdf8; text-decoration: none;"><i class="fa-solid fa-headset"></i> 24/7 Online Customer Support & Grievance Desk</a>
+          <a href="/contact" style="color: #38bdf8; text-decoration: none;"><i class="fa-solid fa-headset"></i> 24/7
+            Online Customer Support & Grievance Desk</a>
         </p>
       </div>
 
       <div class="footer-disclaimer">
         <p style="margin-bottom: 0.75rem;">
-          <a href="/terms" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Terms & Conditions</a>
-          <a href="/privacy" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Privacy Policy</a>
-          <a href="/refund" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Cancellation & Refund Policy</a>
-          <a href="/shipping" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Shipping & Delivery</a>
-          <a href="/contact" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Contact Us</a>
+          <a href="/terms" style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Terms &
+            Conditions</a>
+          <a href="/privacy"
+            style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Privacy Policy</a>
+          <a href="/refund"
+            style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Cancellation & Refund
+            Policy</a>
+          <a href="/shipping"
+            style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Shipping & Delivery</a>
+          <a href="/contact"
+            style="color:#38bdf8; text-decoration:none; font-weight:600; margin-right: 0.75rem;">Contact Us</a>
           <a href="/laws" style="color:#38bdf8; text-decoration:none; font-weight:600;">Statutory Rules</a>
         </p>
-        <p><strong>Disclaimer:</strong> DepositShield India is an automated legal self-help document drafting platform. It does not provide legal representation or advocate attorney services. If your dispute involves complex title or proprietary litigation, please consult an advocate.</p>
+        <p><strong>Disclaimer:</strong> DepositShield India is an automated legal self-help document drafting platform.
+          It does not provide legal representation or advocate attorney services. If your dispute involves complex title
+          or proprietary litigation, please consult an advocate.</p>
         <p>&copy; 2026 DepositShield India. All rights reserved. Secure 256-bit SSL encrypted payments via Razorpay.</p>
       </div>
     </div>
@@ -1803,36 +2317,50 @@
       </div>
       <h2>Get a 100% Free 60-Second Legal Evaluation</h2>
       <p>
-        Landlords count on tenants giving up after moving out. Enter your details below — our legal compliance desk will review your lease and tell you exactly how much money you can legally claim back under Section 108 of the Transfer of Property Act.
+        Landlords count on tenants giving up after moving out. Enter your details below — our legal compliance desk will
+        review your lease and tell you exactly how much money you can legally claim back under Section 108 of the
+        Transfer of Property Act.
       </p>
 
       <form id="exitLeadForm" style="display: flex; flex-direction: column; gap: 0.85rem;">
         <div>
-          <label style="font-size: 0.8rem; font-weight: 700; color: #e2e8f0; display: block; margin-bottom: 4px;">Your Full Name *</label>
-          <input type="text" id="exitLeadName" class="form-input" placeholder="e.g. Rahul Sharma" required style="width: 100%;">
+          <label style="font-size: 0.8rem; font-weight: 700; color: #e2e8f0; display: block; margin-bottom: 4px;">Your
+            Full Name *</label>
+          <input type="text" id="exitLeadName" class="form-input" placeholder="e.g. Rahul Sharma" required
+            style="width: 100%;">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
           <div>
-            <label style="font-size: 0.8rem; font-weight: 700; color: #e2e8f0; display: block; margin-bottom: 4px;">WhatsApp Number *</label>
-            <input type="tel" id="exitLeadPhone" class="form-input" placeholder="10-digit number" required style="width: 100%;">
+            <label
+              style="font-size: 0.8rem; font-weight: 700; color: #e2e8f0; display: block; margin-bottom: 4px;">WhatsApp
+              Number *</label>
+            <input type="tel" id="exitLeadPhone" class="form-input" placeholder="10-digit number" required
+              style="width: 100%;">
           </div>
           <div>
-            <label style="font-size: 0.8rem; font-weight: 700; color: #e2e8f0; display: block; margin-bottom: 4px;">Withheld Amount (₹) *</label>
-            <input type="number" id="exitLeadAmount" class="form-input" placeholder="e.g. 45000" required style="width: 100%;">
+            <label
+              style="font-size: 0.8rem; font-weight: 700; color: #e2e8f0; display: block; margin-bottom: 4px;">Withheld
+              Amount (₹) *</label>
+            <input type="number" id="exitLeadAmount" class="form-input" placeholder="e.g. 45000" required
+              style="width: 100%;">
           </div>
         </div>
 
         <div>
-          <label style="font-size: 0.8rem; font-weight: 700; color: #e2e8f0; display: block; margin-bottom: 4px;">City / Area *</label>
-          <input type="text" id="exitLeadCity" class="form-input" placeholder="e.g. HSR Layout, Bengaluru" required style="width: 100%;">
+          <label style="font-size: 0.8rem; font-weight: 700; color: #e2e8f0; display: block; margin-bottom: 4px;">City /
+            Area *</label>
+          <input type="text" id="exitLeadCity" class="form-input" placeholder="e.g. HSR Layout, Bengaluru" required
+            style="width: 100%;">
         </div>
 
-        <button type="submit" id="btnSubmitExitLead" class="btn-primary" style="margin-top: 0.5rem; justify-content: center; padding: 12px; font-size: 0.95rem; font-weight: 800;">
+        <button type="submit" id="btnSubmitExitLead" class="btn-primary"
+          style="margin-top: 0.5rem; justify-content: center; padding: 12px; font-size: 0.95rem; font-weight: 800;">
           <i class="fa-solid fa-shield-halved"></i> Request Free Deposit Recovery Check
         </button>
 
-        <div id="exitLeadSuccessMsg" style="display: none; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; text-align: center; font-weight: 700;">
+        <div id="exitLeadSuccessMsg"
+          style="display: none; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; text-align: center; font-weight: 700;">
           ✓ Request logged! Our legal officer is reviewing your dispute and will message you on WhatsApp shortly.
         </div>
       </form>
@@ -1842,4 +2370,5 @@
   <!-- Main JavaScript File -->
   <script src="/app.js"></script>
 </body>
+
 </html>
